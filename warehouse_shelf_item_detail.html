@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>散件上架</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .main-fixed {
+            width: 400px;
+            height: 700px;
+            margin: 0 auto;
+            background: #f5f5f5;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            overflow-y: auto;
+            position: relative;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 0;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 0 8px 0;
+            position: relative;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        .back-button {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            border-radius: 0;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #333;
+            cursor: pointer;
+        }
+        .header-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #222;
+            margin: 0 auto;
+            text-align: center;
+            flex: 1;
+        }
+        .shelf-type-tabs {
+            display: flex;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 18px;
+            overflow: hidden;
+        }
+        .shelf-type-tab {
+            flex: 1;
+            text-align: center;
+            padding: 16px 0;
+            font-size: 18px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .shelf-type-tab.active {
+            color: #1677ff;
+            font-weight: bold;
+        }
+        .shelf-type-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background: #1677ff;
+            border-radius: 2px;
+        }
+        .scan-area {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 18px 18px 10px 18px;
+            margin-bottom: 18px;
+            box-sizing: border-box;
+        }
+        .scan-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .scan-input-wrapper img {
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+            width: 30px;
+            height: 30px;
+        }
+        .scan-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px 16px 14px 40px;
+            font-size: 19px;
+            border: 1.5px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            outline: none;
+            margin-bottom: 2px;
+        }
+        .scan-input:focus {
+            border: 1.5px solid #3a8bfd;
+            background: #f0f7ff;
+        }
+        .current-item {
+            display: none;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px 16px 14px 40px;
+            font-size: 19px;
+            border: 1.5px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            margin-bottom: 2px;
+            position: relative;
+        }
+        .current-item-text {
+            color: #222;
+        }
+        .clear-item-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        .clear-item-btn:hover {
+            color: #333;
+        }
+        .info-area {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 10px 8px 10px 8px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: row;
+            font-size: 17px;
+            gap: 0;
+            justify-content: space-between;
+        }
+        .info-col-left {
+            flex: 1 1 60%;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .info-col-right {
+            flex: 1 1 40%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end;
+            justify-content: flex-start;
+        }
+        .info-row {
+            display: flex;
+            align-items: center;
+            min-height: 22px;
+        }
+        .info-label {
+            color: #888;
+            margin-right: 4px;
+        }
+        .info-value {
+            color: #222;
+            font-weight: bold;
+        }
+        .info-highlight {
+            color: #0099ff;
+            font-size: 15px;
+            font-weight: bold;
+            margin: 0 2px;
+        }
+        .wait-list-area {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 10px 0 10px 0;
+            margin: 0;
+            display: none;
+        }
+        .wait-list-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #222;
+            padding: 12px 8px 8px 8px;
+        }
+        .wait-list {
+            width: 100%;
+        }
+        .wait-item {
+            display: flex;
+            align-items: stretch;
+            border-bottom: 1px solid #eee;
+            padding: 12px 8px 12px 8px;
+        }
+        .wait-item:last-child {
+            border-bottom: none;
+        }
+        .wait-img {
+            width: 73px;
+            height: 73px;
+            background: #ededed;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-right: 12px;
+            flex-shrink: 0;
+            flex-direction: column;
+            margin-top: 2px;
+        }
+        .wait-fnsku {
+            font-size: 10px;
+            color: #888;
+            margin-top: 4px;
+            word-break: break-all;
+            text-align: center;
+        }
+        .wait-info {
+            flex: 3 1 -5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+            margin-right: auto;
+        }
+        .wait-row {
+            font-size: 17px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .wait-row .label {
+            color: #666;
+            margin-right: 4px;
+        }
+        .wait-sku {
+            font-size: 15px;
+            color: #333;
+            word-break: break-all;
+        }
+        .wait-count-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 67px;
+            max-width: 70px;
+            background: #f6f6f6;
+            border-radius: 10px;
+            padding: 8px 4px;
+            margin-left: 4px;
+            height: 50px;
+            text-align: center;
+        }
+        .wait-count-label {
+            color: #444;
+            font-size: 15px;
+            margin-bottom: 2px;
+            line-height: 1.1;
+        }
+        .wait-count-row {
+            white-space: nowrap;
+        }
+        .wait-count {
+            color: #00aaff;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .footer-btn-area {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background: none;
+            padding: 16px 0 12px 0;
+            display: flex;
+            justify-content: center;
+            z-index: 100;
+            gap: 20px;
+        }
+        .footer-btn {
+            width: 180px;
+            padding: 14px 0;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            background: #1677ff;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(22,119,255,0.08);
+            transition: all 0.2s;
+        }
+        .footer-btn:disabled {
+            background: #a0cfff;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .footer-btn:active:not(:disabled) {
+            background: #125fd1;
+        }
+        .footer-btn-clear {
+            background-color: #ea4335;
+            color: #fff;
+        }
+        .footer-btn-clear:disabled {
+            background-color: #ffb3b3;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .footer-btn-clear:active:not(:disabled) {
+            background-color: #c0392b;
+        }
+        .black-text {
+            color: #222 !important;
+        }
+        .pending-list-area {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 10px 0 10px 0;
+            margin: 0 0 18px 0;
+            display: block;
+        }
+        .pending-list-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #222;
+            padding: 12px 8px 8px 8px;
+            display: block;
+        }
+        .pending-list {
+            width: 100%;
+        }
+        .pending-item {
+            display: flex;
+            align-items: stretch;
+            border-bottom: 1px solid #eee;
+            padding: 12px 8px 12px 8px;
+            cursor: pointer;
+        }
+        .pending-item:last-child {
+            border-bottom: none;
+        }
+        .pending-item:hover {
+            background: #f8f8f8;
+        }
+        .pending-img {
+            width: 73px;
+            height: 73px;
+            background: #ededed;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-right: 12px;
+            flex-shrink: 0;
+            flex-direction: column;
+            margin-top: 2px;
+        }
+        .pending-fnsku {
+            font-size: 10px;
+            color: #888;
+            margin-top: 4px;
+            word-break: break-all;
+            text-align: center;
+        }
+        .pending-info {
+            flex: 3 1 -5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+            margin-right: auto;
+        }
+        .pending-row {
+            font-size: 17px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .pending-row .label {
+            color: #666;
+            margin-right: 4px;
+        }
+        .pending-sku {
+            font-size: 15px;
+            color: #333;
+            word-break: break-all;
+        }
+        .pending-count-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 67px;
+            max-width: 70px;
+            background: #f6f6f6;
+            border-radius: 10px;
+            padding: 8px 4px;
+            margin-left: 4px;
+            height: 50px;
+            text-align: center;
+        }
+        .pending-count-label {
+            color: #444;
+            font-size: 15px;
+            margin-bottom: 2px;
+            line-height: 1.1;
+        }
+        .pending-count-row {
+            white-space: nowrap;
+        }
+        .pending-count {
+            color: #00aaff;
+            font-size: 20px;
+            font-weight: bold;
+            margin-right: 2px;
+        }
+        .pending-total {
+            color: #222;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .hidden-button {
+            display: none;
+        }
+        /* 库位扫描弹窗样式 */
+        .location-scan-modal {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            background: rgba(0,0,0,0.18);
+            justify-content: center;
+            align-items: center;
+        }
+        .location-scan-content {
+            background: #fff;
+            border-radius: 16px;
+            width: 360px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .location-scan-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #222;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .location-scan-input-wrapper {
+            position: relative;
+        }
+        .location-scan-input-wrapper img {
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+            width: 30px;
+            height: 30px;
+        }
+        .location-scan-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px 16px 14px 40px;
+            font-size: 19px;
+            border: 1.5px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            outline: none;
+        }
+        .location-scan-input:focus {
+            border: 1.5px solid #3a8bfd;
+            background: #f0f7ff;
+        }
+        .location-scan-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .location-scan-btn {
+            flex: 1;
+            padding: 12px 0;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .location-scan-confirm {
+            background: #1677ff;
+            color: #fff;
+        }
+        .location-scan-confirm:active {
+            background: #125fd1;
+        }
+        .location-scan-cancel {
+            background: #f5f5f5;
+            color: #666;
+        }
+        .location-scan-cancel:active {
+            background: #e8e8e8;
+        }
+        /* Custom Alert Styles (Success) */
+         .custom-success-alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.0); /* Transparent background */
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            z-index: 10001; /* Above regular modal */
+             visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            /* pointer-events: none; */ /* Removed */
+         }
+         .custom-success-alert-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+         }
+         .custom-success-alert-container {
+            background: #424242; /* Dark grey background */
+            color: #fff;
+            padding: 32px 36px 24px 36px; /* Larger padding */
+            border-radius: 16px; /* More rounded corners */
+            /* margin-top: 50px; */ /* Removed */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Updated shadow */
+            font-size: 16px;
+            text-align: center;
+            display: flex; /* Use flex to stack icon and text */
+            flex-direction: column; /* Stack vertically */
+            align-items: center; /* Center content horizontally */
+            min-width: 180px; /* Minimum width */
+            transform: scale(0.95); /* Initial scale for transition */
+            transition: transform 0.3s ease;
+         }
+         .custom-success-alert-overlay.visible .custom-success-alert-container {
+            transform: scale(1);
+         }
+        /* Tooltip Styles */
+        .tooltip-container {
+            position: fixed;
+            top: 12px;
+            right: calc(50% - 400px / 2 + 9px + 100px);
+            display: inline-block;
+            vertical-align: middle;
+            z-index: 1001;
+        }
+        .info-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 6px;
+            background-color: #ffe066;
+            color: #b48a00;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            border: 1px solid #ffd700;
+        }
+        .tooltip-content {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 260px;
+            max-width: 340px;
+            background-color: #ffe066;
+            color: #222;
+            padding: 16px 18px 12px 18px;
+            border-radius: 8px;
+            white-space: pre-line;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .tooltip-container:hover .tooltip-content {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-fixed">
+        <div class="container">
+            <div class="header">
+                <button class="back-button" onclick="window.location.href='warehouse_shelf_list.html'">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15.5 19L9.5 12L15.5 5" stroke="#222" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <span class="header-title">扫码上架</span>
+            </div>
+            <div class="tooltip-container">
+                <span class="info-icon">!</span>
+                <div class="tooltip-content">没有全部扫描就确认上架时，页面会刷新并重新获取待上架数量，原型没有体现这一点
+                    
+                    条码:X00302LCPX、X6SV4S4Y;
+                    库位码:KW20250524001
+                </div>
+            </div>
+            <div class="shelf-type-tabs">
+                <div class="shelf-type-tab" onclick="window.location.href='warehouse_shelf_box_detail.html?receipt_code=' + getQueryParam('receipt_code')">整箱上架</div>
+                <div class="shelf-type-tab active" onclick="window.location.href='warehouse_shelf_item_detail.html?receipt_code=' + getQueryParam('receipt_code')">散件上架</div>
+            </div>
+            <div class="scan-area">
+                <div class="scan-input-wrapper">
+                    <img src="icon/screenshot_2025-05-22_16-58-53.png" alt="扫描条码">
+                    <input type="text" class="scan-input" placeholder="扫描条码上架" />
+                    <div class="current-item">
+                        <span class="current-item-text">当前条码：</span>
+                        <button class="clear-item-btn">清空</button>
+                    </div>
+                </div>
+            </div>
+            <div class="info-area">
+                <div class="info-col-left">
+                    <div class="info-row"><span class="info-label">入库单号:</span><span class="info-value" id="receiptCode">RK20250523001</span></div>                    
+                    <div class="info-row"><span class="info-label">采购单号:</span><span class="info-value" id="purchaseOrder">ST20250423001</span></div>
+                    <div class="info-row"><span class="info-label">供应商:</span><span class="info-value" id="supplier">供应商1</span></div>
+                </div>
+                <div class="info-col-right">
+                    <div class="info-row">
+                        <span class="info-label">已扫/待上架:</span>
+                        <span class="info-highlight" id="shelfCount">0</span>
+                        <span style="color:#222;font-weight:bold;">/</span>
+                        <span class="info-value" id="totalCount">100</span>
+                    </div>
+                </div>
+            </div>
+            <div class="pending-list-area">
+                <div class="pending-list-title" style="display: none;">待上架列表</div>
+                <div class="pending-list" id="pendingList">
+                    <!-- 列表项由JS渲染 -->
+                </div>
+            </div>
+            <div class="wait-list-area">
+                <div class="wait-list" id="waitList">
+                    <!-- 列表项由JS渲染 -->
+                </div>
+            </div>
+        </div>
+        <div class="footer-btn-area">
+            <button class="footer-btn footer-btn-clear" id="footerClearBtn" disabled>清空重扫</button>
+            <button class="footer-btn" id="footerConfirmBtn" disabled>确认上架</button>
+        </div>
+    </div>
+    <div id="customAlert" style="display:none;position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:9999;background:rgba(0,0,0,0.18);justify-content:center;align-items:center;">
+        <div style="background:#333;padding:32px 36px 24px 36px;border-radius:16px;display:flex;flex-direction:column;align-items:center;min-width:180px;">
+            <div style="width:64px;height:64px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+                <span style="font-size:38px;color:#333;font-weight:bold;">!</span>
+            </div>
+            <div id="customAlertText" style="color:#fff;font-size:22px;text-align:center;"></div>
+        </div>
+    </div>
+
+    <!-- 成功的提示弹窗 -->
+     <div class="custom-success-alert-overlay" id="customSuccessAlertOverlay">
+         <div class="custom-success-alert-container" id="customSuccessAlertContent">
+             <!-- Alert message goes here -->
+         </div>
+     </div>
+
+    <!-- 库位扫描弹窗 -->
+    <div id="locationScanModal" class="location-scan-modal">
+        <div class="location-scan-content">
+            <div class="location-scan-title">扫描上架库位</div>
+            <div class="location-scan-input-wrapper">
+                <img src="icon/screenshot_2025-05-22_16-58-53.png" alt="扫描库位">
+                <input type="text" class="location-scan-input" id="locationScanInput" placeholder="扫描库位" />
+            </div>
+            <div class="location-scan-buttons">
+                <button class="location-scan-btn location-scan-cancel" id="locationScanCancelBtn">取消</button>
+                <button class="location-scan-btn location-scan-confirm" id="locationScanConfirmBtn">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取URL参数
+        function getQueryParam(name) {
+            const url = new URL(window.location.href);
+            return url.searchParams.get(name);
+        }
+        const receiptCode = getQueryParam('receipt_code') || 'RK20250523001';
+        
+        // 模拟数据
+        const detailData = {
+            'RK20250523001': {
+                receiptCode: 'RK20250523001',
+                purchaseOrder: 'ST20250423001',
+                supplier: '供应商1',
+                spu: 'ST210628UB',
+                totalCount: 60,
+                shelfCount: 0
+            }
+        };
+        const detailData2 = {
+            'RK20250523002': {
+                receiptCode: 'RK20250523002',
+                purchaseOrder: '-',
+                supplier: '-',
+                spu: 'ST210628UB',
+                totalCount: 50,
+                shelfCount: 0
+            }
+        };
+
+        // 模拟条码数据
+        const items_data = {
+            'X00302LCPX': {
+                fnsku: 'X00302LCPX',
+                sku: 'ST210628UBCOGNAC100',
+                img: 'icon/3.png',
+                spu: 'ST210628UB',
+                color_size: '栗色/10'
+            },
+            'X6SV4S4Y': {
+                fnsku: 'X6SV4S4Y',
+                sku: 'ST210628UBBLACK9',
+                img: 'icon/3.png',
+                spu: 'ST210628UB',
+                color_size: '黑色/9'
+            }
+        };
+        const items_data2 = {
+            'X00302LCPX': {
+                fnsku: 'X00302LCPX',
+                sku: 'ST210628UBCOGNAC100',
+                img: 'icon/3.png',
+                spu: 'ST210628UB',
+                color_size: '栗色/10'
+            },
+            'X6SV4S4Y': {
+                fnsku: 'X6SV4S4Y',
+                sku: 'ST210628UBBLACK9',
+                img: 'icon/3.png',
+                spu: 'ST210628UB',
+                color_size: '黑色/9'
+            }
+        };
+
+        // 模拟待上架数据
+        const pendingData = [
+            {
+                fnsku: 'X00302LCPX',
+                sku: 'ST210628UBCOGNAC100',
+                num: 18,
+                scanned: 0,
+                img: 'icon/3.png',
+                spu: 'ST210628UB',
+                color_size: '栗色/10'
+            },
+            {
+                fnsku: 'X6SV4S4Y',
+                sku: 'ST210628UBBLACK9',
+                num: 42,
+                scanned: 0,
+                img: 'icon/3.png',
+                spu: 'ST210628UB',
+                color_size: '黑色/9'
+            }
+        ];
+        const pendingData2 = [
+            {
+                fnsku: 'X00302LCPX',
+                sku: 'ST210628UBCOGNAC100',
+                num: 25,
+                scanned: 0,
+                img: 'icon/3.png',
+                spu: 'ST210628UB',
+                color_size: '栗色/10'
+            },
+            {
+                fnsku: 'X6SV4S4Y',
+                sku: 'ST210628UBBLACK9',
+                num: 25,
+                scanned: 0,
+                img: 'icon/3.png',
+                spu: 'ST210628UB',
+                color_size: '黑色/9'
+            }
+        ];
+
+        let scannedItems = new Set(); // 用于存储已扫描的条码
+        const initialShelfCount = detailData[receiptCode].shelfCount; // 存储初始已上架数量
+        const initialPendingData = JSON.parse(JSON.stringify(pendingData)); // 存储初始待上架列表数据
+
+        // 更新信息区域显示
+        function updateInfoArea() {
+            // 计算当前总已上架数量（所有SKU的已扫描数量之和）
+            const currentShelfCount = pendingData.reduce((sum, item) => sum + item.scanned, 0);
+
+            const shelfCountElement = document.getElementById('shelfCount');
+            const totalCountElement = document.getElementById('totalCount');
+            const footerClearBtn = document.getElementById('footerClearBtn');
+            const footerConfirmBtn = document.getElementById('footerConfirmBtn');
+
+            shelfCountElement.textContent = currentShelfCount;
+
+            // 更新按钮状态
+            if (currentShelfCount > 0) {
+                footerClearBtn.disabled = false;
+                footerConfirmBtn.disabled = false;
+            } else {
+                footerClearBtn.disabled = true;
+                footerConfirmBtn.disabled = true;
+            }
+
+            // 检查上架数量是否等于总数量，更新颜色
+            if (currentShelfCount === parseInt(totalCountElement.textContent)) {
+                shelfCountElement.classList.add('black-text');
+            } else {
+                shelfCountElement.classList.remove('black-text');
+            }
+
+            // 更新待上架列表
+            renderPendingList();
+        }
+
+        // 渲染SKU明细列表
+        function renderWaitList() {
+            const list = document.getElementById('waitList');
+            const listArea = document.querySelector('.wait-list-area');
+            if (waitList.length === 0) {
+                listArea.style.display = 'none';
+                return;
+            }
+            listArea.style.display = 'block';
+            list.innerHTML = waitList.map(item => `
+                <div class="wait-item">
+                    <div class="wait-img">
+                        <img src="${item.img}" alt="产品图片" style="width:100%;height:100%;object-fit:cover;border-radius:0px;display:block;">
+                        <div class="wait-fnsku">${item.fnsku}</div>
+                    </div>
+                    <div class="wait-info">
+                        <div class="wait-row"><span class="label">货号：</span>${item.spu}</div>
+                        <div class="wait-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
+                        <div class="wait-sku"><span class="label">SKU：</span>${item.sku}</div>
+                    </div>
+                    <div class="wait-count-box">
+                        <div class="wait-count-label">数量</div>
+                        <div class="wait-count-row">
+                            <span class="wait-count">1</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染待上架列表
+        function renderPendingList() {
+            const list = document.getElementById('pendingList');
+            const listArea = document.querySelector('.pending-list-area');
+            const listTitle = document.querySelector('.pending-list-title');
+            
+            // 显示列表区域，隐藏标题
+            listArea.style.display = 'block';
+            listTitle.style.display = 'none';
+            
+            list.innerHTML = pendingData.map(item => `
+                <div class="pending-item">
+                    <div class="pending-img">
+                        <img src="${item.img}" alt="产品图片" style="width:100%;height:100%;object-fit:cover;border-radius:0px;display:block;">
+                        <div class="pending-fnsku">${item.fnsku}</div>
+                    </div>
+                    <div class="pending-info">
+                        <div class="pending-row"><span class="label">货号：</span>${item.spu}</div>
+                        <div class="pending-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
+                        <div class="pending-sku"><span class="label">SKU：</span>${item.sku}</div>
+                    </div>
+                    <div class="pending-count-box">
+                        <div class="pending-count-label">已扫/待上架</div>
+                        <div class="pending-count-row">
+                            <span class="pending-count ${item.scanned === item.num ? 'black-text' : ''}">${item.scanned}</span>/<span class="pending-total">${item.num}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 模拟库位数据
+        const validLocations = ['KW20250524001', 'KW20250524002', 'KW20250524003', 'KW20250524004', 'KW20250524005'];
+
+        // 底部确认上架按钮逻辑
+        const footerConfirmBtn = document.getElementById('footerConfirmBtn');
+        footerConfirmBtn.onclick = function() {
+            // 使用当前计算的已上架数量
+            const currentShelfCount = pendingData.reduce((sum, item) => sum + item.scanned, 0);
+
+            if (currentShelfCount === 0) {
+                showCustomAlert('上架0件，请扫描条码');
+                return;
+            }
+
+            // 显示库位扫描弹窗
+            const locationScanModal = document.getElementById('locationScanModal');
+            locationScanModal.style.display = 'flex';
+            document.getElementById('locationScanInput').focus();
+        };
+
+        // 库位扫描弹窗取消按钮
+        document.getElementById('locationScanCancelBtn').onclick = function() {
+            document.getElementById('locationScanModal').style.display = 'none';
+            document.getElementById('locationScanInput').value = '';
+        };
+
+        // 库位扫描输入框回车事件
+        document.getElementById('locationScanInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const locationCode = this.value.trim();
+                
+                if (!locationCode) {
+                    showCustomAlert('请输入库位');
+                    return;
+                }
+
+                // 校验库位是否存在
+                if (!validLocations.includes(locationCode)) {
+                    showCustomAlert('上架仓库不一致');
+                    this.value = ''; // 清空输入框
+                    return;
+                }
+
+                // 关闭库位扫描弹窗
+                document.getElementById('locationScanModal').style.display = 'none';
+                this.value = '';
+
+                // 显示上架成功提示
+                showCustomAlert('上架成功');
+                
+                // 清空所有已扫描记录
+                scannedItems.clear();
+                pendingData.forEach((item, index) => {
+                    item.scanned = initialPendingData[index].scanned;
+                });
+                updateInfoArea();
+                scanInput.value = '';
+            }
+        });
+
+        // 库位扫描弹窗确认按钮
+        document.getElementById('locationScanConfirmBtn').onclick = function() {
+            const locationCode = document.getElementById('locationScanInput').value.trim();
+            
+            if (!locationCode) {
+                showCustomAlert('请输入库位');
+                return;
+            }
+
+            // 校验库位是否存在
+            if (!validLocations.includes(locationCode)) {
+                showCustomAlert('上架仓库不一致');
+                document.getElementById('locationScanInput').value = ''; // 清空输入框
+                return;
+            }
+
+            // 关闭库位扫描弹窗
+            document.getElementById('locationScanModal').style.display = 'none';
+            document.getElementById('locationScanInput').value = '';
+
+            // 显示上架成功提示
+            showCustomAlert('上架成功');
+            
+            // 清空所有已扫描记录
+            scannedItems.clear();
+            pendingData.forEach((item, index) => {
+                item.scanned = initialPendingData[index].scanned;
+            });
+            updateInfoArea();
+            scanInput.value = '';
+        };
+
+        // 自定义弹窗
+        let successAlertTimeout;
+        function showCustomAlert(msg) {
+            // 检查是否为成功消息
+            const successMessages = ['上架成功', '已清空'];
+            const isSuccess = successMessages.includes(msg);
+
+            if (isSuccess) {
+                const alertOverlay = document.getElementById('customSuccessAlertOverlay');
+                const alertContent = document.getElementById('customSuccessAlertContent');
+                
+                // Add checkmark icon and text
+                alertContent.innerHTML = `
+                    <div class="custom-alert-icon" style="width: 64px; height: 64px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="38" height="38">
+                            <path d="M5 13L9 17L19 7" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="custom-alert-text" style="color: #fff; font-size: 22px;">${msg}</div>
+                `;
+
+                alertOverlay.classList.add('visible');
+
+                // Clear previous timeout if any
+                clearTimeout(successAlertTimeout);
+
+                // Hide alert after duration
+                successAlertTimeout = setTimeout(() => {
+                    alertOverlay.classList.remove('visible');
+                }, 1500); // Adjust duration as needed
+
+            } else {
+                // 使用原有的提示弹窗样式
+                const alertDiv = document.getElementById('customAlert');
+                const alertText = document.getElementById('customAlertText');
+                alertText.textContent = msg;
+                alertDiv.style.display = 'flex';
+                alertDiv.style.zIndex = '10000'; // Ensure it's above other content
+                setTimeout(() => { 
+                    alertDiv.style.display = 'none';
+                    alertDiv.style.zIndex = '9999';
+                }, 1200);
+            }
+        }
+
+        // 显示当前条码
+        function showCurrentItem(itemCode) {
+            const scanInput = document.querySelector('.scan-input');
+            const currentItem = document.querySelector('.current-item');
+            const currentItemText = document.querySelector('.current-item-text');
+            
+            scanInput.style.display = 'none';
+            currentItem.style.display = 'block';
+            currentItemText.textContent = `当前条码：${itemCode}`;
+        }
+
+        // 清空当前条码
+        function clearCurrentBarcode() {
+            const scanInput = document.querySelector('.scan-input');
+            const currentBarcode = document.querySelector('.current-barcode');
+            const currentBarcodeText = document.querySelector('.current-barcode-text');
+            
+            // 从已扫条码数组中移除当前条码
+            const barcode = currentBarcodeText.textContent.replace('当前条码：', '').trim();
+            if (barcode) {
+                // 重置待上架列表中的已扫描数量
+                const skuInfo = pendingData.find(item => item.fnsku === barcode);
+                if (skuInfo) {
+                    skuInfo.scanned = 0;
+                }
+            }
+            
+            // 清空列表
+            waitList = [];
+            renderWaitList();
+            renderPendingList();
+            
+            // 恢复输入框
+            scanInput.style.display = 'block';
+            currentBarcode.style.display = 'none';
+            scanInput.value = '';
+            scanInput.focus();
+        }
+
+        // 更新清空重扫按钮状态
+        function updateClearButtonState() {
+            // 判断是否有新扫描的条码，或者pendingData中的scanned数量是否有任何一项大于initialPendingData中的对应项
+            const hasNewScans = scannedItems.size > 0;
+            const hasIncreasedQuantity = pendingData.some((item, index) => {
+                return item.scanned > initialPendingData[index].scanned;
+            });
+
+            if (hasNewScans || hasIncreasedQuantity) {
+                footerClearBtn.classList.remove('hidden-button');
+            } else {
+                footerClearBtn.classList.add('hidden-button');
+            }
+        }
+
+        // 扫描条码输入框逻辑
+        const scanInput = document.querySelector('.scan-input');
+        scanInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const barcode = scanInput.value.trim();
+                if (!barcode) return;
+                
+                // 查找对应的SKU信息
+                const skuInfo = pendingData.find(item => item.fnsku === barcode);
+                if (!skuInfo) {
+                    showCustomAlert('条码不属于当前入库单');
+                    scanInput.value = '';
+                    return;
+                }
+                
+                // 检查是否已达到总数
+                if (skuInfo.scanned >= skuInfo.num) {
+                    showCustomAlert('该条码已全部上架');
+                    scanInput.value = '';
+                    return;
+                }
+                
+                // 校验通过后，增加已扫描数量
+                skuInfo.scanned++;
+                scannedItems.add(barcode);
+                
+                // 更新显示
+                updateInfoArea();
+                scanInput.value = '';
+            }
+        });
+
+        // 清空按钮点击事件
+        document.querySelector('.clear-item-btn').addEventListener('click', clearCurrentBarcode);
+
+        // 清空重扫按钮逻辑
+        const footerClearBtn = document.getElementById('footerClearBtn');
+        footerClearBtn.onclick = function() {
+            // 清空新扫条码集合
+            scannedItems.clear();
+
+            // 重置待上架列表里的已扫描数量为初始值
+            pendingData.forEach((item, index) => {
+                item.scanned = initialPendingData[index].scanned;
+            });
+
+            // 更新页面显示
+            updateInfoArea();
+
+            // 清空扫描输入框
+            scanInput.value = '';
+            showCustomAlert('已清空');
+        };
+
+        // 页面加载时初始化
+        document.getElementById('receiptCode').textContent = detailData[receiptCode].receiptCode;
+        document.getElementById('purchaseOrder').textContent = detailData[receiptCode].purchaseOrder;
+        document.getElementById('supplier').textContent = detailData[receiptCode].supplier;
+        document.getElementById('totalCount').textContent = detailData[receiptCode].totalCount;
+        document.getElementById('shelfCount').textContent = detailData[receiptCode].shelfCount;
+        updateInfoArea(); // 初始更新以设置正确的数量显示和按钮状态
+    </script>
+</body>
+</html> 
