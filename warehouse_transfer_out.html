@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>批量移库</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .main-fixed {
+            width: 400px;
+            height: 700px;
+            margin: 0 auto;
+            background: #f5f5f5;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            overflow-y: hidden;
+            position: relative;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 0;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 0 8px 0;
+            position: relative;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        .back-button {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            border-radius: 0;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #333;
+            cursor: pointer;
+        }
+        .header-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #222;
+            margin: 0 auto;
+            text-align: center;
+            flex: 1;
+        }
+        .transfer-type-tabs {
+            display: flex;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        .transfer-type-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            font-size: 16px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .transfer-type-tab.active {
+            color: #1677ff;
+            font-weight: bold;
+        }
+        .transfer-type-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background: #1677ff;
+            border-radius: 2px;
+        }
+        .scan-area {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 10px 18px 10px 18px;
+            margin-bottom: 8px;
+            box-sizing: border-box;
+        }
+        .scan-label {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .scan-input-wrapper {
+            position: relative;
+            margin-bottom: 12px;
+        }
+        .scan-input-wrapper:last-child {
+            margin-bottom: 0;
+        }
+        .scan-input-wrapper img {
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+            width: 30px;
+            height: 30px;
+        }
+        .scan-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px 16px 10px 40px;
+            font-size: 16px;
+            border: 1.5px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            outline: none;
+            margin-bottom: 2px;
+        }
+        .scan-input:focus {
+            border: 1.5px solid #3a8bfd;
+            background: #f0f7ff;
+        }
+        .current-location {
+            display: none;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px 16px 10px 40px;
+            font-size: 16px;
+            border: 1.5px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            margin-bottom: 2px;
+            position: relative;
+        }
+        .current-location-text {
+            color: #222;
+        }
+        .clear-location-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        .clear-location-btn:hover {
+            color: #333;
+        }
+        .pending-list-area {
+            background: #f5f5f5;
+            border-radius: 10px;
+            
+            padding: 10px 0;
+            margin-bottom: 70px;
+            flex-grow: 1;
+            height: 360px;
+            overflow-y: auto;
+        }
+        .pending-list-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #222;
+            padding: 0px 8px 8px 0px;
+            display: none;
+        }
+        .pending-list {
+            width: 100%;
+        }
+        .pending-item {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            border-bottom: 1px solid #eee;
+            padding: 12px 8px 12px 8px;
+            position: relative;
+            margin-bottom: 9px;
+            background: #fff;
+            border-radius: 6px;
+        }
+        .pending-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .pending-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .pending-location {
+            font-size: 15px;
+            color: #666;
+        }
+        .pending-check-btn {
+            width: 20px;
+            height: 20px;
+            border: 1.5px solid #1677ff;
+            border-radius: 4px;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .pending-check-btn.checked {
+            background: #1677ff;
+        }
+        .pending-check-btn.checked::after {
+            content: '';
+            width: 12px;
+            height: 6px;
+            border-left: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+            transform: rotate(-45deg) translate(1px, -1px);
+        }
+        .pending-content {
+            display: flex;
+            align-items: flex-start;
+            margin-top: 8px;
+        }
+        .pending-img-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+            width: 55px;
+        }
+        .pending-img {
+            width: 55px;
+            height: 55px;
+            background: #ededed;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0;
+        }
+        .pending-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+            display: block;
+        }
+        .pending-fnsku {
+            font-size: 12px;
+            color: #888;
+            word-break: break-all;
+            text-align: right;
+            position: absolute;
+            top: 14px;
+            right: 12px;
+        }
+        .pending-info-main {
+            flex-grow: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .pending-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+            margin-right: 10px;
+        }
+        .pending-row {
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .pending-row .label {
+            color: #666;
+            margin-right: 4px;
+        }
+        .pending-sku {
+            font-size: 14px;
+            color: #333;
+            word-break: break-all;
+        }
+        .transfer-qty-box {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f7f7f7;
+            border-radius: 10px;
+            padding: 10px;
+            min-width: 50px;
+            height: 50px;
+        }
+        .transfer-qty-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .transfer-qty-value {
+            color: #0099ff;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .footer-btn-area {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background: #f5f5f5;
+            padding: 16px 0 12px 0;
+            display: flex;
+            justify-content: center;
+            z-index: 100;
+            gap: 20px;
+            
+        }
+        .footer-btn {
+            width: 180px;
+            padding: 14px 0;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            background: #1677ff;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(22,119,255,0.08);
+            transition: all 0.2s;
+        }
+        .footer-btn:disabled {
+            background: #a0cfff;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .footer-btn:active:not(:disabled) {
+            background: #125fd1;
+        }
+        .footer-btn-clear {
+            background-color: #ea4335;
+            color: #fff;
+        }
+        .footer-btn-clear:disabled {
+            background-color: #ffb3b3;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .footer-btn-clear:active:not(:disabled) {
+            background-color: #c0392b;
+        }
+        /* 提示弹窗样式 */
+        .custom-alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .custom-alert-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+        .custom-alert-container {
+            background: #333;
+            padding: 32px 36px 24px 36px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 180px;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .custom-alert-overlay.visible .custom-alert-container {
+            transform: scale(1);
+        }
+        .custom-alert-icon {
+            width: 64px;
+            height: 64px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+        .custom-alert-icon span {
+            font-size: 38px;
+            color: #333;
+            font-weight: bold;
+        }
+        .custom-alert-text {
+            color: #fff;
+            font-size: 22px;
+            text-align: center;
+        }
+        /* Tooltip Styles */
+        .tooltip-container {
+            position: fixed;
+            top: 12px;
+            right: calc(50% - 400px / 2 + 9px + 100px);
+            display: inline-block;
+            vertical-align: middle;
+            z-index: 1001;
+        }
+        .info-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 6px;
+            background-color: #ffe066;
+            color: #b48a00;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            border: 1px solid #ffd700;
+        }
+        .tooltip-content {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 260px;
+            max-width: 340px;
+            background-color: #ffe066;
+            color: #222;
+            padding: 16px 18px 12px 18px;
+            border-radius: 8px;
+            white-space: pre-line;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .tooltip-container:hover .tooltip-content {
+            opacity: 1;
+            visibility: visible;
+        }
+        .moveout-all-btn {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1677ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 6px 12px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .moveout-all-btn:disabled {
+            background: #a0cfff;
+            cursor: not-allowed;
+        }
+        
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+        
+        .custom-modal-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .custom-modal-container {
+            width: 80%;
+            max-width: 300px;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .custom-modal-title {
+            padding: 18px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid #eee;
+            color: #333;
+            text-align: center;
+        }
+        
+        .custom-modal-body {
+            padding: 20px;
+            text-align: center;
+            color: #444;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        .custom-modal-footer {
+            display: flex;
+            border-top: 1px solid #eee;
+        }
+        
+        .custom-modal-button {
+            flex: 1;
+            padding: 12px 0;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            background: white;
+        }
+        
+        .custom-modal-button-cancel {
+            color: #666;
+            border-right: 1px solid #eee;
+        }
+        
+        .custom-modal-button-confirm {
+            color: #1677ff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-fixed">
+        <div class="container">
+            <div class="header">
+                <button class="back-button" onclick="window.location.href='index.html'">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15.5 19L9.5 12L15.5 5" stroke="#222" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <span class="header-title">批量移库</span>
+                <button class="moveout-all-btn" id="moveoutAllBtn" disabled>全部移出</button>
+            </div>
+            <div class="tooltip-container">
+                <span class="info-icon">!</span>
+                <div class="tooltip-content">测试提示：
+                    库位码: KW20250524001
+                    条码: X00302LCPX、X6SV4S4Y
+                </div>
+            </div>
+            <div class="transfer-type-tabs">
+                <div class="transfer-type-tab active" onclick="switchTab('out')">移出</div>
+                <div class="transfer-type-tab" onclick="switchTab('in')">移入</div>
+            </div>
+            <div class="scan-area">
+                <div class="scan-input-wrapper">
+                    <img src="icon/screenshot_2025-05-22_16-58-53.png" alt="扫描库位码">
+                    <input type="text" class="scan-input" id="locationInput" placeholder="扫描库位码" />
+                    <div class="current-location" id="currentLocationGroup">
+                        <span class="current-location-text" id="currentLocationDisplay">当前库位：</span>
+                        <button class="clear-location-btn" onclick="clearLocation()">更换</button>
+                    </div>
+                </div>
+                <div class="scan-input-wrapper">
+                    <img src="icon/screenshot_2025-05-22_16-58-53.png" alt="扫描条码/箱码">
+                    <input type="text" class="scan-input" id="barcodeInput" placeholder="扫描条码/箱码" disabled />
+                </div>
+            </div>
+            <div class="pending-list-area">
+                <div class="pending-list" id="pendingList">
+                    <!-- 列表项由JS渲染 -->
+                </div>
+            </div>
+        </div>
+        <div class="footer-btn-area">
+            <button class="footer-btn footer-btn-clear" id="footerClearBtn" disabled>清空列表</button>
+            <button class="footer-btn" id="footerConfirmBtn" disabled>确认移出</button>
+        </div>
+    </div>
+
+    <!-- 提示弹窗 -->
+    <div class="custom-alert-overlay" id="customAlertOverlay">
+        <div class="custom-alert-container" id="customAlertContent">
+            <!-- Alert message goes here -->
+        </div>
+    </div>
+
+    <!-- 全部移出确认弹窗 -->
+    <div class="custom-modal-overlay" id="confirmMoveoutAllOverlay">
+        <div class="custom-modal-container">
+            <div class="custom-modal-title" id="moveoutAllTitle">当前库位:</div>
+            <div class="custom-modal-body">
+                是否将当前库位的全部库存移出?
+            </div>
+            <div class="custom-modal-footer">
+                <button class="custom-modal-button custom-modal-button-cancel" id="moveoutAllCancelBtn">取消</button>
+                <button class="custom-modal-button custom-modal-button-confirm" id="moveoutAllConfirmBtn">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟条码数据
+        const items_data = {
+            'X00302LCPX': {
+                fnsku: 'X00302LCPX',
+                sku: 'ST210628UBCOGNAC100',
+                img: 'icon/3.png',
+                spu: 'ST210628UB',
+                color_size: '栗色/10',
+                locations: {
+                    'KW20250524001': 30,
+                    'KW20250524002': 15
+                },
+                available_qty: 45
+            },
+            'X6SV4S4Y': {
+                fnsku: 'X6SV4S4Y',
+                sku: 'ST210628UBBLACK9',
+                img: 'icon/3.png',
+                spu: 'ST210628UB',
+                color_size: '黑色/9',
+                locations: {
+                    'KW20250524001': 20,
+                    'KW20250524002': 10
+                },
+                available_qty: 30
+            },
+            'X23456789': {
+                fnsku: 'X23456789',
+                sku: 'ST210628UBBLACK10',
+                img: 'icon/3.png',
+                spu: 'ST210628UB',
+                color_size: '黑色/10',
+                locations: {
+                    'KW20250524001': 0
+                },
+                available_qty: 0
+            }
+        };
+
+        // 模拟库位数据
+        const location_data = {
+            'KW20250524001': {
+                location_code: 'KW20250524001',
+                items: ['X00302LCPX', 'X6SV4S4Y','X23456789'],
+                warehouse: 'WH001'
+            },
+            'KW20250524002': {
+                location_code: 'KW20250524002',
+                items: ['X00302LCPX', 'X6SV4S4Y'],
+                warehouse: 'WH001'
+            }
+        };
+
+        // 模拟箱码数据
+        const box_data = {
+            'CD250423000001': {
+                box_code: 'CD250423000001',
+                items: [
+                    { fnsku: 'X00302LCPX', qty: 10 },
+                    { fnsku: 'X6SV4S4Y', qty: 5 }
+                ]
+            },
+            'CD250423000002': {
+                box_code: 'CD250423000002',
+                items: [
+                    { fnsku: 'X00302LCPX', qty: 8 },
+                    { fnsku: 'X6SV4S4Y', qty: 3 }
+                ]
+            },
+            'CD250423000003': {
+                box_code: 'CD250423000003',
+                items: [
+                    { fnsku: 'X00302LCPX', qty: 8 },
+                    { fnsku: '13213', qty: 3 }
+                ]
+            }
+        };
+
+        // 存储已扫描的条码及数量
+        let scannedItems = [];
+        let currentLocation = '';
+        // 存储已扫描的箱码，避免重复扫描
+        const scannedBoxCodes = new Set();
+
+        // 切换标签页
+        function switchTab(tab) {
+            if (tab === 'out') {
+                window.location.href = 'warehouse_transfer_out.html';
+            } else if (tab === 'in') {
+                window.location.href = 'warehouse_transfer_in.html';
+            }
+        }
+
+        // 清空当前库位
+        function clearLocation() {
+            const locationInput = document.getElementById('locationInput');
+            const currentLocationGroup = document.getElementById('currentLocationGroup');
+            
+            // 清空条码扫描框并禁用
+            document.getElementById('barcodeInput').value = '';
+            document.getElementById('barcodeInput').disabled = true;
+            
+            // 禁用全部移出按钮
+            document.getElementById('moveoutAllBtn').disabled = true;
+            
+            // 清空当前库位
+            currentLocation = '';
+            
+            // 显示库位扫描框
+            locationInput.style.display = 'block';
+            currentLocationGroup.style.display = 'none';
+            locationInput.value = '';
+            locationInput.focus();
+            
+            // 注意：不再清空已扫描的商品列表和按钮状态
+        }
+
+        // 显示当前库位
+        function showCurrentLocation(locationCode) {
+            const locationInput = document.getElementById('locationInput');
+            const currentLocationGroup = document.getElementById('currentLocationGroup');
+            const currentLocationDisplay = document.getElementById('currentLocationDisplay');
+            
+            locationInput.style.display = 'none';
+            currentLocationGroup.style.display = 'block';
+            currentLocationDisplay.textContent = `当前库位：${locationCode}`;
+            
+            // 启用条码扫描框
+            document.getElementById('barcodeInput').disabled = false;
+            document.getElementById('barcodeInput').focus();
+            
+            // 启用全部移出按钮
+            document.getElementById('moveoutAllBtn').disabled = false;
+            
+            // 设置当前库位
+            currentLocation = locationCode;
+        }
+
+        // 渲染待移出列表
+        function renderPendingList() {
+            const list = document.getElementById('pendingList');
+            list.innerHTML = '';
+            
+            scannedItems.forEach(item => {
+                const listItem = document.createElement('div');
+                listItem.className = 'pending-item';
+                
+                // 添加库位信息到顶部
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'pending-header';
+                headerDiv.innerHTML = `
+                    <div class="pending-location">库位：${item.location}</div>
+                `;
+                listItem.appendChild(headerDiv);
+                
+                // 添加FNSKU在右上角
+                const fnskuDiv = document.createElement('div');
+                fnskuDiv.className = 'pending-fnsku';
+                fnskuDiv.textContent = item.fnsku;
+                listItem.appendChild(fnskuDiv);
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'pending-content';
+                
+                const imgAreaDiv = document.createElement('div');
+                imgAreaDiv.className = 'pending-img-area';
+                imgAreaDiv.innerHTML = `
+                    <div class="pending-img">
+                        <img src="${item.img}" alt="产品图片">
+                    </div>
+                `;
+                
+                const infoMainDiv = document.createElement('div');
+                infoMainDiv.className = 'pending-info-main';
+                
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'pending-info';
+                infoDiv.innerHTML = `
+                    <div class="pending-row"><span class="label">货号：</span>${item.spu}</div>
+                    <div class="pending-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
+                    <div class="pending-sku"><span class="label">SKU：</span>${item.sku}</div>
+                `;
+                
+                const qtyBoxDiv = document.createElement('div');
+                qtyBoxDiv.className = 'transfer-qty-box';
+                qtyBoxDiv.innerHTML = `
+                    <div class="transfer-qty-label">移出数量</div>
+                    <div class="transfer-qty-value">${item.qty}</div>
+                `;
+                
+                infoMainDiv.appendChild(infoDiv);
+                infoMainDiv.appendChild(qtyBoxDiv);
+                
+                contentDiv.appendChild(imgAreaDiv);
+                contentDiv.appendChild(infoMainDiv);
+                
+                listItem.appendChild(contentDiv);
+                list.appendChild(listItem);
+            });
+            
+            // 更新底部按钮状态
+            const hasItems = scannedItems.length > 0;
+            document.getElementById('footerClearBtn').disabled = !hasItems;
+            document.getElementById('footerConfirmBtn').disabled = !hasItems;
+        }
+
+        // 库位扫描输入框逻辑
+        const locationInput = document.getElementById('locationInput');
+        locationInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const locationCode = this.value.trim();
+                if (!locationCode) return;
+                
+                // 校验库位是否存在
+                if (!location_data[locationCode]) {
+                    showAlert('库位不属于当前仓库');
+                    this.value = '';
+                    return;
+                }
+                
+                // 显示当前库位
+                showCurrentLocation(locationCode);
+            }
+        });
+
+        // 条码扫描输入框逻辑
+        const barcodeInput = document.getElementById('barcodeInput');
+        barcodeInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const code = this.value.trim();
+                if (!code) return;
+                
+                try {
+                    // 判断是箱码还是条码
+                    if (code.startsWith('CD')) {
+                        handleBoxCode(code);
+                    } else {
+                        handleBarcode(code);
+                    }
+                } catch (error) {
+                    console.error('处理扫描输入时出错:', error);
+                    showAlert('扫描处理错误');
+                } finally {
+                    // 无论发生什么情况，都确保清空输入框
+                    setTimeout(() => {
+                        this.value = '';
+                    }, 10);
+                }
+            }
+        });
+
+        // 清空列表按钮逻辑
+        document.getElementById('footerClearBtn').addEventListener('click', function() {
+            scannedItems = [];
+            renderPendingList();
+            
+            // 聚焦条码输入框
+            document.getElementById('barcodeInput').focus();
+        });
+
+        // 确认移出按钮逻辑
+        document.getElementById('footerConfirmBtn').addEventListener('click', function() {
+            showAlert('移出成功', 'success');
+            
+            // 延时后清空库位和列表
+            setTimeout(() => {
+                // 清空已扫描的商品列表
+                scannedItems = [];
+                // 清空已扫描的箱码集合
+                scannedBoxCodes.clear();
+                // 清空当前库位
+                clearLocation();
+                // 更新列表显示
+                renderPendingList();
+            }, 1500);
+        });
+
+        // 处理箱码
+        function handleBoxCode(boxCode) {
+            // 检查是否重复扫描
+            if (scannedBoxCodes.has(boxCode)) {
+                showAlert('重复扫描');
+                return;
+            }
+            
+            // 检查箱码是否存在
+            if (!box_data[boxCode]) {
+                showAlert('箱码不存在');
+                return;
+            }
+            
+            // 检查当前是否已选择库位
+            if (!currentLocation) {
+                showAlert('请先扫描库位码');
+                return;
+            }
+            
+            // 检查箱内商品是否属于当前库位
+            const boxItems = box_data[boxCode].items;
+            let hasInvalidItem = false;
+            let hasInvalidQty = false;
+            
+            // 先检查有效性
+            for (const boxItem of boxItems) {
+                const fnsku = boxItem.fnsku;
+                const qty = boxItem.qty;
+                
+                // 检查商品是否存在
+                if (!items_data[fnsku]) {
+                    hasInvalidItem = true;
+                    break;
+                }
+                
+                // 检查商品是否属于当前库位
+                const itemLocations = items_data[fnsku].locations;
+                if (!itemLocations || !itemLocations[currentLocation]) {
+                    hasInvalidItem = true;
+                    break;
+                }
+                
+                // 检查库位数量是否足够
+                const locationAvailableQty = itemLocations[currentLocation];
+                
+                // 先检查已扫描的数量
+                const existingIndex = scannedItems.findIndex(item => item.fnsku === fnsku && item.location === currentLocation);
+                const alreadyScannedQty = existingIndex !== -1 ? scannedItems[existingIndex].qty : 0;
+                
+                if (alreadyScannedQty + qty > locationAvailableQty) {
+                    hasInvalidQty = true;
+                    break;
+                }
+            }
+            
+            if (hasInvalidItem) {
+                showAlert('箱内商品不属于当前库位');
+                return;
+            }
+            
+            if (hasInvalidQty) {
+                showAlert('移出数量超出库位可用数量');
+                return;
+            }
+            
+            // 添加箱内商品到移出列表
+            for (const boxItem of boxItems) {
+                const fnsku = boxItem.fnsku;
+                const qty = boxItem.qty;
+                
+                // 查找已有条目
+                const existingIndex = scannedItems.findIndex(item => item.fnsku === fnsku && item.location === currentLocation);
+                
+                if (existingIndex !== -1) {
+                    // 更新数量
+                    scannedItems[existingIndex].qty += qty;
+                } else {
+                    // 添加新条目
+                    scannedItems.push({
+                        ...items_data[fnsku],
+                        location: currentLocation,
+                        locationAvailableQty: items_data[fnsku].locations[currentLocation],
+                        qty: qty
+                    });
+                }
+            }
+            
+            // 记录已扫描的箱码
+            scannedBoxCodes.add(boxCode);
+            
+            // 更新列表显示
+            renderPendingList();
+            
+            // 显示成功提示
+            // showAlert('箱码扫描成功', 'success');
+        }
+
+        // 处理条码
+        function handleBarcode(barcode) {
+            // 校验条码是否存在
+            if (!items_data[barcode]) {
+                showAlert('条码不存在');
+                return;
+            }
+            
+            // 校验条码是否属于当前库位
+            const itemLocations = items_data[barcode].locations;
+            if (!itemLocations || !itemLocations[currentLocation]) {
+                showAlert('条码不属于当前库位');
+                return;
+            }
+            
+            // 获取当前库位的可用数量
+            const locationAvailableQty = itemLocations[currentLocation];
+            
+            // 检查是否已扫描相同库位的相同条码
+            const existingIndex = scannedItems.findIndex(item => item.fnsku === barcode && item.location === currentLocation);
+            if (existingIndex !== -1) {
+                // 已存在，更新数量
+                if (scannedItems[existingIndex].qty < locationAvailableQty) {
+                    scannedItems[existingIndex].qty += 1;
+                } else {
+                    showAlert('移出数量超出库位可用数量');
+                    return;
+                }
+            } else {
+                // 新增
+                scannedItems.push({
+                    ...items_data[barcode],
+                    location: currentLocation,
+                    locationAvailableQty: locationAvailableQty,
+                    qty: 1
+                });
+            }
+            
+            // 更新列表
+            renderPendingList();
+        }
+
+        // 显示提示弹窗
+        let alertTimeout;
+        function showAlert(message, type = 'error') {
+            const alertOverlay = document.getElementById('customAlertOverlay');
+            const alertContent = document.getElementById('customAlertContent');
+            
+            if (type === 'success') {
+                // 成功提示样式
+                alertContent.innerHTML = `
+                    <div class="custom-alert-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="38" height="38">
+                            <path d="M5 13L9 17L19 7" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="custom-alert-text">${message}</div>
+                `;
+            } else {
+                // 错误提示样式
+                alertContent.innerHTML = `
+                    <div class="custom-alert-icon">
+                        <span>!</span>
+                    </div>
+                    <div class="custom-alert-text">${message}</div>
+                `;
+            }
+            
+            alertOverlay.classList.add('visible');
+            
+            clearTimeout(alertTimeout);
+            alertTimeout = setTimeout(() => {
+                alertOverlay.classList.remove('visible');
+            }, 1500);
+        }
+
+        // 修改提示信息
+        function showTooltip() {
+            const tooltipContent = document.querySelector('.tooltip-content');
+            tooltipContent.innerHTML = `测试提示：
+库位码: KW20250524001、KW20250524002 (WH001)
+条码: X00302LCPX、X6SV4S4Y、
+箱码: CD250423000001、CD250423000002
+`;
+        }
+
+        // 页面加载时初始化提示信息
+        window.onload = function() {
+            showTooltip();
+        };
+
+        // 全部移出按钮点击事件
+        document.getElementById('moveoutAllBtn').addEventListener('click', function() {
+            // 设置弹窗标题
+            document.getElementById('moveoutAllTitle').textContent = `当前库位: ${currentLocation}`;
+            
+            // 显示确认弹窗
+            document.getElementById('confirmMoveoutAllOverlay').classList.add('visible');
+        });
+
+        // 取消全部移出
+        document.getElementById('moveoutAllCancelBtn').addEventListener('click', function() {
+            document.getElementById('confirmMoveoutAllOverlay').classList.remove('visible');
+        });
+
+        // 确认全部移出
+        document.getElementById('moveoutAllConfirmBtn').addEventListener('click', function() {
+            // 隐藏弹窗
+            document.getElementById('confirmMoveoutAllOverlay').classList.remove('visible');
+            
+            // 获取当前库位下的所有商品
+            const locationItems = location_data[currentLocation].items;
+            
+            // 将所有商品添加到列表
+            locationItems.forEach(fnsku => {
+                // 检查商品是否有效
+                if (!items_data[fnsku]) return;
+                
+                // 检查库位是否有数量
+                const itemLocations = items_data[fnsku].locations;
+                if (!itemLocations || !itemLocations[currentLocation] || itemLocations[currentLocation] <= 0) return;
+                
+                const locationAvailableQty = itemLocations[currentLocation];
+                
+                // 检查是否已存在
+                const existingIndex = scannedItems.findIndex(item => item.fnsku === fnsku && item.location === currentLocation);
+                if (existingIndex !== -1) {
+                    // 更新为全部数量
+                    scannedItems[existingIndex].qty = locationAvailableQty;
+                } else {
+                    // 添加新条目
+                    scannedItems.push({
+                        ...items_data[fnsku],
+                        location: currentLocation,
+                        locationAvailableQty: locationAvailableQty,
+                        qty: locationAvailableQty
+                    });
+                }
+            });
+            
+            // 更新列表
+            renderPendingList();
+            
+            // 显示成功提示
+            showAlert('全部商品已添加', 'success');
+        });
+    </script>
+</body>
+</html> 
