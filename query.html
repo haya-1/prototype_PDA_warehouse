@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>装箱查询</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .main-fixed {
+            width: 400px;
+            height: 700px;
+            margin: 0 auto;
+            background: #f5f5f5;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            overflow-y: auto;
+            position: relative;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 0;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 0 8px 0;
+            position: relative;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        .back-button {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            border-radius: 0;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #333;
+            cursor: pointer;
+        }
+        .header-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #222;
+            margin: 0 auto;
+            text-align: center;
+            flex: 1;
+        }
+        .scan-area {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 18px 18px 10px 18px;
+            margin-bottom: 18px;
+            box-sizing: border-box;
+        }
+        .scan-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .scan-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px 16px;
+            font-size: 19px;
+            border: 1.5px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            outline: none;
+            margin-bottom: 2px;
+        }
+        .scan-input:focus {
+            border: 1.5px solid #3a8bfd;
+            background: #f0f7ff;
+        }
+        .clear-input {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            padding: 4px 8px;
+            color: #666;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .current-box {
+            display: none;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px 16px;
+            font-size: 19px;
+            border: 1.5px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            margin-bottom: 2px;
+            position: relative;
+        }
+        .current-box-text {
+            color: #222;
+        }
+        .clear-box-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        .box-info {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 12px 16px;
+            margin-bottom: 18px;
+            font-size: 16px;
+        }
+        .box-info div {
+            margin-bottom: 4px;
+            color: #222;
+        }
+        .box-info span {
+            font-weight: bold;
+        }
+        .list-area {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 10px 0;
+            margin-bottom: 70px;
+        }
+        .list-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        .item-img {
+            width: 60px;
+            height: 40px;
+            border-radius: 6px;
+            object-fit: cover;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        .item-info {
+            flex: 1;
+            padding: 0 10px;
+        }
+        .item-sku {
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 2px;
+            color: #222;
+        }
+        .item-bar {
+            font-size: 14px;
+            color: #444;
+            margin: 2px 0;
+        }
+        .item-style {
+            font-size: 14px;
+            color: #444;
+            margin: 2px 0;
+        }
+        .item-store {
+            font-size: 13px;
+            color: #888;
+        }
+        .item-qty {
+            font-weight: bold;
+            font-size: 22px;
+            color: #333;
+            width: 40px;
+            text-align: right;
+            margin-left: 5px;
+        }
+        .button-area {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 20px;
+            background-color: #f5f5f5;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            transform: none;
+        }
+        .button {
+            width: 180px;
+            padding: 14px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            background-color: #1677ff;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(22,119,255,0.08);
+            transition: background 0.2s;
+        }
+        .button:active {
+            background-color: #125fd1;
+        }
+        .button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .alert-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.18);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+        .alert-content {
+            background-color: #333;
+            padding: 32px 36px 24px 36px;
+            border-radius: 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 180px;
+        }
+        .alert-icon {
+            width: 64px;
+            height: 64px;
+            background-color: #fff;
+            border-radius: 50%;
+            margin: 0 auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            color: #333;
+            font-weight: bold;
+        }
+        .alert-text {
+            font-size: 22px;
+            color: #fff;
+            line-height: 1.4;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-fixed">
+        <div class="container">
+            <div class="header">
+                <button class="back-button" onclick="history.back()">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15.5 19L9.5 12L15.5 5" stroke="#222" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <span class="header-title">装箱查询</span>
+            </div>
+            <div class="scan-area">
+                <div class="scan-input-wrapper">
+                    <input type="text" class="scan-input" id="boxCodeInput" placeholder="请扫描箱码">
+                    <button class="clear-input" id="clearBoxBtn" onclick="clearInput('boxCodeInput',)"></button>
+                    <div class="current-box" id="currentBoxCodeGroup">
+                        <span class="current-box-text" id="currentBoxCodeDisplay">当前箱码：</span>
+                        <button class="clear-box-btn" onclick="handleChangeBox()"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="box-info" id="boxInfo" style="display:none;">
+                <div>绑定单据：<span id="planCodeText"></span></div>
+                <div>箱内鞋子总数：<span id="totalQtyText"></span></div>
+            </div>
+            <div class="list-area">
+                <div id="skuList"></div>
+            </div>
+            <div class="button-area">
+                <button class="button disabled" id="changeButton" onclick="handleChangeBox()">清空查询</button>
+            </div>
+        </div>
+    </div>
+    <div class="alert-overlay" id="alertOverlay">
+        <div class="alert-content">
+            <div class="alert-icon">!</div>
+            <div class="alert-text">请扫描正确的箱码</div>
+        </div>
+    </div>
+    <script>
+        // 硬编码 SKU 数据
+        const skuData = {
+            "boxcode": "CD250423000001",
+            "skudetail": [
+                {
+                    "sku": "ST1839GRAY080",
+                    "fnsku": "X001P67ABJ",
+                    "chinese_sku": "ST1839/灰色/8",
+                    "quantity": 9,
+                    "store":"STQ SHOP-US"
+                },
+                {
+                    "sku": "ST1839WHITE090",
+                    "fnsku": "X001P58RN9",
+                    "chinese_sku": "ST1839/白色/9",
+                    "quantity": 8,
+                    "store":"STQ SHOP-US"
+                },
+                {
+                    "sku": "ST1839GRAYWHITE090",
+                    "fnsku": "X001P59JSB",
+                    "chinese_sku": "ST1839/灰白/9",
+                    "quantity": 1,
+                    "store":"STQ SHOP-US"
+                }
+            ],
+            "plan_code":"PN20250428001"
+        };
+
+        function validateBoxCode(code) {
+            // 检查箱码格式：CD + 日期(6位YYMMDD) + 序号(6位)
+            const regex = /^CD\d{12}$/;
+            if (!regex.test(code)) {
+                return false;
+            }
+
+            // 提取日期部分 YYMMDD
+            const dateStr = code.substring(2, 8);
+            const year = 2000 + parseInt(dateStr.substring(0, 2)); // 假设年份在2000-2099之间
+            const month = parseInt(dateStr.substring(2, 4));
+            const day = parseInt(dateStr.substring(4, 6));
+
+            // 检查日期是否有效
+            const date = new Date(year, month - 1, day); // 月份从0开始，所以要减1
+            return date.getFullYear() === year && 
+                   date.getMonth() === month - 1 && 
+                   date.getDate() === day &&
+                   month >= 1 && month <= 12 && // 确保月份在1-12之间
+                   day >= 1 && day <= 31; // 简单的日期检查
+        }
+
+        function showAlert(message) {
+            const overlay = document.getElementById('alertOverlay');
+            const alertText = overlay.querySelector('.alert-text');
+            alertText.textContent = message;
+            overlay.style.display = 'flex';
+            
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 1000);
+        }
+
+        function updateList(boxCode) {
+            const boxInfo = document.getElementById('boxInfo');
+            const planCodeText = document.getElementById('planCodeText');
+            const totalQtyText = document.getElementById('totalQtyText');
+            const skuList = document.getElementById('skuList');
+            skuList.innerHTML = '';
+            if (!skuData || skuData.boxcode !== boxCode) {
+                boxInfo.style.display = 'none';
+                return;
+            }
+            planCodeText.textContent = skuData.plan_code || '-';
+            const totalQty = skuData.skudetail.reduce((sum, item) => sum + (item.quantity || 0), 0);
+            totalQtyText.textContent = totalQty;
+            boxInfo.style.display = 'block';
+
+            skuData.skudetail.forEach(item => {
+                const listItem = document.createElement('div');
+                listItem.className = 'list-item';
+                
+                const imgDiv = document.createElement('div');
+                imgDiv.innerHTML = '<img src="https://via.placeholder.com/60x40?text=鞋" class="item-img">';
+                
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'item-info';
+                infoDiv.innerHTML = `
+                    <div class="item-sku">SKU：${item.sku || '-'}</div>
+                    <div class="item-bar">条码：${item.fnsku || '-'}</div>
+                    <div class="item-style">货号/颜色/尺码：${item.chinese_sku || '-'}</div>
+                    <div class="item-store">店铺：${item.store || '无'}</div>
+                `;
+                
+                const qtyDiv = document.createElement('div');
+                qtyDiv.className = 'item-qty';
+                qtyDiv.textContent = item.quantity;
+                
+                listItem.appendChild(imgDiv);
+                listItem.appendChild(infoDiv);
+                listItem.appendChild(qtyDiv);
+                skuList.appendChild(listItem);
+            });
+        }
+
+        let currentBoxCode = '';
+
+        function handleChangeBox() {
+            if (document.getElementById('changeButton').classList.contains('disabled')) return;
+            
+            // 清空所有数据
+            currentBoxCode = '';
+            
+            // 恢复箱码输入框
+            document.getElementById('boxCodeInput').value = '';
+            document.getElementById('boxCodeInput').style.display = 'block';
+            document.getElementById('clearBoxBtn').style.display = 'block';
+            document.getElementById('currentBoxCodeGroup').style.display = 'none';
+            
+            // 清空SKU列表
+            updateList('');
+            document.getElementById('boxInfo').style.display = 'none';
+            document.getElementById('changeButton').classList.add('disabled');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('boxCodeInput').addEventListener('keypress', function(e) {
+                if (e.key !== 'Enter') return;
+                
+                const boxCode = e.target.value.trim();
+                console.log('Box code scanned:', boxCode);
+                
+                if (!validateBoxCode(boxCode)) {
+                    showAlert('箱码不存在');
+                    e.target.value = ''; // 清空输入
+                    return;
+                }
+
+                if (skuData.boxcode === boxCode) {
+                    // 设置当前箱码
+                    currentBoxCode = boxCode;
+                    
+                    // 隐藏输入框，显示当前箱码
+                    e.target.style.display = 'none';
+                    document.getElementById('clearBoxBtn').style.display = 'none';
+                    document.getElementById('currentBoxCodeGroup').style.display = 'block';
+                    document.getElementById('currentBoxCodeDisplay').textContent = `当前箱码：${boxCode}`;
+                    
+                    // 启用更换箱码按钮
+                    document.getElementById('changeButton').classList.remove('disabled');
+                    
+                    updateList(boxCode);
+                } else {
+                    showAlert('箱码不存在');
+                    e.target.value = '';
+                }
+            });
+        });
+
+        function clearInput(inputId) {
+            const input = document.getElementById(inputId);
+            input.value = '';
+            if (inputId === 'boxCodeInput') {
+                updateList('');
+                document.getElementById('boxInfo').style.display = 'none';
+                document.getElementById('skuList').innerHTML = '';
+            }
+        }
+    </script>
+</body>
+</html> 

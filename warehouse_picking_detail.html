@@ -448,7 +448,7 @@
             transition: transform 0.3s ease;
         }
         .custom-modal-overlay.visible .custom-modal-container {
-            transform: scale(1);
+             transform: scale(1);
         }
         .custom-modal-title {
             font-size: 20px;
@@ -487,12 +487,12 @@
             background: #eee;
             color: #333;
         }
-        .custom-modal-button-cancel:hover {
+         .custom-modal-button-cancel:hover {
             background: #ddd;
         }
 
         /* Custom Alert Styles */
-        .custom-alert-overlay {
+         .custom-alert-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -694,11 +694,11 @@
     </div>
 
     <!-- 提示弹窗 -->
-    <div class="custom-alert-overlay" id="customAlertModalOverlay">
-        <div class="custom-alert-container" id="customAlertModalContent">
-            <!-- Alert message goes here -->
-        </div>
-    </div>
+     <div class="custom-alert-overlay" id="customAlertModalOverlay">
+         <div class="custom-alert-container" id="customAlertModalContent">
+             <!-- Alert message goes here -->
+         </div>
+     </div>
 
     <!-- 成功提示弹窗 -->
     <div class="custom-success-alert-overlay" id="customSuccessAlertOverlay">
@@ -989,21 +989,43 @@
             if (e.key === 'Enter') {
                 const code = this.value.trim();
                 if (!code) return;
-
-                // 根据前两位判断是箱码还是条码
-                if (code.startsWith('CD')) {
-                    if (validateBoxCode(code)) {
-                        updateInfoArea();
-                        renderPendingList();
+                
+                console.log('扫描输入:', code);
+                
+                try {
+                    // 根据前两位判断是箱码还是条码
+                    if (code.startsWith('CD')) {
+                        const valid = validateBoxCode(code);
+                        console.log('箱码校验结果:', valid);
+                        if (valid) {
+                            updateInfoArea();
+                            renderPendingList();
+                        }
+                    } else {
+                        const valid = validateBarcode(code);
+                        console.log('条码校验结果:', valid);
+                        if (valid) {
+                            updateInfoArea();
+                            renderPendingList();
+                        }
                     }
-                } else {
-                    if (validateBarcode(code)) {
-                        updateInfoArea();
-                        renderPendingList();
-                    }
+                } catch (error) {
+                    console.error('处理扫描输入时出错:', error);
+                } finally {
+                    // 无论发生什么情况，都确保清空输入框
+                    console.log('清空输入框');
+                    setTimeout(() => {
+                        this.value = '';
+                        scanInput.value = '';
+                        document.getElementById('scanInput').value = '';
+                    }, 10);
                 }
-                this.value = '';
             }
+        });
+
+        // 额外确保输入框获得焦点时会清空
+        scanInput.addEventListener('focus', function() {
+            this.value = '';
         });
 
         // 清空按钮点击事件
@@ -1035,7 +1057,7 @@
             // The '待拣' quantity should reflect remaining items in the list
             modalPickingQuantitiesSpan.innerHTML = 
                 `${currentPickedInSession} / ${remainingToPickInList} / ${totalPlannedCount}`;
-
+            
             // Show modal
             confirmPickingModalOverlay.classList.add('visible');
         };
@@ -1071,10 +1093,10 @@
             const remainingAfterThis = totalPlannedCount - totalConfirmedAfterThis;
 
             // If remaining is 0, go back to list page; otherwise, reload page
-            setTimeout(() => {
+                setTimeout(() => {
                 if (remainingAfterThis <= 0) {
                     window.location.href = 'warehouse_picking_list.html'; // Navigate to list page
-                } else {
+            } else {
                     window.location.reload(); // Reload current page
                 }
             }, 1500); // Wait for 1.5 seconds before action
@@ -1106,9 +1128,9 @@
                 }, duration);
             } else {
                 // 使用错误提示样式
-                const alertOverlay = document.getElementById('customAlertModalOverlay');
-                const alertContent = document.getElementById('customAlertModalContent');
-                
+            const alertOverlay = document.getElementById('customAlertModalOverlay');
+            const alertContent = document.getElementById('customAlertModalContent');
+            
                 alertContent.innerHTML = `
                     <div class="custom-alert-icon">
                         <span>!</span>
@@ -1116,13 +1138,13 @@
                     <div class="custom-alert-text">${message}</div>
                 `;
                 
-                alertOverlay.classList.add('visible');
+            alertOverlay.classList.add('visible');
 
-                clearTimeout(alertTimeout);
-                alertTimeout = setTimeout(() => {
-                    alertOverlay.classList.remove('visible');
-                }, duration);
-            }
+            clearTimeout(alertTimeout);
+            alertTimeout = setTimeout(() => {
+                alertOverlay.classList.remove('visible');
+            }, duration);
+        }
         }
 
         // 终止拣货按钮点击事件
