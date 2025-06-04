@@ -277,6 +277,54 @@
             gap: 4px;
             align-items: flex-end;
         }
+
+        /* Tooltip Styles */
+        .tooltip-container {
+            position: fixed;
+            top: 12px;
+            right: calc(50% - 400px / 2 + 9px + 100px);
+            display: inline-block;
+            vertical-align: middle;
+            z-index: 1001;
+        }
+
+        .info-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 6px;
+            background-color: #ffe066;
+            color: #b48a00;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            border: 1px solid #ffd700;
+        }
+
+        .tooltip-content {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 260px;
+            max-width: 340px;
+            background-color: #ffe066;
+            color: #222;
+            padding: 16px 18px 12px 18px;
+            border-radius: 8px;
+            white-space: pre-line;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .tooltip-container:hover .tooltip-content {
+            opacity: 1;
+            visibility: visible;
+        }
     </style>
 </head>
 <body>
@@ -289,6 +337,10 @@
                     </svg>
                 </button>
                 <span class="header-title">扫码拣货</span>
+            </div>
+            <div class="tooltip-container">
+                <span class="info-icon">!</span>
+                <div class="tooltip-content">1、只有PJ20250524001的详情页有数据；2、全部拣完后，本原型无法更新列表</div>
             </div>
             <div class="filter-area">
                 <div class="filter-input-wrapper">
@@ -364,7 +416,7 @@
                             </div>
                             <div class="list-item-right">
                                 <div class="list-item-quantity">
-                                    <span class="list-item-quantity-label">待拣数量:</span>
+                                    <span class="list-item-quantity-label">待拣/总数:</span>
                                     <span class="list-item-quantity-value">${item.plan_quantity - item.picked_quantity}/${item.plan_quantity}</span>
                                 </div>
                                 <div class="list-item-owner">
