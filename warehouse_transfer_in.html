@@ -724,6 +724,16 @@
         
         // 模拟库位数据
         const location_data = {
+            'KW20250524001': {
+                location_code: 'KW20250524001',
+                items: ['X00302LCPX', 'X6SV4S4Y','X23456789'],
+                warehouse: 'WH001'
+            },
+            'KW20250524002': {
+                location_code: 'KW20250524002',
+                items: ['X00302LCPX', 'X6SV4S4Y'],
+                warehouse: 'WH001'
+            },
             'KW20250524003': {
                 location_code: 'KW20250524003',
                 warehouse: 'WH001'
@@ -757,6 +767,9 @@
             currentLocationGroup.style.display = 'none';
             locationInput.value = '';
             locationInput.focus();
+
+            // 禁用添加移入明细按钮
+            document.getElementById('addDetailBtn').disabled = true;
         }
 
         // 显示当前库位
@@ -772,6 +785,9 @@
             // 设置当前库位和仓库
             currentLocation = locationCode;
             currentWarehouse = location_data[locationCode]?.warehouse || '';
+
+            // 启用添加移入明细按钮
+            document.getElementById('addDetailBtn').disabled = false;
         }
 
         // 渲染待移入列表
@@ -947,6 +963,15 @@
                     this.value = '';
                     return;
                 }
+                // 获取当前从sessionStorage中选择的仓库
+                const selectedWarehouse = sessionStorage.getItem('selectedWarehouse');
+                
+                // 校验库位是否与当前仓库一致
+                if (location_data[locationCode].warehouse !== selectedWarehouse) {
+                    showAlert('库位不属于当前仓库');
+                    this.value = '';
+                    return;
+                }
                 
                 showCurrentLocation(locationCode);
             }
@@ -998,7 +1023,7 @@
                 selectedItems = [];
                 clearLocation();
                 renderPendingList();
-            }, 1500);
+            }, 1000);
         });
 
         // 显示提示弹窗
@@ -1032,7 +1057,7 @@
             clearTimeout(alertTimeout);
             alertTimeout = setTimeout(() => {
                 alertOverlay.classList.remove('visible');
-            }, 1500);
+            }, 1000);
         }
 
         // 切换标签页
@@ -1047,9 +1072,9 @@
         // 修改提示信息
         function updateTooltip() {
             const tooltipContent = document.querySelector('.tooltip-content');
-            tooltipContent.innerHTML = `测试提示：
-库位码: KW20250524003 (WH001)
-库位码: KW20250524004 (WH002)
+            tooltipContent.innerHTML = `原型提示：
+库位扫描会根据首页所选仓库判断：北京仓(WH001)、上海仓(WH002)
+库位码: KW20250524001~003(WH001)、KW20250524004 (WH002)
 注意: 移入仓库需要和移出仓库一致
 `;
         }
@@ -1058,6 +1083,8 @@
         window.onload = function() {
             renderPendingList();
             updateTooltip();
+            // 根据当前库位状态初始化按钮状态
+            document.getElementById('addDetailBtn').disabled = !currentLocation;
         };
     </script>
 </body>

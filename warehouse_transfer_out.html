@@ -670,7 +670,8 @@
                 spu: 'ST210628UB',
                 color_size: '黑色/10',
                 locations: {
-                    'KW20250524001': 0
+                    'KW20250524001': 1,
+                    'KW20250524002': 0
                 },
                 available_qty: 0
             }
@@ -687,7 +688,16 @@
                 location_code: 'KW20250524002',
                 items: ['X00302LCPX', 'X6SV4S4Y'],
                 warehouse: 'WH001'
+            },
+            'KW20250524003': {
+                location_code: 'KW20250524003',
+                warehouse: 'WH001'
+            },
+            'KW20250524004': {
+                location_code: 'KW20250524004',
+                warehouse: 'WH002'
             }
+            
         };
 
         // 模拟箱码数据
@@ -710,7 +720,7 @@
                 box_code: 'CD250423000003',
                 items: [
                     { fnsku: 'X00302LCPX', qty: 8 },
-                    { fnsku: '13213', qty: 3 }
+                    { fnsku: 'X23456789', qty: 3 }
                 ]
             }
         };
@@ -852,6 +862,15 @@
                 
                 // 校验库位是否存在
                 if (!location_data[locationCode]) {
+                    showAlert('库位不存在');
+                    this.value = '';
+                    return;
+                }
+                // 获取当前从sessionStorage中选择的仓库
+                const selectedWarehouse = sessionStorage.getItem('selectedWarehouse');
+                
+                // 校验库位是否与当前仓库一致
+                if (location_data[locationCode].warehouse !== selectedWarehouse) {
                     showAlert('库位不属于当前仓库');
                     this.value = '';
                     return;
@@ -892,7 +911,7 @@
         document.getElementById('footerClearBtn').addEventListener('click', function() {
             scannedItems = [];
             renderPendingList();
-            
+            scannedBoxCodes.clear();
             // 聚焦条码输入框
             document.getElementById('barcodeInput').focus();
         });
@@ -911,7 +930,7 @@
                 clearLocation();
                 // 更新列表显示
                 renderPendingList();
-            }, 1500);
+            }, 1000);
         });
 
         // 处理箱码
@@ -1085,15 +1104,16 @@
             clearTimeout(alertTimeout);
             alertTimeout = setTimeout(() => {
                 alertOverlay.classList.remove('visible');
-            }, 1500);
+            }, 1000);
         }
 
         // 修改提示信息
         function showTooltip() {
             const tooltipContent = document.querySelector('.tooltip-content');
-            tooltipContent.innerHTML = `测试提示：
-库位码: KW20250524001、KW20250524002 (WH001)
-条码: X00302LCPX、X6SV4S4Y、
+            tooltipContent.innerHTML = `原型提示：
+库位扫描会根据首页所选仓库判断：北京仓(WH001)、上海仓(WH002)
+库位码: KW20250524001~003(WH001)、KW20250524004 (WH002)
+条码: X00302LCPX、X6SV4S4Y
 箱码: CD250423000001、CD250423000002
 `;
         }
