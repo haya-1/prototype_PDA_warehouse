@@ -169,7 +169,7 @@
         .add-detail-btn {
             width: 100%;
             padding: 12px 0;
-            margin-top: 10px;
+            margin-top: 5px;
             font-size: 16px;
             border: none;
             border-radius: 8px;
@@ -767,9 +767,6 @@
             currentLocationGroup.style.display = 'none';
             locationInput.value = '';
             locationInput.focus();
-
-            // 禁用添加移入明细按钮
-            document.getElementById('addDetailBtn').disabled = true;
         }
 
         // 显示当前库位
@@ -785,9 +782,6 @@
             // 设置当前库位和仓库
             currentLocation = locationCode;
             currentWarehouse = location_data[locationCode]?.warehouse || '';
-
-            // 启用添加移入明细按钮
-            document.getElementById('addDetailBtn').disabled = false;
         }
 
         // 渲染待移入列表
@@ -871,7 +865,7 @@
             }
             
             if (filteredData.length === 0) {
-                list.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">没有找到同仓库的可移入商品</div>';
+                list.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">没有找到当前仓库的待移入库存</div>';
                 return;
             }
             
@@ -930,11 +924,17 @@
 
         // 显示库存选择弹窗
         function showInventoryModal() {
-            if (!currentWarehouse) {
-                showAlert('请先扫描有效库位码');
+            // 获取当前从sessionStorage中选择的仓库
+            const selectedWarehouseFromIndex = sessionStorage.getItem('selectedWarehouse');
+
+            if (!selectedWarehouseFromIndex) {
+                showAlert('请先在首页选择仓库'); // Alert if no warehouse selected in index.html
                 return;
             }
             
+            // 将当前仓库设置为从index.html读取的仓库，用于库存列表的筛选
+            currentWarehouse = selectedWarehouseFromIndex;
+
             // 重置选中状态
             checkedInventory = [...selectedItems];
             
@@ -959,7 +959,7 @@
                 
                 // 校验库位是否存在
                 if (!location_data[locationCode]) {
-                    showAlert('库位不存在');
+                    showAlert('库位不属于当前仓库');
                     this.value = '';
                     return;
                 }
@@ -1083,8 +1083,6 @@
         window.onload = function() {
             renderPendingList();
             updateTooltip();
-            // 根据当前库位状态初始化按钮状态
-            document.getElementById('addDetailBtn').disabled = !currentLocation;
         };
     </script>
 </body>
