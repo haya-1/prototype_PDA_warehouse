@@ -69,7 +69,7 @@
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             padding: 18px 18px 10px 18px;
-            margin-bottom: 18px;
+            margin-bottom: 8px;
             box-sizing: border-box;
         }
         .scan-input-wrapper {
@@ -81,7 +81,7 @@
             width: 100%;
             box-sizing: border-box;
             padding: 14px 16px;
-            font-size: 19px;
+            font-size: 16px;
             border: 1.5px solid #ddd;
             border-radius: 8px;
             background: #fff;
@@ -135,8 +135,8 @@
             background: #fff;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            padding: 12px 16px;
-            margin-bottom: 18px;
+            padding: 12px 10px;
+            margin-bottom: 5px;
             font-size: 16px;
         }
         .box-info div {
@@ -147,60 +147,128 @@
             font-weight: bold;
         }
         .list-area {
-            background: #fff;
+            background: #f5f5f5;
             border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            padding: 10px 0;
+            padding: 5px 0;
             margin-bottom: 70px;
         }
         .list-item {
             display: flex;
-            align-items: flex-start;
+            flex-direction: column;
+            align-items: stretch;
             padding: 12px 8px;
-            border-bottom: 1px solid #eee;
+            background: #fff;
+            border-radius: 6px;
+            margin-bottom: 9px;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
         .list-item:last-child {
-            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .item-title {
+            font-weight: bold;
+            font-size: 15px;
+            color: #222;
+        }
+        .item-content {
+            display: flex;
+            align-items: flex-start;
+        }
+        .item-img-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+            width: 55px;
         }
         .item-img {
-            width: 60px;
-            height: 40px;
-            border-radius: 6px;
+            width: 55px;
+            height: 55px;
+            background: #ededed;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0;
+        }
+        .item-img img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            margin-right: 10px;
-            flex-shrink: 0;
+            border-radius: 4px;
+        }
+        .item-fnsku {
+            font-size: 12px;
+            color: #888;
+            word-break: break-all;
+            text-align: right;
+            position: absolute;
+            top: 14px;
+            right: 12px;
+        }
+        .item-info-main {
+            flex-grow: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
         }
         .item-info {
             flex: 1;
-            padding: 0 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+            margin-right: 10px;
+        }
+        .item-row {
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .item-row .label {
+            color: #666;
+            margin-right: 4px;
         }
         .item-sku {
-            font-weight: bold;
-            font-size: 15px;
-            margin-bottom: 2px;
-            color: #222;
-        }
-        .item-bar {
             font-size: 14px;
-            color: #444;
-            margin: 2px 0;
-        }
-        .item-style {
-            font-size: 14px;
-            color: #444;
-            margin: 2px 0;
-        }
-        .item-store {
-            font-size: 13px;
-            color: #888;
-        }
-        .item-qty {
-            font-weight: bold;
-            font-size: 22px;
             color: #333;
-            width: 40px;
-            text-align: right;
-            margin-left: 5px;
+            word-break: break-all;
+        }
+        .item-qty-box {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f7f7f7;
+            border-radius: 10px;
+            padding: 10px;
+            min-width: 50px;
+            height: 50px;
+        }
+        .item-qty-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .item-qty-value {
+            color: #0099ff;
+            font-weight: bold;
+            font-size: 18px;
         }
         .button-area {
             position: absolute;
@@ -276,6 +344,50 @@
             line-height: 1.4;
             text-align: center;
         }
+        /* Tooltip Styles */
+        .tooltip-container {
+            position: fixed;
+            top: 12px;
+            right: calc(50% - 400px / 2 + 9px + 100px);
+            display: inline-block;
+            vertical-align: middle;
+            z-index: 1001;
+        }
+        .info-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 6px;
+            background-color: #ffe066;
+            color: #b48a00;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            border: 1px solid #ffd700;
+        }
+        .tooltip-content {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 260px;
+            max-width: 340px;
+            background-color: #ffe066;
+            color: #222;
+            padding: 16px 18px 12px 18px;
+            border-radius: 8px;
+            white-space: pre-line;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .tooltip-container:hover .tooltip-content {
+            opacity: 1;
+            visibility: visible;
+        }
     </style>
 </head>
 <body>
@@ -288,6 +400,10 @@
                     </svg>
                 </button>
                 <span class="header-title">装箱查询</span>
+            </div>
+            <div class="tooltip-container">
+                <span class="info-icon">!</span>
+                <div class="tooltip-content">每次扫描箱码都会清空当前查询结果</div>
             </div>
             <div class="scan-area">
                 <div class="scan-input-wrapper">
@@ -307,7 +423,7 @@
                 <div id="skuList"></div>
             </div>
             <div class="button-area">
-                <button class="button disabled" id="changeButton" onclick="handleChangeBox()">清空查询</button>
+                <button class="button disabled" id="changeButton" onclick="handleChangeBox()" style="display: none;">清空查询</button>
             </div>
         </div>
     </div>
@@ -319,33 +435,55 @@
     </div>
     <script>
         // 硬编码 SKU 数据
-        const skuData = {
-            "boxcode": "CD250423000001",
-            "skudetail": [
-                {
-                    "sku": "ST1839GRAY080",
-                    "fnsku": "X001P67ABJ",
-                    "chinese_sku": "ST1839/灰色/8",
-                    "quantity": 9,
-                    "store":"STQ SHOP-US"
-                },
-                {
-                    "sku": "ST1839WHITE090",
-                    "fnsku": "X001P58RN9",
-                    "chinese_sku": "ST1839/白色/9",
-                    "quantity": 8,
-                    "store":"STQ SHOP-US"
-                },
-                {
-                    "sku": "ST1839GRAYWHITE090",
-                    "fnsku": "X001P59JSB",
-                    "chinese_sku": "ST1839/灰白/9",
-                    "quantity": 1,
-                    "store":"STQ SHOP-US"
-                }
-            ],
-            "plan_code":"PN20250428001"
-        };
+        const skuData = [
+            {
+                "boxcode": "CD250423000001",
+                "skudetail": [
+                    {
+                        "sku": "ST1839GRAY080",
+                        "fnsku": "X001P67ABJ",
+                        "chinese_sku": "ST1839/灰色/8",
+                        "quantity": 9,
+                        "store":"STQ SHOP-US"
+                    },
+                    {
+                        "sku": "ST1839WHITE090",
+                        "fnsku": "X001P58RN9",
+                        "chinese_sku": "ST1839/白色/9",
+                        "quantity": 8,
+                        "store":"STQ SHOP-US"
+                    },
+                    {
+                        "sku": "ST1839GRAYWHITE090",
+                        "fnsku": "X001P59JSB",
+                        "chinese_sku": "ST1839/灰白/9",
+                        "quantity": 1,
+                        "store":"STQ SHOP-US"
+                    }
+                ],
+                "plan_code":"PN20250428001"
+            },
+            {
+                "boxcode": "CD250423000002",
+                "skudetail": [
+                    {
+                        "sku": "ST1840BLACK085",
+                        "fnsku": "X001P72CKL",
+                        "chinese_sku": "ST1840/黑色/8.5",
+                        "quantity": 5,
+                        "store":"STQ SHOP-US"
+                    },
+                    {
+                        "sku": "ST1840RED095",
+                        "fnsku": "X001P81DMN",
+                        "chinese_sku": "ST1840/红色/9.5",
+                        "quantity": 7,
+                        "store":"STQ SHOP-US"
+                    }
+                ],
+                "plan_code":"PN20250428002"
+            }
+        ];
 
         function validateBoxCode(code) {
             // 检查箱码格式：CD + 日期(6位YYMMDD) + 序号(6位)
@@ -382,42 +520,84 @@
 
         function updateList(boxCode) {
             const boxInfo = document.getElementById('boxInfo');
-            const planCodeText = document.getElementById('planCodeText');
-            const totalQtyText = document.getElementById('totalQtyText');
             const skuList = document.getElementById('skuList');
             skuList.innerHTML = '';
-            if (!skuData || skuData.boxcode !== boxCode) {
+            
+            // 查找匹配的箱码数据
+            const boxData = skuData.find(box => box.boxcode === boxCode);
+            
+            if (!boxData) {
                 boxInfo.style.display = 'none';
                 return;
             }
-            planCodeText.textContent = skuData.plan_code || '-';
-            const totalQty = skuData.skudetail.reduce((sum, item) => sum + (item.quantity || 0), 0);
-            totalQtyText.textContent = totalQty;
+            
+            // 显示当前箱码
+            document.getElementById('boxInfo').innerHTML = `
+                <div>当前箱码：<span>${boxCode}</span></div>
+                <div>绑定单据：<span id="planCodeText">${boxData.plan_code || '-'}</span></div>
+                <div>箱内鞋子总数：<span id="totalQtyText"></span></div>
+            `;
+            const totalQty = boxData.skudetail.reduce((sum, item) => sum + (item.quantity || 0), 0);
+            document.getElementById('totalQtyText').textContent = totalQty;
             boxInfo.style.display = 'block';
-
-            skuData.skudetail.forEach(item => {
+            
+            boxData.skudetail.forEach(item => {
                 const listItem = document.createElement('div');
                 listItem.className = 'list-item';
                 
-                const imgDiv = document.createElement('div');
-                imgDiv.innerHTML = '<img src="https://via.placeholder.com/60x40?text=鞋" class="item-img">';
+                // 添加标题到顶部
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'item-header';
+                headerDiv.innerHTML = `<div class="item-title">SKU：${item.sku || '-'}</div>`;
+                listItem.appendChild(headerDiv);
+                
+                // 添加FNSKU到右上角
+                // const fnskuDiv = document.createElement('div');
+                // fnskuDiv.className = 'item-fnsku';
+                // fnskuDiv.textContent = item.fnsku || '-';
+                // listItem.appendChild(fnskuDiv);
+                
+                // 添加内容区域
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'item-content';
+                
+                // 添加图片区域
+                const imgAreaDiv = document.createElement('div');
+                imgAreaDiv.className = 'item-img-area';
+                imgAreaDiv.innerHTML = `
+                    <div class="item-img">
+                        <img src="https://via.placeholder.com/55x55?text=鞋" alt="产品图片">
+                    </div>
+                `;
+                
+                // 添加信息区域
+                const infoMainDiv = document.createElement('div');
+                infoMainDiv.className = 'item-info-main';
                 
                 const infoDiv = document.createElement('div');
                 infoDiv.className = 'item-info';
                 infoDiv.innerHTML = `
-                    <div class="item-sku">SKU：${item.sku || '-'}</div>
-                    <div class="item-bar">条码：${item.fnsku || '-'}</div>
-                    <div class="item-style">货号/颜色/尺码：${item.chinese_sku || '-'}</div>
-                    <div class="item-store">店铺：${item.store || '无'}</div>
+                    <div class="item-row"><span class="label">条码：</span>${item.fnsku || '-'}</div>
+                    <div class="item-row"><span class="label">货号/颜色/尺码：</span>${item.chinese_sku || '-'}</div>
+                    <div class="item-row"><span class="label">店铺：</span>${item.store || '无'}</div>
                 `;
                 
-                const qtyDiv = document.createElement('div');
-                qtyDiv.className = 'item-qty';
-                qtyDiv.textContent = item.quantity;
+                // 添加数量区域
+                const qtyBoxDiv = document.createElement('div');
+                qtyBoxDiv.className = 'item-qty-box';
+                qtyBoxDiv.innerHTML = `
+                    <div class="item-qty-label">数量</div>
+                    <div class="item-qty-value">${item.quantity}</div>
+                `;
                 
-                listItem.appendChild(imgDiv);
-                listItem.appendChild(infoDiv);
-                listItem.appendChild(qtyDiv);
+                infoMainDiv.appendChild(infoDiv);
+                infoMainDiv.appendChild(qtyBoxDiv);
+                
+                contentDiv.appendChild(imgAreaDiv);
+                contentDiv.appendChild(infoMainDiv);
+                
+                listItem.appendChild(contentDiv);
+                
                 skuList.appendChild(listItem);
             });
         }
@@ -455,19 +635,14 @@
                     return;
                 }
 
-                if (skuData.boxcode === boxCode) {
-                    // 设置当前箱码
-                    currentBoxCode = boxCode;
+                // 查找箱码是否存在于数据中
+                const boxExists = skuData.some(box => box.boxcode === boxCode);
+
+                if (boxExists) {
+                    // 清空输入框
+                    e.target.value = '';
                     
-                    // 隐藏输入框，显示当前箱码
-                    e.target.style.display = 'none';
-                    document.getElementById('clearBoxBtn').style.display = 'none';
-                    document.getElementById('currentBoxCodeGroup').style.display = 'block';
-                    document.getElementById('currentBoxCodeDisplay').textContent = `当前箱码：${boxCode}`;
-                    
-                    // 启用更换箱码按钮
-                    document.getElementById('changeButton').classList.remove('disabled');
-                    
+                    // 更新列表显示
                     updateList(boxCode);
                 } else {
                     showAlert('箱码不存在');

@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>库存查询</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .main-fixed {
+            width: 400px;
+            height: 700px;
+            margin: 0 auto;
+            background: #f5f5f5;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            overflow-y: auto;
+            position: relative;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 0;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 0 8px 0;
+            position: relative;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        .back-button {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            border-radius: 0;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #333;
+            cursor: pointer;
+        }
+        .header-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #222;
+            margin: 0 auto;
+            text-align: center;
+            flex: 1;
+        }
+        /* Tooltip Styles */
+        .tooltip-container {
+            position: fixed;
+            top: 12px;
+            right: calc(50% - 400px / 2 + 9px + 100px);
+            display: inline-block;
+            vertical-align: middle;
+            z-index: 1001;
+        }
+        .info-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 6px;
+            background-color: #ffe066;
+            color: #b48a00;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            border: 1px solid #ffd700;
+        }
+        .tooltip-content {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 260px;
+            max-width: 340px;
+            background-color: #ffe066;
+            color: #222;
+            padding: 16px 18px 12px 18px;
+            border-radius: 8px;
+            white-space: pre-line;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .tooltip-container:hover .tooltip-content {
+            opacity: 1;
+            visibility: visible;
+        }
+        .scan-area {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 18px 18px 10px 18px;
+            margin-bottom: 18px;
+            box-sizing: border-box;
+        }
+        .scan-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .scan-input-wrapper img {
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+            width: 30px;
+            height: 30px;
+        }
+        .scan-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px 40px 14px 40px;
+            font-size: 16px;
+            border: 1.5px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            outline: none;
+            margin-bottom: 2px;
+        }
+        .scan-input:focus {
+            border: 1.5px solid #3a8bfd;
+            background: #f0f7ff;
+        }
+        .scan-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            color: #666;
+        }
+        .info-area {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 12px 16px;
+            margin-bottom: 18px;
+            font-size: 17px;
+        }
+        .info-row {
+            display: flex;
+            margin-bottom: 6px;
+        }
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+        .info-label {
+            color: #666;
+            margin-right: 4px;
+        }
+        .info-value {
+            font-weight: bold;
+            color: #222;
+        }
+        .info-value#totalInventory {
+            font-size: 18px;
+        }
+        .result-area {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 16px;
+            margin-bottom: 18px;
+            max-height: 370px;
+            overflow-y: auto;
+            flex-grow: 1;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 20px;
+        }
+        .product-card {
+            display: flex;
+            flex-direction: column;
+        }
+        .product-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .product-image {
+            width: 55px;
+            height: 55px;
+            object-fit: cover;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            margin-right: 12px;
+        }
+        .product-info {
+            flex: 1;
+        }
+        .product-sku {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        .product-item-code {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+        .product-color-size {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+        .product-barcode {
+            font-size: 15px;
+            color: #222;
+        }
+        .inventory-summary {
+            background: #f7f7f7;
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .inventory-count {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .inventory-count .label {
+            font-weight: normal;
+            color: #666;
+            margin-right: 4px;
+        }
+        .inventory-count .value {
+            color: #222;
+        }
+        .available-count {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .available-count .label {
+            font-weight: normal;
+            color: #666;
+            margin-right: 4px;
+        }
+        .available-count .value {
+            color: #0099ff;
+        }
+        .location-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        .location-table th {
+            background: #f5f5f5;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            color: #222;
+            font-size: 15px;
+        }
+        .location-table td {
+            padding: 12px 10px;
+            text-align: center;
+            border-top: 1px solid #eee;
+            font-size: 15px;
+        }
+        .location-table tr:first-child td {
+            border-top: none;
+        }
+        .location-code {
+            font-weight: bold;
+            color: #222;
+        }
+        .location-qty {
+            color: #222;
+        }
+        .location-available {
+            color: #0099ff;
+            font-weight: bold;
+        }
+        .custom-alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .custom-alert-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+        .custom-alert-container {
+            background: #333;
+            padding: 32px 36px 24px 36px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 180px;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .custom-alert-overlay.visible .custom-alert-container {
+            transform: scale(1);
+        }
+        .custom-alert-icon {
+            width: 64px;
+            height: 64px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+        .custom-alert-icon span {
+            font-size: 38px;
+            color: #333;
+            font-weight: bold;
+        }
+        .custom-alert-text {
+            color: #fff;
+            font-size: 22px;
+            text-align: center;
+        }
+        .no-results {
+            text-align: center;
+            color: #888;
+            padding: 40px 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-fixed">
+        <div class="container">
+            <div class="header">
+                <button class="back-button" onclick="window.location.href='index.html'">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15.5 19L9.5 12L15.5 5" stroke="#222" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <span class="header-title">库存查询</span>
+            </div>
+            <div class="tooltip-container">
+                <span class="info-icon">!</span>
+                <div class="tooltip-content">支持条码/SKU/库位查询
+SKU以ST开头，库位以KW开头</div>
+            </div>
+            <div class="scan-area">
+                <div class="scan-input-wrapper">
+                    <img src="icon/screenshot_2025-05-22_16-58-53.png" alt="扫描条码">
+                    <input type="text" class="scan-input" id="scanInput" placeholder="扫描条码/SKU/库位码查询" autofocus />
+                    <svg class="scan-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                        <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="#777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 21L16.65 16.65" stroke="#777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="info-area" id="infoArea" style="display: none;">
+                <div class="info-row" style="display: none;">
+                    <div class="info-label">当前仓库：</div>
+                    <div class="info-value" id="currentWarehouse">-</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">查询内容：</div>
+                    <div class="info-value" id="queryContent">-</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">库存/可用：</div>
+                    <div class="info-value" id="totalInventory">-</div>
+                </div>
+            </div>
+            <div class="result-area" id="resultArea" style="display: none;">
+                <!-- Results will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Overlay -->
+    <div class="custom-alert-overlay" id="customAlertOverlay">
+        <div class="custom-alert-container" id="customAlertContent">
+            <!-- Alert message goes here -->
+        </div>
+    </div>
+
+    <script>
+        // 模拟数据 - 库存
+        const inventory_data = {
+            // 条码查询数据
+            "X00302LCPX": {
+                sku: "ST210628UBCOGNAC10",
+                item_code: "ST210628UB",
+                color_size: "栗色/10",
+                barcode: "X00302LCPX",
+                image: "https://via.placeholder.com/80x80?text=产品图片",
+                locations: [
+                    { location: "库位1", qty: 106, available: 30 },
+                    { location: "库位2", qty: 62, available: 12 }
+                ]
+            },
+            "X23456789": {
+                sku: "ST210628UBCOGNAC10",
+                item_code: "ST210628UB",
+                color_size: "栗色/10",
+                barcode: "X23456789",
+                image: "https://via.placeholder.com/80x80?text=产品图片",
+                locations: [
+                    { location: "库位1", qty: 1, available: 1 },
+                    { location: "库位2", qty: 5, available: 5 }
+                ]
+            },
+            "X6SV4S4Y": {
+                sku: "ST210628UBBLACK9",
+                item_code: "ST210628UB",
+                color_size: "黑色/9",
+                barcode: "X6SV4S4Y",
+                image: "https://via.placeholder.com/80x80?text=产品图片",
+                locations: [
+                    { location: "库位1", qty: 35, available: 20 },
+                    { location: "库位3", qty: 28, available: 15 }
+                ]
+            },
+            // SKU查询数据
+            "ST210628UBBLACK9": {
+                sku: "ST210628UBBLACK9",
+                item_code: "ST210628UB",
+                color_size: "黑色/9",
+                barcode: "X6SV4S4Y",
+                image: "https://via.placeholder.com/80x80?text=产品图片",
+                locations: [
+                    { location: "库位1", qty: 35, available: 20 },
+                    { location: "库位3", qty: 28, available: 15 }
+                ]
+            },
+            "ST210628UBCOGNAC10": {
+                sku: "ST210628UBCOGNAC10",
+                item_code: "ST210628UB",
+                color_size: "栗色/10",
+                barcode: "X00302LCPX",
+                image: "https://via.placeholder.com/80x80?text=产品图片",
+                locations: [
+                    { location: "库位1", qty: 106, available: 30 },
+                    { location: "库位2", qty: 62, available: 12 }
+                ]
+            },
+            "ST210628UBCOGNAC10": {
+                sku: "ST210628UBCOGNAC10",
+                item_code: "ST210628UB",
+                color_size: "栗色/10",
+                barcode: "X23456789",
+                image: "https://via.placeholder.com/80x80?text=产品图片",
+                locations: [
+                    { location: "库位1", qty: 1, available: 1 },
+                    { location: "库位2", qty: 5, available: 5 }
+                ]
+            },
+            // 库位查询数据
+            "KW20250524001": {
+                name: "库位1",
+                items: [
+                    {
+                        sku: "ST210628UBBLACK9",
+                        item_code: "ST210628UB",
+                        color_size: "黑色/9",
+                        barcode: "X6SV4S4Y",
+                        image: "https://via.placeholder.com/80x80?text=产品图片",
+                        qty: 35,
+                        available: 20
+                    },
+                    {
+                        sku: "ST210628UBCOGNAC10",
+                        item_code: "ST210628UB",
+                        color_size: "栗色/10",
+                        barcode: "X00302LCPX",
+                        image: "https://via.placeholder.com/80x80?text=产品图片",
+                        qty: 106,
+                        available: 30
+                    },
+                    {
+                        sku: "ST210628UBCOGNAC10",
+                        item_code: "ST210628UB",
+                        color_size: "栗色/10",
+                        barcode: "X23456789",
+                        image: "https://via.placeholder.com/80x80?text=产品图片",
+                        qty: 1,
+                        available: 1
+                    }
+                ]
+            },
+            "KW20250524002": {
+                name: "库位2",
+                items: [
+                    {
+                        sku: "ST210628UBCOGNAC10",
+                        item_code: "ST210628UB",
+                        color_size: "栗色/10",
+                        barcode: "X00302LCPX",
+                        image: "https://via.placeholder.com/80x80?text=产品图片",
+                        qty: 62,
+                        available: 12
+                    },
+                    {
+                        sku: "ST210628UBCOGNAC10",
+                        item_code: "ST210628UB",
+                        color_size: "栗色/10",
+                        barcode: "X23456789",
+                        image: "https://via.placeholder.com/80x80?text=产品图片",
+                        qty: 5,
+                        available: 5
+                    }
+                ]
+            }
+        };
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 从sessionStorage获取当前仓库
+            const currentWarehouse = sessionStorage.getItem('selectedWarehouse');
+            
+            if (!currentWarehouse) {
+                showAlert('请先在首页选择仓库');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+                return;
+            }
+
+            // 根据仓库代码获取仓库名称
+            const warehouseName = getWarehouseName(currentWarehouse);
+            document.getElementById('currentWarehouse').textContent = warehouseName;
+            
+            // 监听扫描输入
+            document.getElementById('scanInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const query = this.value.trim();
+                    if (!query) return;
+                    
+                    handleQuery(query, currentWarehouse);
+                }
+            });
+        });
+
+        // 获取仓库名称
+        function getWarehouseName(warehouseCode) {
+            const warehouseNames = {
+                'WH001': '北京仓库',
+                'WH002': '上海仓库',
+                'WH003': '广州仓库',
+                'WH004': '深圳仓库'
+            };
+            return warehouseNames[warehouseCode] || warehouseCode;
+        }
+
+        // 处理查询
+        function handleQuery(query, currentWarehouse) {
+            // Clear the input field after submitting
+            document.getElementById('scanInput').value = '';
+            
+            // 清空之前的结果
+            const resultArea = document.getElementById('resultArea');
+            resultArea.innerHTML = '';
+            resultArea.style.display = 'none';
+            document.getElementById('infoArea').style.display = 'none';
+            
+            // Determine query type and set appropriate label
+            let queryTypeLabel = "查询内容";
+            if (query.startsWith('ST')) {
+                queryTypeLabel = "SKU";
+            } else if (query.startsWith('KW')) {
+                queryTypeLabel = "库位";
+            } else {
+                queryTypeLabel = "条码";
+                
+            }
+            
+            // Update query content with appropriate label
+            if (query.startsWith('KW')) {
+                const data = inventory_data[query];
+                document.getElementById('queryContent').textContent = query+"("+data.name+")";
+            } else {
+                document.getElementById('queryContent').textContent = query;
+                
+            }
+            document.querySelector('.info-row:nth-child(2) .info-label').textContent = queryTypeLabel + "：";
+            document.getElementById('infoArea').style.display = 'block';
+            
+            resultArea.style.display = 'block';
+            
+            // 判断查询类型
+            if (query.startsWith('ST')) {
+                // SKU查询
+                handleSkuQuery(query);
+            } else if (query.startsWith('KW')) {
+                // 库位查询
+                handleLocationQuery(query);
+            } else {
+                // 条码查询
+                handleBarcodeQuery(query);
+            }
+        }
+
+        // 处理条码查询
+        function handleBarcodeQuery(barcode) {
+            const data = inventory_data[barcode];
+            
+            if (!data) {
+                showNoResults();
+                return;
+            }
+            
+            const resultArea = document.getElementById('resultArea');
+            resultArea.innerHTML = '';
+            
+            // 计算总库存和可用库存
+            let totalQty = 0;
+            let totalAvailable = 0;
+            data.locations.forEach(loc => {
+                totalQty += loc.qty;
+                totalAvailable += loc.available;
+            });
+            
+            document.getElementById('totalInventory').textContent = `${totalQty}/${totalAvailable}`;
+            
+            // 创建产品卡片
+            const productCard = document.createElement('div');
+            productCard.className = 'product-card';
+            
+            // 产品信息头部
+            productCard.innerHTML = `
+                <div class="product-header-sku" style="font-size: 17px; font-weight: bold; margin-bottom: 10px; color: #222; border-bottom: 1px solid #eee; padding-bottom: 8px;">
+                    SKU: ${data.sku}
+                </div>
+                <div class="product-header">
+                    <img src="${data.image}" class="product-image" alt="${data.sku}">
+                    <div class="product-info" style="position: relative; flex: 1; padding-right: 85px;">
+                        <div class="product-item-code">货号: ${data.item_code}</div>
+                        <div class="product-color-size">颜色/尺码: ${data.color_size}</div>
+                        <div class="product-barcode">条码: ${data.barcode}</div>
+                        <div style="position: absolute; top: 0; right: 0; display: flex; flex-direction: column; align-items: center; background: #f7f7f7; padding: 6px 8px; border-radius: 4px; min-width: 75px;">
+                            <span style="font-size: 14px; font-weight: bold;">库存/可用</span>
+                            <span style="color: #222; font-weight: bold;">${totalQty}/${totalAvailable}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 创建库位表格
+            const table = document.createElement('table');
+            table.className = 'location-table';
+            table.innerHTML = `
+                <tr>
+                    <th>库位</th>
+                    <th>库存</th>
+                    <th>可用</th>
+                </tr>
+            `;
+            
+            data.locations.forEach(loc => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="location-code">${loc.location}</td>
+                    <td class="location-qty">${loc.qty}</td>
+                    <td class="location-available">${loc.available}</td>
+                `;
+                table.appendChild(row);
+            });
+            
+            productCard.appendChild(table);
+            resultArea.appendChild(productCard);
+        }
+
+        // 处理SKU查询
+        function handleSkuQuery(sku) {
+            // 查找所有匹配该SKU的条目
+            const skuItems = [];
+            const seenLocations = new Map(); // 用于跟踪已经看到的库位和数量组合
+            
+            // 遍历inventory_data查找所有匹配的条目
+            for (let barcode in inventory_data) {
+                if (inventory_data[barcode].sku === sku) {
+                    // 创建一个库位的唯一标识字符串
+                    let item = {...inventory_data[barcode], barcode: barcode};
+                    let locationKey = '';
+                    
+                    // 检查这个商品的库位组合是否已经存在
+                    let isDuplicate = false;
+                    
+                    // 为每个库位创建唯一键
+                    const itemLocations = item.locations.map(loc => 
+                        `${loc.location}_${loc.qty}_${loc.available}`
+                    ).sort().join('|');
+                    
+                    if (seenLocations.has(itemLocations)) {
+                        // 如果这个库位组合已经存在，跳过这个条目
+                        continue;
+                    }
+                    
+                    // 记录这个库位组合
+                    seenLocations.set(itemLocations, true);
+                    skuItems.push(item);
+                }
+            }
+            
+            if (skuItems.length === 0) {
+                showNoResults();
+                return;
+            }
+            
+            const resultArea = document.getElementById('resultArea');
+            resultArea.innerHTML = `<h3 style="margin-bottom:16px;font-size:18px;">SKU：${sku}</h3>`;
+            
+            // 计算总库存和可用库存
+            let totalQty = 0;
+            let totalAvailable = 0;
+            
+            skuItems.forEach(item => {
+                item.locations.forEach(loc => {
+                    totalQty += loc.qty;
+                    totalAvailable += loc.available;
+                });
+            });
+            
+            document.getElementById('totalInventory').textContent = `${totalQty}/${totalAvailable}`;
+            
+            // 为每个匹配的条目创建产品卡片
+            skuItems.forEach(item => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.style.marginBottom = '20px';
+                
+                // 产品信息头部
+                productCard.innerHTML = `
+                    <div class="product-header">
+                        <img src="${item.image}" class="product-image" alt="${item.sku}">
+                        <div class="product-info" style="position: relative; flex: 1; padding-right: 85px;">
+                            <div class="product-item-code">货号: ${item.item_code}</div>
+                            <div class="product-color-size">颜色/尺码: ${item.color_size}</div>
+                            <div class="product-barcode">条码: ${item.barcode}</div>
+                            <div style="position: absolute; top: 0; right: 0; display: flex; flex-direction: column; align-items: center; background: #f7f7f7; padding: 6px 8px; border-radius: 4px; min-width: 75px;">
+                                <span style="font-size: 14px; font-weight: bold;">库存/可用</span>
+                                <span style="color: #222; font-weight: bold;">
+                                    ${item.locations.reduce((sum, loc) => sum + loc.qty, 0)}/
+                                    ${item.locations.reduce((sum, loc) => sum + loc.available, 0)}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // 创建库位表格
+                const table = document.createElement('table');
+                table.className = 'location-table';
+                table.innerHTML = `
+                    <tr>
+                        <th>库位</th>
+                        <th>库存</th>
+                        <th>可用</th>
+                    </tr>
+                `;
+                
+                item.locations.forEach(loc => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="location-code">${loc.location}</td>
+                        <td class="location-qty">${loc.qty}</td>
+                        <td class="location-available">${loc.available}</td>
+                    `;
+                    table.appendChild(row);
+                });
+                
+                productCard.appendChild(table);
+                resultArea.appendChild(productCard);
+            });
+        }
+
+        // 处理库位查询
+        function handleLocationQuery(location) {
+            const data = inventory_data[location];
+            
+            if (!data || !data.items || data.items.length === 0) {
+                showNoResults();
+                return;
+            }
+            
+            const resultArea = document.getElementById('resultArea');
+            //不需要显示库位了，不要去掉注释
+            // resultArea.innerHTML = `<h3 style="margin-bottom:16px;font-size:16px;">库位：${location.name}</h3>`;
+            
+            // 计算总库存和可用库存
+            let totalQty = 0;
+            let totalAvailable = 0;
+            data.items.forEach(item => {
+                totalQty += item.qty;
+                totalAvailable += item.available;
+            });
+            
+            document.getElementById('totalInventory').textContent = `${totalQty}/${totalAvailable}`;
+            
+            // 按SKU分组
+            const skuGroups = {};
+            data.items.forEach(item => {
+                if (!skuGroups[item.sku]) {
+                    skuGroups[item.sku] = [];
+                }
+                skuGroups[item.sku].push(item);
+            });
+            
+            // 创建每个SKU组的卡片
+            Object.keys(skuGroups).forEach(sku => {
+                const items = skuGroups[sku];
+                const groupQty = items.reduce((sum, item) => sum + item.qty, 0);
+                const groupAvailable = items.reduce((sum, item) => sum + item.available, 0);
+                
+                // 创建SKU组卡片
+                const skuGroupCard = document.createElement('div');
+                skuGroupCard.className = 'product-card';
+                skuGroupCard.style.marginBottom = '20px';
+                
+                // 创建可点击的SKU标题行
+                const skuHeader = document.createElement('div');
+                skuHeader.className = 'product-header-sku';
+                skuHeader.style.fontSize = '18px';
+                skuHeader.style.fontWeight = 'bold';
+                skuHeader.style.marginBottom = '10px';
+                skuHeader.style.color = '#222';
+                skuHeader.style.borderBottom = '1px solid #eee';
+                skuHeader.style.paddingBottom = '8px';
+                skuHeader.style.cursor = 'pointer';
+                skuHeader.style.display = 'flex';
+                skuHeader.style.justifyContent = 'space-between';
+                skuHeader.style.alignItems = 'center';
+                
+                // 添加SKU文本和下拉箭头
+                skuHeader.innerHTML = `
+                    <span>SKU: ${sku}</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="dropdown-arrow">
+                        <path d="M6 9L12 15L18 9" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                `;
+                
+                // 创建内容容器，默认展开
+                const contentContainer = document.createElement('div');
+                contentContainer.className = 'sku-group-content';
+                contentContainer.style.display = 'block';
+                
+                // 为SKU标题添加点击事件，控制展开/收起
+                skuHeader.addEventListener('click', function() {
+                    const arrow = this.querySelector('.dropdown-arrow');
+                    if (contentContainer.style.display === 'none') {
+                        contentContainer.style.display = 'block';
+                        arrow.style.transform = 'rotate(0deg)';
+                    } else {
+                        contentContainer.style.display = 'none';
+                        arrow.style.transform = 'rotate(-90deg)';
+                    }
+                });
+                
+                // 添加每个条码的商品信息
+                items.forEach(item => {
+                    const productItem = document.createElement('div');
+                    productItem.className = 'product-item';
+                    productItem.style.marginBottom = '15px';
+                    productItem.style.paddingTop = '5px';
+                    
+                    productItem.innerHTML = `
+                        <div class="product-header">
+                            <img src="${item.image}" class="product-image" alt="${item.sku}">
+                            <div class="product-info" style="position: relative; flex: 1; padding-right: 85px;">
+                                <div class="product-item-code">货号: ${item.item_code}</div>
+                                <div class="product-color-size">颜色/尺码: ${item.color_size}</div>
+                                <div class="product-barcode">条码: ${item.barcode}</div>
+                                <div style="position: absolute; top: 0; right: 0; display: flex; flex-direction: column; align-items: center; background: #f7f7f7; padding: 6px 8px; border-radius: 4px; min-width: 75px;">
+                                    <span style="font-size: 14px; font-weight: bold;">库存/可用</span>
+                                    <span style="color: #222; font-weight: bold;">${item.qty}/${item.available}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    contentContainer.appendChild(productItem);
+                });
+                
+                // 组装SKU组卡片
+                skuGroupCard.appendChild(skuHeader);
+                skuGroupCard.appendChild(contentContainer);
+                
+                resultArea.appendChild(skuGroupCard);
+            });
+        }
+
+        // 显示无结果提示
+        function showNoResults() {
+            const resultArea = document.getElementById('resultArea');
+            resultArea.innerHTML = '<div class="no-results">暂无查询结果</div>';
+            document.getElementById('totalInventory').textContent = '0/0';
+        }
+
+        // 显示提示弹窗
+        let alertTimeout;
+        function showAlert(message, type = 'error') {
+            const alertOverlay = document.getElementById('customAlertOverlay');
+            const alertContent = document.getElementById('customAlertContent');
+            
+            if (type === 'success') {
+                // 成功提示样式
+                alertContent.innerHTML = `
+                    <div class="custom-alert-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="38" height="38">
+                            <path d="M5 13L9 17L19 7" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="custom-alert-text">${message}</div>
+                `;
+            } else {
+                // 错误提示样式
+                alertContent.innerHTML = `
+                    <div class="custom-alert-icon">
+                        <span>!</span>
+                    </div>
+                    <div class="custom-alert-text">${message}</div>
+                `;
+            }
+            
+            alertOverlay.classList.add('visible');
+            
+            clearTimeout(alertTimeout);
+            alertTimeout = setTimeout(() => {
+                alertOverlay.classList.remove('visible');
+            }, 1500);
+        }
+    </script>
+</body>
+</html> 
