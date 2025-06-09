@@ -87,7 +87,7 @@
             top: 30px;
             left: 50%;
             transform: translateX(-50%);
-            min-width: 260px;
+            min-width: 200px;
             max-width: 340px;
             background: #ffe066;
             color: #222;
@@ -230,8 +230,7 @@
         .button-area {
             position: relative;
             width: 100%;
-            background: #fff;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.07);
+            background: none;
             padding: 16px 0 12px 0;
             display: flex;
             justify-content: center;
@@ -272,7 +271,7 @@
         }
         .alert-overlay {
             display: none;
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -328,7 +327,7 @@
                     库内装箱
                     <!-- 备注 -->
                     <span class="note-icon">!
-                        <span class="note-tooltip">和供应商端PDA的[发货装箱-详情]、[箱子清空]差不多，校验规则有些不一样
+                        <span class="note-tooltip">----------------装箱----------------<br>箱码：<br>CD250423000001~004<br>条码：<br>X001P67ABJ、X001P58RN9、X001P59JSB；<br>----------------解绑----------------<br>箱码：<br>CD250423000001~003
                         </span>
                     </span>
                 </div>
@@ -403,9 +402,9 @@
     <script>
         // 数据模拟
         const skuDataList = [
-            { 条码: "X001P67ABJ", chinese_sku: "ST1839/灰色/8" },
-            { 条码: "X001P58RN9", chinese_sku: "ST1839/白色/9" },
-            { 条码: "X001P59JSB", chinese_sku: "ST1839/灰白/9" }
+            { 条码: "X001P67ABJ", chinese_sku: "ST250126789/灰色/8" },
+            { 条码: "X001P58RN9", chinese_sku: "ST250126789/白色/9" },
+            { 条码: "X001P59JSB", chinese_sku: "ST250126789/灰白/9" }
         ];
         const boxDataList = [
             { box_code: "CD250423000001", is_empty: true },
@@ -417,9 +416,9 @@
         const unbindSkuData = {
             boxcode: "CD250423000002",
             skudetail: [
-                { 条码: "X001P67ABJ", chinese_sku: "ST1839/灰色/8", quantity: 9 },
-                { 条码: "X001P58RN9", chinese_sku: "ST1839/白色/9", quantity: 8 },
-                { 条码: "X001P59JSB", chinese_sku: "ST1839/灰白/9", quantity: 1 }
+                { 条码: "X001P67ABJ", chinese_sku: "ST250126789/灰色/8", quantity: 9 },
+                { 条码: "X001P58RN9", chinese_sku: "ST250126789/白色/9", quantity: 8 },
+                { 条码: "X001P59JSB", chinese_sku: "ST250126789/灰白/9", quantity: 1 }
             ]
         };
         // 装箱逻辑
@@ -550,11 +549,11 @@
                 return;
             }
             const item = skuDataList.find(item => item.条码 === 条码);
-            // if (!item) {
-            //     showAlert('条码不属于当前采购单');
-            //     e.target.value = '';
-            //     return;
-            // }
+            if (!item) {
+                showAlert('条码不存在');
+                e.target.value = '';
+                return;
+            }
             if (scannedItemsPack[条码]) {
                 scannedItemsPack[条码].quantity += 1;
             } else {

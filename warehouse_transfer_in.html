@@ -639,7 +639,7 @@
                         <button class="clear-location-btn" onclick="clearLocation()">更换</button>
                     </div>
                 </div>
-                <button class="add-detail-btn" id="addDetailBtn">添加移入明细</button>
+                <button class="add-detail-btn" id="addDetailBtn">选择移入库存</button>
             </div>
             <div class="pending-list-area">
                 <div class="pending-list" id="pendingList">
@@ -725,26 +725,30 @@
         // 模拟库位数据
         const location_data = {
             'KW20250524001': {
+                name: '库位1',
                 location_code: 'KW20250524001',
                 items: ['X00302LCPX', 'X6SV4S4Y','X23456789'],
                 warehouse: 'WH001'
             },
             'KW20250524002': {
+                name: '库位2',
                 location_code: 'KW20250524002',
                 items: ['X00302LCPX', 'X6SV4S4Y'],
                 warehouse: 'WH001'
             },
             'KW20250524003': {
+                name: '库位3',
                 location_code: 'KW20250524003',
                 warehouse: 'WH001'
             },
             'KW20250524004': {
+                name: '库位4',
                 location_code: 'KW20250524004',
                 warehouse: 'WH002'
             }
         };
 
-        // 存储待移入的商品
+        // 存储待移入的货品
         let selectedItems = [];
         // 存储当前库位
         let currentLocation = '';
@@ -797,7 +801,7 @@
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'pending-header';
                 headerDiv.innerHTML = `
-                    <div class="pending-location">移出库位：${item.origin_location}</div>
+                    <div class="pending-location">移出库位：${location_data[item.origin_location]?.name || item.origin_location}</div>
                 `;
                 listItem.appendChild(headerDiv);
                 
@@ -876,7 +880,7 @@
                 listItem.className = 'inventory-item';
                 listItem.innerHTML = `
                     <div class="inventory-item-header">
-                        <div class="pending-location">移出库位：${item.origin_location}</div>
+                        <div class="pending-location">移出库位：${location_data[item.origin_location]?.name || item.origin_location}</div>
                     </div>
                     <div class="pending-fnsku">${item.fnsku}</div>
                     <div class="inventory-check ${isChecked ? 'checked' : ''}" data-id="${item.id}"></div>
@@ -977,7 +981,7 @@
             }
         });
 
-        // 添加移入明细按钮点击事件
+        // 选择移入库存按钮点击事件
         document.getElementById('addDetailBtn').addEventListener('click', function() {
             showInventoryModal();
         });
@@ -999,7 +1003,7 @@
 
         // 库存弹窗确认按钮
         document.getElementById('inventoryConfirmBtn').addEventListener('click', function() {
-            // 更新选中的商品
+            // 更新选中的货品
             selectedItems = [...checkedInventory];
             
             // 隐藏弹窗
@@ -1012,7 +1016,7 @@
         // 确认移入按钮点击事件
         document.getElementById('footerConfirmBtn').addEventListener('click', function() {
             if (selectedItems.length === 0) {
-                showAlert('请先添加移入商品');
+                showAlert('请先添加移入货品');
                 return;
             }
             

@@ -680,24 +680,22 @@
         // 模拟库位数据
         const location_data = {
             'KW20250524001': {
-                name: '库位1',
                 location_code: 'KW20250524001',
                 items: ['X00302LCPX', 'X6SV4S4Y','X23456789'],
-                warehouse: 'WH001'
+                warehouse: 'WH001',
+                name: '库位1'
             },
             'KW20250524002': {
-                name: '库位2',
                 location_code: 'KW20250524002',
                 items: ['X00302LCPX', 'X6SV4S4Y'],
-                warehouse: 'WH001'
+                warehouse: 'WH001',
+                name: '库位2'
             },
             'KW20250524003': {
-                name: '库位3',
                 location_code: 'KW20250524003',
                 warehouse: 'WH001'
             },
             'KW20250524004': {
-                name: '库位4',
                 location_code: 'KW20250524004',
                 warehouse: 'WH002'
             }
@@ -794,62 +792,68 @@
             const list = document.getElementById('pendingList');
             list.innerHTML = '';
             
+            // 如果没有条码，不显示任何内容
+            if (scannedItems.length === 0) {
+                return;
+            }
+            
+            // 按库位分组
+            const locationGroups = {};
+            
             scannedItems.forEach(item => {
-                const listItem = document.createElement('div');
-                listItem.className = 'pending-item';
-                
-                // 添加库位信息到顶部
-                const headerDiv = document.createElement('div');
-                headerDiv.className = 'pending-header';
-                headerDiv.innerHTML = `
-                    <div class="pending-location">库位：${location_data[item.location]?.name || item.location}</div>
-                `;
-                listItem.appendChild(headerDiv);
-                
-                // 添加FNSKU在右上角
-                const fnskuDiv = document.createElement('div');
-                fnskuDiv.className = 'pending-fnsku';
-                fnskuDiv.textContent = item.fnsku;
-                listItem.appendChild(fnskuDiv);
-                
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'pending-content';
-                
-                const imgAreaDiv = document.createElement('div');
-                imgAreaDiv.className = 'pending-img-area';
-                imgAreaDiv.innerHTML = `
-                    <div class="pending-img">
-                        <img src="${item.img}" alt="产品图片">
-                    </div>
-                `;
-                
-                const infoMainDiv = document.createElement('div');
-                infoMainDiv.className = 'pending-info-main';
-                
-                const infoDiv = document.createElement('div');
-                infoDiv.className = 'pending-info';
-                infoDiv.innerHTML = `
-                    <div class="pending-row"><span class="label">货号：</span>${item.spu}</div>
-                    <div class="pending-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
-                    <div class="pending-sku"><span class="label">SKU：</span>${item.sku}</div>
-                `;
-                
-                const qtyBoxDiv = document.createElement('div');
-                qtyBoxDiv.className = 'transfer-qty-box';
-                qtyBoxDiv.innerHTML = `
-                    <div class="transfer-qty-label">移出数量</div>
-                    <div class="transfer-qty-value">${item.qty}</div>
-                `;
-                
-                infoMainDiv.appendChild(infoDiv);
-                infoMainDiv.appendChild(qtyBoxDiv);
-                
-                contentDiv.appendChild(imgAreaDiv);
-                contentDiv.appendChild(infoMainDiv);
-                
-                listItem.appendChild(contentDiv);
-                list.appendChild(listItem);
+                if (!locationGroups[item.location]) {
+                    locationGroups[item.location] = [];
+                }
+                locationGroups[item.location].push(item);
             });
+            
+            // 为每个库位创建表格
+            for (const location in locationGroups) {
+                const items = locationGroups[location];
+                
+                // 创建库位容器
+                const locationContainer = document.createElement('div');
+                locationContainer.style.border = '1px solid #e5e5e5';
+                locationContainer.style.borderRadius = '8px';
+                locationContainer.style.overflow = 'hidden';
+                locationContainer.style.marginBottom = '15px';
+                locationContainer.style.background = '#fff';
+                
+                // 库位标题
+                const locationTitle = document.createElement('div');
+                locationTitle.style.padding = '10px 15px';
+                locationTitle.style.borderBottom = '1px solid #e5e5e5';
+                locationTitle.style.fontWeight = 'bold';
+                locationTitle.style.fontSize = '18px';
+                locationTitle.textContent = `库位: ${location_data[location]?.name || location}`;
+                locationContainer.appendChild(locationTitle);
+                
+                // 创建表格
+                const table = document.createElement('table');
+                table.style.width = '100%';
+                table.style.borderCollapse = 'collapse';
+                
+                // 表头
+                const tableHeader = document.createElement('tr');
+                tableHeader.innerHTML = `
+                    <th style="padding: 12px; text-align: center; width: 60%; border-bottom: 1px solid #e5e5e5; background: #f8f8f8;">条码</th>
+                    <th style="padding: 12px; text-align: center; width: 40%; border-bottom: 1px solid #e5e5e5; background: #f8f8f8;">移出数量</th>
+                `;
+                table.appendChild(tableHeader);
+                
+                // 添加条码行
+                items.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td style="padding: 12px; text-align: center; border-bottom: 1px solid #f0f0f0;">${item.fnsku}</td>
+                        <td style="padding: 12px; text-align: center; border-bottom: 1px solid #f0f0f0;">${item.qty}</td>
+                    `;
+                    table.appendChild(row);
+                });
+                
+                locationContainer.appendChild(table);
+                list.appendChild(locationContainer);
+            }
             
             // 更新底部按钮状态
             const hasItems = scannedItems.length > 0;
@@ -922,6 +926,34 @@
 
         // 确认移出按钮逻辑
         document.getElementById('footerConfirmBtn').addEventListener('click', function() {
+            // 在确认时进行校验
+            let hasError = false;
+            let errorMessage = '';
+            
+            // 检查每个货品是否属于当前库位以及数量是否足够
+            for (const item of scannedItems) {
+                const itemLocations = items_data[item.fnsku].locations;
+                
+                // 检查货品是否属于当前库位
+                if (!itemLocations || !itemLocations[currentLocation]) {
+                    hasError = true;
+                    errorMessage = `${item.fnsku} 不属于当前库位`;
+                    break;
+                }
+                
+                // 检查数量是否足够
+                if (item.qty > itemLocations[currentLocation]) {
+                    hasError = true;
+                    errorMessage = `${item.fnsku} 移出数量超出库位可用数量`;
+                    break;
+                }
+            }
+            
+            if (hasError) {
+                showAlert(errorMessage);
+                return;
+            }
+            
             showAlert('移出成功', 'success');
             
             // 延时后清空库位和列表
@@ -945,84 +977,58 @@
                 return;
             }
             
-            // 检查箱码是否存在
-            if (!box_data[boxCode]) {
-                showAlert('箱码不存在');
-                return;
-            }
-            
             // 检查当前是否已选择库位
             if (!currentLocation) {
                 showAlert('请先扫描库位码');
                 return;
             }
             
-            // 检查箱内货品是否属于当前库位
-            const boxItems = box_data[boxCode].items;
-            let hasInvalidItem = false;
-            let hasInvalidQty = false;
-            
-            // 先检查有效性
-            for (const boxItem of boxItems) {
-                const fnsku = boxItem.fnsku;
-                const qty = boxItem.qty;
+            // 直接添加箱码到列表，不校验箱码是否存在或内容
+            try {
+                // 尝试获取箱码数据，如果存在就使用，不存在就创建空数组
+                const boxItems = box_data[boxCode]?.items || [];
                 
-                // 检查货品是否存在
-                if (!items_data[fnsku]) {
-                    hasInvalidItem = true;
-                    break;
+                // 添加箱内货品到移出列表
+                for (const boxItem of boxItems) {
+                    const fnsku = boxItem.fnsku;
+                    const qty = boxItem.qty;
+                    
+                    // 查找已有条目
+                    const existingIndex = scannedItems.findIndex(item => item.fnsku === fnsku && item.location === currentLocation);
+                    
+                    if (existingIndex !== -1) {
+                        // 更新数量
+                        scannedItems[existingIndex].qty += qty;
+                    } else {
+                        // 尝试获取货品数据，如果不存在则创建基本数据
+                        const itemData = items_data[fnsku] || {
+                            fnsku: fnsku,
+                            sku: "未知SKU",
+                            img: "icon/3.png",
+                            spu: "未知货号",
+                            color_size: "未知规格",
+                            locations: {}
+                        };
+                        
+                        // 添加新条目
+                        scannedItems.push({
+                            ...itemData,
+                            location: currentLocation,
+                            locationAvailableQty: itemData.locations?.[currentLocation] || 0,
+                            qty: qty
+                        });
+                    }
                 }
-                
-                // 检查货品是否属于当前库位
-                const itemLocations = items_data[fnsku].locations;
-                if (!itemLocations || !itemLocations[currentLocation]) {
-                    hasInvalidItem = true;
-                    break;
-                }
-                
-                // 检查库位数量是否足够
-                const locationAvailableQty = itemLocations[currentLocation];
-                
-                // 先检查已扫描的数量
-                const existingIndex = scannedItems.findIndex(item => item.fnsku === fnsku && item.location === currentLocation);
-                const alreadyScannedQty = existingIndex !== -1 ? scannedItems[existingIndex].qty : 0;
-                
-                if (alreadyScannedQty + qty > locationAvailableQty) {
-                    hasInvalidQty = true;
-                    break;
-                }
-            }
-            
-            if (hasInvalidItem) {
-                showAlert('箱内货品不属于当前库位');
-                return;
-            }
-            
-            if (hasInvalidQty) {
-                showAlert('移出数量超出库位可用数量');
-                return;
-            }
-            
-            // 添加箱内货品到移出列表
-            for (const boxItem of boxItems) {
-                const fnsku = boxItem.fnsku;
-                const qty = boxItem.qty;
-                
-                // 查找已有条目
-                const existingIndex = scannedItems.findIndex(item => item.fnsku === fnsku && item.location === currentLocation);
-                
-                if (existingIndex !== -1) {
-                    // 更新数量
-                    scannedItems[existingIndex].qty += qty;
-                } else {
-                    // 添加新条目
-                    scannedItems.push({
-                        ...items_data[fnsku],
-                        location: currentLocation,
-                        locationAvailableQty: items_data[fnsku].locations[currentLocation],
-                        qty: qty
-                    });
-                }
+            } catch (error) {
+                console.error('处理箱码时出错:', error);
+                // 如果是未知箱码，添加一个条目代表整个箱
+                scannedItems.push({
+                    fnsku: boxCode,
+                    sku: "未知箱码",
+                    location: currentLocation,
+                    locationAvailableQty: 0,
+                    qty: 1
+                });
             }
             
             // 记录已扫描的箱码
@@ -1030,43 +1036,40 @@
             
             // 更新列表显示
             renderPendingList();
-            
-            // 显示成功提示
-            // showAlert('箱码扫描成功', 'success');
         }
 
         // 处理条码
         function handleBarcode(barcode) {
-            // 校验条码是否存在
-            if (!items_data[barcode]) {
-                showAlert('条码不存在');
+            // 检查当前是否已选择库位
+            if (!currentLocation) {
+                showAlert('请先扫描库位码');
                 return;
             }
             
-            // 校验条码是否属于当前库位
-            const itemLocations = items_data[barcode].locations;
-            if (!itemLocations || !itemLocations[currentLocation]) {
-                showAlert('条码不属于当前库位');
-                return;
-            }
-            
-            // 获取当前库位的可用数量
-            const locationAvailableQty = itemLocations[currentLocation];
+            // 不校验条码是否存在，直接添加
             
             // 检查是否已扫描相同库位的相同条码
             const existingIndex = scannedItems.findIndex(item => item.fnsku === barcode && item.location === currentLocation);
             if (existingIndex !== -1) {
                 // 已存在，更新数量
-                if (scannedItems[existingIndex].qty < locationAvailableQty) {
-                    scannedItems[existingIndex].qty += 1;
-                } else {
-                    showAlert('移出数量超出库位可用数量');
-                    return;
-                }
+                scannedItems[existingIndex].qty += 1;
             } else {
+                // 尝试获取货品数据，如果不存在则创建基本数据
+                const itemData = items_data[barcode] || {
+                    fnsku: barcode,
+                    sku: "未知SKU",
+                    img: "icon/3.png",
+                    spu: "未知货号",
+                    color_size: "未知规格",
+                    locations: {}
+                };
+                
+                // 获取当前库位的可用数量（如果存在）
+                const locationAvailableQty = itemData.locations?.[currentLocation] || 0;
+                
                 // 新增
                 scannedItems.push({
-                    ...items_data[barcode],
+                    ...itemData,
                     location: currentLocation,
                     locationAvailableQty: locationAvailableQty,
                     qty: 1
