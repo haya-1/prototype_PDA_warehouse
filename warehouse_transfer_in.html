@@ -801,7 +801,7 @@
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'pending-header';
                 headerDiv.innerHTML = `
-                    <div class="pending-location">移出库位：${location_data[item.origin_location]?.name || item.origin_location}</div>
+                    <div class="pending-location">原库位：${location_data[item.origin_location]?.name || item.origin_location}</div>
                 `;
                 listItem.appendChild(headerDiv);
                 
@@ -880,7 +880,7 @@
                 listItem.className = 'inventory-item';
                 listItem.innerHTML = `
                     <div class="inventory-item-header">
-                        <div class="pending-location">移出库位：${location_data[item.origin_location]?.name || item.origin_location}</div>
+                        <div class="pending-location">原库位：${location_data[item.origin_location]?.name || item.origin_location}</div>
                     </div>
                     <div class="pending-fnsku">${item.fnsku}</div>
                     <div class="inventory-check ${isChecked ? 'checked' : ''}" data-id="${item.id}"></div>
