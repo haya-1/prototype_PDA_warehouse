@@ -18,7 +18,7 @@
         }
         .main-fixed {
             width: 400px;
-            height: 700px;
+            height: 665px;
             margin: 0 auto;
             background: #f5f5f5;
             box-shadow: 0 2px 16px rgba(0,0,0,0.08);
@@ -94,7 +94,7 @@
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             padding: 18px 18px 10px 18px;
-            margin-bottom: 18px;
+            margin-bottom: 6px;
             box-sizing: border-box;
         }
         .scan-input-wrapper {
@@ -114,8 +114,8 @@
         .scan-input {
             width: 100%;
             box-sizing: border-box;
-            padding: 14px 16px 14px 40px;
-            font-size: 19px;
+            padding: 14px 40px 14px 40px;
+            font-size: 16px;
             border: 1.5px solid #ddd;
             border-radius: 8px;
             background: #fff;
@@ -131,7 +131,7 @@
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             padding: 10px 8px 10px 8px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             display: flex;
             flex-direction: row;
             font-size: 17px;
@@ -175,8 +175,8 @@
             background: none;
             border-radius: 10px;
             /* box-shadow: 0 2px 8px rgba(0,0,0,0.06); */
-            padding: 10px 0 10px 0;
-            margin: 0 0 0px 0;
+            padding: 0px 0 0px 0;
+            margin: 0px 0px 0px 0px;
             flex-grow: 1;
             overflow-y: auto;
         }
@@ -194,10 +194,10 @@
             display: flex;
             flex-direction: column;
             align-items: stretch;
-            border-bottom: 1px solid #eee;
-            padding: 12px 8px 12px 8px;
+            border-bottom: 2px solid #acacac;
+            padding: 8px 8px 8px 8px;
             position: relative;
-            margin-bottom: 9px;
+            margin-bottom: 0px;
             background: #fff;
         }
         .pending-item:last-child {
@@ -208,13 +208,23 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #eee;
+            margin-bottom: 6px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e5e5e5;
         }
         .pending-location {
-            font-size: 17px;
+            font-size: 16px;
+            color: #222;
+        }
+        .pending-fnsku-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .pending-fnsku-header {
+            font-size: 14px;
             color: #666;
+            padding-right: 2px;
         }
         .pending-check-btn {
             width: 20px;
@@ -249,7 +259,7 @@
         .pending-content {
             display: flex;
             align-items: flex-start;
-            margin-top: 8px;
+            margin-top: 6px;
         }
         .pending-img-area {
             display: flex;
@@ -257,11 +267,11 @@
             align-items: center;
             margin-right: 12px;
             flex-shrink: 0;
-            width: 73px;
+            width: 60px;
         }
         .pending-img {
-            width: 73px;
-            height: 73px;
+            width: 60px;
+            height: 60px;
             background: #ededed;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -298,9 +308,9 @@
             margin-right: 10px;
         }
         .pending-row {
-            font-size: 16px;
+            font-size: 15px;
             color: #333;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -316,15 +326,16 @@
         }
         .pending-count-area {
             flex-shrink: 0;
-            width: 100px;
+            width: 110px;
             text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
         }
         .pending-count-label {
             color: #444;
-            font-size: 16px;
+            font-size: 15px;
             margin-bottom: 4px;
             line-height: 1.1;
         }
@@ -336,12 +347,14 @@
             background: #f6f6f6;
             border-radius: 10px;
             padding: 8px 4px;
-            height: 80px;
-            width: 100%;
+            min-width: 110px;
+            max-width: 130px;
+            height: 75px;
             text-align: center;
         }
         .pending-count-row {
             white-space: nowrap;
+            padding: 0 6px;
         }
         .pending-count-input {
             width: 35px;
@@ -349,12 +362,11 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             text-align: center;
-            font-size: 20px;
+            font-size: 18px;
             color: #00aaff;
             font-weight: bold;
             margin-right: 2px;
             box-sizing: border-box;
-            
         }
         .pending-count-input::-webkit-outer-spin-button,
         .pending-count-input::-webkit-inner-spin-button {
@@ -632,6 +644,8 @@
             opacity: 1;
             visibility: visible;
         }
+
+
     </style>
 </head>
 <body>
@@ -698,11 +712,11 @@
     </div>
 
     <!-- 提示弹窗 -->
-     <div class="custom-alert-overlay" id="customAlertModalOverlay">
-         <div class="custom-alert-container" id="customAlertModalContent">
-             <!-- Alert message goes here -->
-         </div>
-     </div>
+    <div class="custom-alert-overlay" id="customAlertModalOverlay">
+        <div class="custom-alert-container" id="customAlertModalContent">
+            <!-- Alert message goes here -->
+        </div>
+    </div>
 
     <!-- 成功提示弹窗 -->
     <div class="custom-success-alert-overlay" id="customSuccessAlertOverlay">
@@ -758,6 +772,7 @@
         const pendingData = [
             {
                 location: 'KW20250524001',
+                location_name:'库位1',
                 fnsku: 'X00302LCPX',
                 sku: 'ST210628UBCOGNAC100',
                 img: 'icon/3.png',
@@ -768,6 +783,7 @@
             },
             {
                 location: 'KW20250524002',
+                location_name:'库位2',
                 fnsku: 'X6SV4S4Y',
                 sku: 'ST210628UBBLACK9',
                 img: 'icon/3.png',
@@ -920,16 +936,18 @@
                 return `
                 <div class="pending-item ${item.current === item.num ? 'checked-highlight' : ''}">
                     <div class="pending-header">
-                        <div class="pending-location">库位：${item.location}</div>
-                        <button class="pending-check-btn ${item.current === item.num ? 'checked' : ''}" 
-                            onclick="checkAll(${index})"></button>
+                        <div class="pending-location">库位：${item.location_name}</div>
+                        <div class="pending-fnsku-wrapper">
+                            <span style="font-size: 14px; color: #666; margin-right: 8px;">${item.fnsku}</span>
+                            <button class="pending-check-btn ${item.current === item.num ? 'checked' : ''}" 
+                                onclick="checkAll(${index})"></button>
+                        </div>
                     </div>
                     <div class="pending-content">
                         <div class="pending-img-area">
                             <div class="pending-img">
-                                <img src="${item.img}" alt="产品图片">
+                                <img src="${item.img}" alt="产品图片" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">
                             </div>
-                            <div class="pending-fnsku">${item.fnsku}</div>
                         </div>
                         <div class="pending-info-main">
                             <div class="pending-info">

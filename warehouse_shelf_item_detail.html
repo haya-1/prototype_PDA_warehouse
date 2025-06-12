@@ -13,11 +13,11 @@
         }
         .main-fixed {
             width: 400px;
-            height: 700px;
+            height: 665px;
             margin: 0 auto;
             background: #f5f5f5;
             box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-            overflow-y: auto;
+            overflow-y: hidden;
             position: relative;
         }
         .container {
@@ -64,14 +64,14 @@
             background: #fff;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            margin-bottom: 18px;
+            margin-bottom: 8px;
             overflow: hidden;
         }
         .shelf-type-tab {
             flex: 1;
             text-align: center;
-            padding: 16px 0;
-            font-size: 18px;
+            padding: 10px 0;
+            font-size: 17px;
             color: #666;
             cursor: pointer;
             transition: all 0.3s;
@@ -97,7 +97,7 @@
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             padding: 18px 18px 10px 18px;
-            margin-bottom: 18px;
+            margin-bottom: 8px;
             box-sizing: border-box;
         }
         .scan-input-wrapper {
@@ -117,8 +117,8 @@
         .scan-input {
             width: 100%;
             box-sizing: border-box;
-            padding: 14px 16px 14px 40px;
-            font-size: 19px;
+            padding: 14px 40px 14px 40px;
+            font-size: 16px;
             border: 1.5px solid #ddd;
             border-radius: 8px;
             background: #fff;
@@ -223,16 +223,40 @@
         }
         .wait-item {
             display: flex;
-            align-items: stretch;
-            border-bottom: 1px solid #eee;
-            padding: 12px 8px 12px 8px;
+            flex-direction: column;
+            border-bottom: 2px solid #d9d9d9;
+            padding: 0 0 8px 0;
         }
         .wait-item:last-child {
             border-bottom: none;
         }
+        .wait-item-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 8px;
+            border-bottom: 1px solid #e5e5e5;
+            margin-bottom: 10px;
+            background-color: #fafafa;
+        }
+        .wait-item-sku {
+            font-size: 15px;
+            color: #333;
+            font-weight: bold;
+            padding-left: 2px;
+        }
+        .wait-item-fnsku {
+            font-size: 15px;
+            color: #666;
+            padding-right: 2px;
+        }
+        .wait-item-content {
+            display: flex;
+            align-items: stretch;
+            padding: 0 8px;
+        }
         .wait-img {
-            width: 73px;
-            height: 73px;
+            width: 60px;
+            height: 60px;
             background: #ededed;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -243,13 +267,6 @@
             flex-shrink: 0;
             flex-direction: column;
             margin-top: 2px;
-        }
-        .wait-fnsku {
-            font-size: 10px;
-            color: #888;
-            margin-top: 4px;
-            word-break: break-all;
-            text-align: center;
         }
         .wait-info {
             flex: 3 1 -5px;
@@ -278,27 +295,28 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-width: 67px;
-            max-width: 70px;
+            min-width: 110px;
+            max-width: 130px;
             background: #f6f6f6;
             border-radius: 10px;
             padding: 8px 4px;
             margin-left: 4px;
-            height: 50px;
+            height: 54px;
             text-align: center;
         }
         .wait-count-label {
             color: #444;
             font-size: 15px;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
             line-height: 1.1;
         }
         .wait-count-row {
             white-space: nowrap;
+            padding: 0 6px;
         }
         .wait-count {
             color: #00aaff;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
         }
         .footer-btn-area {
@@ -369,20 +387,44 @@
         }
         .pending-item {
             display: flex;
-            align-items: stretch;
-            border-bottom: 1px solid #eee;
-            padding: 12px 8px 12px 8px;
+            flex-direction: column;
+            border-bottom: 2px solid #d9d9d9;
+            padding: 0 0 8px 0;
             cursor: pointer;
         }
         .pending-item:last-child {
             border-bottom: none;
         }
         .pending-item:hover {
-            background: #f8f8f8;
+            background: transparent;
+        }
+        .pending-item-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 8px;
+            border-bottom: 1px solid #e5e5e5;
+            margin-bottom: 10px;
+            background-color: #fafafa;
+        }
+        .pending-item-sku {
+            font-size: 15px;
+            color: #333;
+            font-weight: bold;
+            padding-left: 2px;
+        }
+        .pending-item-fnsku {
+            font-size: 15px;
+            color: #666;
+            padding-right: 2px;
+        }
+        .pending-item-content {
+            display: flex;
+            align-items: stretch;
+            padding: 0 8px;
         }
         .pending-img {
-            width: 73px;
-            height: 73px;
+            width: 60px;
+            height: 60px;
             background: #ededed;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -393,13 +435,6 @@
             flex-shrink: 0;
             flex-direction: column;
             margin-top: 2px;
-        }
-        .pending-fnsku {
-            font-size: 10px;
-            color: #888;
-            margin-top: 4px;
-            word-break: break-all;
-            text-align: center;
         }
         .pending-info {
             flex: 3 1 -5px;
@@ -428,46 +463,65 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-width: 67px;
-            max-width: 70px;
+            min-width: 110px;
+            max-width: 130px;
             background: #f6f6f6;
             border-radius: 10px;
             padding: 8px 4px;
             margin-left: 4px;
-            height: 50px;
+            height: 54px;
             text-align: center;
         }
         .pending-count-label {
             color: #444;
             font-size: 15px;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
             line-height: 1.1;
         }
         .pending-count-row {
             white-space: nowrap;
+            padding: 0 6px;
         }
         .pending-count {
             color: #00aaff;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
             margin-right: 2px;
         }
         .pending-total {
             color: #222;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
         }
         .hidden-button {
             display: none;
         }
+        @media (max-width: 600px) {
+            .container { padding: 0 2px; }
+            .wait-count-box, .pending-count-box { 
+                padding: 8px 4px; 
+                min-width: 95px;
+                max-width: 100px;
+                height: 50px;
+            }
+            .wait-count, .wait-total, .pending-count, .pending-total {
+                font-size: 20px;
+            }
+            .wait-item-header, .pending-item-header {
+                padding: 8px 10px;
+            }
+            .wait-item-content, .pending-item-content {
+                padding: 0 6px;
+            }
+        }
         /* 库位扫描弹窗样式 */
         .location-scan-modal {
             display: none;
-            position: fixed;
+            position: absolute;
             left: 0;
             top: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             z-index: 9999;
             background: rgba(0,0,0,0.18);
             justify-content: center;
@@ -475,19 +529,19 @@
         }
         .location-scan-content {
             background: #fff;
-            border-radius: 16px;
-            width: 360px;
-            padding: 24px;
+            border-radius: 14px;
+            width: 320px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
         .location-scan-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             color: #222;
             text-align: center;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
         .location-scan-input-wrapper {
             position: relative;
@@ -587,7 +641,7 @@
         /* Tooltip Styles */
         .tooltip-container {
             position: fixed;
-            top: 12px;
+            top: 9px;
             right: calc(50% - 400px / 2 + 9px + 100px);
             display: inline-block;
             vertical-align: middle;
@@ -609,7 +663,7 @@
         }
         .tooltip-content {
             position: absolute;
-            top: 30px;
+            top: 27px;
             left: 50%;
             transform: translateX(-50%);
             min-width: 260px;
@@ -879,19 +933,23 @@
             listArea.style.display = 'block';
             list.innerHTML = waitList.map(item => `
                 <div class="wait-item">
-                    <div class="wait-img">
-                        <img src="${item.img}" alt="产品图片" style="width:100%;height:100%;object-fit:cover;border-radius:0px;display:block;">
-                        <div class="wait-fnsku">${item.fnsku}</div>
+                    <div class="wait-item-header">
+                        <span class="wait-item-sku">${item.sku}</span>
+                        <span class="wait-item-fnsku">${item.fnsku}</span>
                     </div>
-                    <div class="wait-info">
-                        <div class="wait-row"><span class="label">货号：</span>${item.spu}</div>
-                        <div class="wait-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
-                        <div class="wait-sku"><span class="label">SKU：</span>${item.sku}</div>
-                    </div>
-                    <div class="wait-count-box">
-                        <div class="wait-count-label">数量</div>
-                        <div class="wait-count-row">
-                            <span class="wait-count">1</span>
+                    <div class="wait-item-content">
+                        <div class="wait-img">
+                            <img src="${item.img}" alt="产品图片" style="width:100%;height:100%;object-fit:cover;border-radius:0px;display:block;">
+                        </div>
+                        <div class="wait-info">
+                            <div class="wait-row"><span class="label">货号：</span>${item.spu}</div>
+                            <div class="wait-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
+                        </div>
+                        <div class="wait-count-box">
+                            <div class="wait-count-label">数量</div>
+                            <div class="wait-count-row">
+                                <span class="wait-count">1</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -910,19 +968,23 @@
             
             list.innerHTML = pendingData.map(item => `
                 <div class="pending-item">
-                    <div class="pending-img">
-                        <img src="${item.img}" alt="产品图片" style="width:100%;height:100%;object-fit:cover;border-radius:0px;display:block;">
-                        <div class="pending-fnsku">${item.fnsku}</div>
+                    <div class="pending-item-header">
+                        <span class="pending-item-sku">${item.sku}</span>
+                        <span class="pending-item-fnsku">${item.fnsku}</span>
                     </div>
-                    <div class="pending-info">
-                        <div class="pending-row"><span class="label">货号：</span>${item.spu}</div>
-                        <div class="pending-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
-                        <div class="pending-sku"><span class="label">SKU：</span>${item.sku}</div>
-                    </div>
-                    <div class="pending-count-box">
-                        <div class="pending-count-label">已扫/待上架</div>
-                        <div class="pending-count-row">
-                            <span class="pending-count ${item.scanned === item.num ? 'black-text' : ''}">${item.scanned}</span>/<span class="pending-total">${item.num}</span>
+                    <div class="pending-item-content">
+                        <div class="pending-img">
+                            <img src="${item.img}" alt="产品图片" style="width:100%;height:100%;object-fit:cover;border-radius:0px;display:block;">
+                        </div>
+                        <div class="pending-info">
+                            <div class="pending-row"><span class="label">货号：</span>${item.spu}</div>
+                            <div class="pending-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
+                        </div>
+                        <div class="pending-count-box">
+                            <div class="pending-count-label">已扫/待上架</div>
+                            <div class="pending-count-row">
+                                <span class="pending-count ${item.scanned === item.num ? 'black-text' : ''}">${item.scanned}</span>/<span class="pending-total">${item.num}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
