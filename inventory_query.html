@@ -393,7 +393,7 @@
                     <div class="info-value" id="queryContent">-</div>
                 </div>
                 <div class="info-row">
-                    <div class="info-label">库存/可用：</div>
+                    <div class="info-label">库存/可用（合计）：</div>
                     <div class="info-value" id="totalInventory">-</div>
                 </div>
             </div>
@@ -419,6 +419,7 @@
                 item_code: "ST210628UB",
                 color_size: "栗色/10",
                 barcode: "X00302LCPX",
+                seller: "STQ SHOP-US",
                 image: "https://via.placeholder.com/80x80?text=产品图片",
                 locations: [
                     { location: "库位1", qty: 106, available: 30 },
@@ -430,21 +431,47 @@
                 item_code: "ST210628UB",
                 color_size: "栗色/10",
                 barcode: "X23456789",
+                seller: "STQ SHOP-CA",
                 image: "https://via.placeholder.com/80x80?text=产品图片",
                 locations: [
                     { location: "库位1", qty: 1, available: 1 },
                     { location: "库位2", qty: 5, available: 5 }
                 ]
             },
-            "X6SV4S4Y": {
+            "X6SV4S4Y-US": {
                 sku: "ST210628UBBLACK9",
                 item_code: "ST210628UB",
                 color_size: "黑色/9",
                 barcode: "X6SV4S4Y",
+                seller: "STQ SHOP-US",
                 image: "https://via.placeholder.com/80x80?text=产品图片",
                 locations: [
                     { location: "库位1", qty: 35, available: 20 },
                     { location: "库位3", qty: 28, available: 15 }
+                ]
+            },
+            "X6SV4S4Y-DE": {
+                sku: "ST210628UBBLACK9",
+                item_code: "ST210628UB",
+                color_size: "黑色/9",
+                barcode: "X6SV4S4Y",
+                seller: "STQ SHOP-DE",
+                image: "https://via.placeholder.com/80x80?text=产品图片",
+                locations: [
+                    { location: "库位1", qty: 12, available: 12 },
+                    { location: "库位2", qty: 34, available: 20 }
+                ]
+            },
+            "X6SV4S4Y-UK": {
+                sku: "ST210628UBBLACK9",
+                item_code: "ST210628UB",
+                color_size: "黑色/9",
+                barcode: "X6SV4S4Y",
+                seller: "STQ SHOP-UK",
+                image: "https://via.placeholder.com/80x80?text=产品图片",
+                locations: [
+                    { location: "库位4", qty: 15, available: 10 },
+                    { location: "库位5", qty: 25, available: 18 }
                 ]
             },
             // SKU查询数据
@@ -453,10 +480,19 @@
                 item_code: "ST210628UB",
                 color_size: "黑色/9",
                 barcode: "X6SV4S4Y",
+                barcodes: [
+                    { code: "X6SV4S4Y", seller: "STQ SHOP-US" },
+                    { code: "X6SV4S4Y", seller: "STQ SHOP-DE" },
+                    { code: "X6SV4S4Y", seller: "STQ SHOP-UK" }
+                ],
                 image: "https://via.placeholder.com/80x80?text=产品图片",
                 locations: [
-                    { location: "库位1", qty: 35, available: 20 },
-                    { location: "库位3", qty: 28, available: 15 }
+                    { location: "库位1", qty: 35, available: 20, seller: "STQ SHOP-US" },
+                    { location: "库位3", qty: 28, available: 15, seller: "STQ SHOP-US" },
+                    { location: "库位1", qty: 12, available: 12, seller: "STQ SHOP-DE" },
+                    { location: "库位2", qty: 34, available: 20, seller: "STQ SHOP-DE" },
+                    { location: "库位4", qty: 15, available: 10, seller: "STQ SHOP-UK" },
+                    { location: "库位5", qty: 25, available: 18, seller: "STQ SHOP-UK" }
                 ]
             },
             "ST210628UBCOGNAC10": {
@@ -464,21 +500,16 @@
                 item_code: "ST210628UB",
                 color_size: "栗色/10",
                 barcode: "X00302LCPX",
+                barcodes: [
+                    { code: "X00302LCPX", seller: "STQ SHOP-US" },
+                    { code: "X23456789", seller: "STQ SHOP-CA" }
+                ],
                 image: "https://via.placeholder.com/80x80?text=产品图片",
                 locations: [
-                    { location: "库位1", qty: 106, available: 30 },
-                    { location: "库位2", qty: 62, available: 12 }
-                ]
-            },
-            "ST210628UBCOGNAC10": {
-                sku: "ST210628UBCOGNAC10",
-                item_code: "ST210628UB",
-                color_size: "栗色/10",
-                barcode: "X23456789",
-                image: "https://via.placeholder.com/80x80?text=产品图片",
-                locations: [
-                    { location: "库位1", qty: 1, available: 1 },
-                    { location: "库位2", qty: 5, available: 5 }
+                    { location: "库位1", qty: 106, available: 30, seller: "STQ SHOP-US" },
+                    { location: "库位2", qty: 62, available: 12, seller: "STQ SHOP-US" },
+                    { location: "库位1", qty: 1, available: 1, seller: "STQ SHOP-CA" },
+                    { location: "库位2", qty: 5, available: 5, seller: "STQ SHOP-CA" }
                 ]
             },
             // 库位查询数据
@@ -490,15 +521,27 @@
                         item_code: "ST210628UB",
                         color_size: "黑色/9",
                         barcode: "X6SV4S4Y",
+                        seller: "STQ SHOP-US",
                         image: "https://via.placeholder.com/80x80?text=产品图片",
                         qty: 35,
                         available: 20
+                    },
+                    {
+                        sku: "ST210628UBBLACK9",
+                        item_code: "ST210628UB",
+                        color_size: "黑色/9",
+                        barcode: "X6SV4S4Y",
+                        seller: "STQ SHOP-DE",
+                        image: "https://via.placeholder.com/80x80?text=产品图片",
+                        qty: 12,
+                        available: 12
                     },
                     {
                         sku: "ST210628UBCOGNAC10",
                         item_code: "ST210628UB",
                         color_size: "栗色/10",
                         barcode: "X00302LCPX",
+                        seller: "STQ SHOP-US",
                         image: "https://via.placeholder.com/80x80?text=产品图片",
                         qty: 106,
                         available: 30
@@ -508,6 +551,7 @@
                         item_code: "ST210628UB",
                         color_size: "栗色/10",
                         barcode: "X23456789",
+                        seller: "STQ SHOP-CA",
                         image: "https://via.placeholder.com/80x80?text=产品图片",
                         qty: 1,
                         available: 1
@@ -518,10 +562,21 @@
                 name: "库位2",
                 items: [
                     {
+                        sku: "ST210628UBBLACK9",
+                        item_code: "ST210628UB",
+                        color_size: "黑色/9",
+                        barcode: "X6SV4S4Y",
+                        seller: "STQ SHOP-DE",
+                        image: "https://via.placeholder.com/80x80?text=产品图片",
+                        qty: 34,
+                        available: 20
+                    },
+                    {
                         sku: "ST210628UBCOGNAC10",
                         item_code: "ST210628UB",
                         color_size: "栗色/10",
                         barcode: "X00302LCPX",
+                        seller: "STQ SHOP-US",
                         image: "https://via.placeholder.com/80x80?text=产品图片",
                         qty: 62,
                         available: 12
@@ -531,9 +586,55 @@
                         item_code: "ST210628UB",
                         color_size: "栗色/10",
                         barcode: "X23456789",
+                        seller: "STQ SHOP-CA",
                         image: "https://via.placeholder.com/80x80?text=产品图片",
                         qty: 5,
                         available: 5
+                    }
+                ]
+            },
+            "KW20250524003": {
+                name: "库位3",
+                items: [
+                    {
+                        sku: "ST210628UBBLACK9",
+                        item_code: "ST210628UB",
+                        color_size: "黑色/9",
+                        barcode: "X6SV4S4Y",
+                        seller: "STQ SHOP-US",
+                        image: "https://via.placeholder.com/80x80?text=产品图片",
+                        qty: 28,
+                        available: 15
+                    }
+                ]
+            },
+            "KW20250524004": {
+                name: "库位4",
+                items: [
+                    {
+                        sku: "ST210628UBBLACK9",
+                        item_code: "ST210628UB",
+                        color_size: "黑色/9",
+                        barcode: "X6SV4S4Y",
+                        seller: "STQ SHOP-UK",
+                        image: "https://via.placeholder.com/80x80?text=产品图片",
+                        qty: 15,
+                        available: 10
+                    }
+                ]
+            },
+            "KW20250524005": {
+                name: "库位5",
+                items: [
+                    {
+                        sku: "ST210628UBBLACK9",
+                        item_code: "ST210628UB",
+                        color_size: "黑色/9",
+                        barcode: "X6SV4S4Y",
+                        seller: "STQ SHOP-UK",
+                        image: "https://via.placeholder.com/80x80?text=产品图片",
+                        qty: 25,
+                        available: 18
                     }
                 ]
             }
@@ -578,6 +679,40 @@
             return warehouseNames[warehouseCode] || warehouseCode;
         }
 
+        // 辅助函数：获取店铺站点备注
+        function getSellerSiteNote(seller) {
+            if (!seller) return '';
+            
+            // 如果是数组，返回多个备注
+            if (Array.isArray(seller)) {
+                const notes = seller.map(s => getSellerSiteNote(s));
+                return notes.join('/');
+            }
+            
+            // 检查店铺名称中的后缀
+            if (seller.endsWith('-US')) {
+                return '(美国)';
+            } else if (seller.endsWith('-CA')) {
+                return '(加拿大)';
+            } else if (seller.endsWith('-UK')) {
+                return '(英国)';
+            } else if (seller.endsWith('-DE')) {
+                return '(德国)';
+            } else if (seller.endsWith('-FR')) {
+                return '(法国)';
+            } else if (seller.endsWith('-IT')) {
+                return '(意大利)';
+            } else if (seller.endsWith('-ES')) {
+                return '(西班牙)';
+            } else if (seller.endsWith('-JP')) {
+                return '(日本)';
+            } else if (seller.endsWith('-AU')) {
+                return '(澳大利亚)';
+            }
+            
+            return '';
+        }
+
         // 处理查询
         function handleQuery(query, currentWarehouse) {
             // Clear the input field after submitting
@@ -592,11 +727,11 @@
             // Determine query type and set appropriate label
             let queryTypeLabel = "查询内容";
             if (query.startsWith('ST')) {
-                queryTypeLabel = "SKU";
+                queryTypeLabel = "查询内容";
             } else if (query.startsWith('KW')) {
-                queryTypeLabel = "库位";
+                queryTypeLabel = "查询内容";
             } else {
-                queryTypeLabel = "条码";
+                queryTypeLabel = "查询内容";
                 
             }
             
@@ -628,147 +763,120 @@
 
         // 处理条码查询
         function handleBarcodeQuery(barcode) {
-            const data = inventory_data[barcode];
+            // 查找直接匹配条码的数据
+            let directMatch = null;
+            // 保存所有匹配的条目
+            const matchingItems = [];
+            const seenSellers = new Set(); // 用于跟踪已经看到的店铺
             
-            if (!data) {
+            // 遍历所有数据查找匹配的条码
+            for (let key in inventory_data) {
+                const item = inventory_data[key];
+                
+                // 检查是否是库位数据
+                if (item.items) continue;
+                
+                // 检查是否是SKU数据，这里我们不需要直接处理
+                if (key.startsWith('ST')) continue;
+                
+                // 检查条码是否匹配
+                if (item.barcode === barcode) {
+                    // 检查是否已经添加了该店铺的数据
+                    if (seenSellers.has(item.seller)) continue;
+                    
+                    // 记录该店铺
+                    seenSellers.add(item.seller);
+                    
+                    // 计算该项的总库存和可用数量
+                    const itemTotalQty = item.locations.reduce((sum, loc) => sum + loc.qty, 0);
+                    const itemTotalAvailable = item.locations.reduce((sum, loc) => sum + loc.available, 0);
+                    
+                    // 添加到匹配项，并包含计算好的库存信息
+                    matchingItems.push({
+                        ...item, 
+                        key: key, 
+                        itemTotalQty: itemTotalQty, 
+                        itemTotalAvailable: itemTotalAvailable
+                    });
+                    
+                    // 如果是完全匹配键名的，标记为直接匹配
+                    if (key.startsWith(barcode)) {
+                        directMatch = matchingItems[matchingItems.length - 1];
+                    }
+                }
+            }
+            
+            if (matchingItems.length === 0) {
                 showNoResults();
                 return;
             }
+            
+            // 按库存量排序（降序）
+            matchingItems.sort((a, b) => b.itemTotalQty - a.itemTotalQty);
             
             const resultArea = document.getElementById('resultArea');
             resultArea.innerHTML = '';
             
-            // 计算总库存和可用库存
-            let totalQty = 0;
-            let totalAvailable = 0;
-            data.locations.forEach(loc => {
-                totalQty += loc.qty;
-                totalAvailable += loc.available;
+            // 计算所有匹配项的总库存和可用库存（合计值）
+            let grandTotalQty = 0;
+            let grandTotalAvailable = 0;
+            matchingItems.forEach(item => {
+                grandTotalQty += item.itemTotalQty;
+                grandTotalAvailable += item.itemTotalAvailable;
             });
             
-            document.getElementById('totalInventory').textContent = `${totalQty}/${totalAvailable}`;
+            // 更新查询信息区域的合计库存显示
+            document.getElementById('totalInventory').textContent = `${grandTotalQty}/${grandTotalAvailable}`;
             
-            // 创建产品卡片
-            const productCard = document.createElement('div');
-            productCard.className = 'product-card';
+            // 获取要显示的SKU（使用第一个匹配项的SKU）
+            const sku = matchingItems[0].sku;
             
-            // 产品信息头部
-            productCard.innerHTML = `
-                <div class="product-header-sku" style="font-size: 17px; font-weight: bold; margin-bottom: 10px; color: #222; border-bottom: 1px solid #eee; padding-bottom: 8px;">
-                    SKU: ${data.sku}
-                </div>
-                <div class="product-header">
-                    <img src="${data.image}" class="product-image" alt="${data.sku}">
-                    <div class="product-info" style="position: relative; flex: 1; padding-right: 85px;">
-                        <div class="product-item-code">货号: ${data.item_code}</div>
-                        <div class="product-color-size">颜色/尺码: ${data.color_size}</div>
-                        <div class="product-barcode">条码: ${data.barcode}</div>
-                        <div style="position: absolute; top: 0; right: 0; display: flex; flex-direction: column; align-items: center; background: #f7f7f7; padding: 6px 8px; border-radius: 4px; min-width: 75px;">
-                            <span style="font-size: 14px; font-weight: bold;">库存/可用</span>
-                            <span style="color: #222; font-weight: bold;">${totalQty}/${totalAvailable}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
+            // 创建共用的SKU标题行
+            const headerSku = document.createElement('div');
+            headerSku.className = 'product-header-sku';
+            headerSku.style.fontSize = '17px';
+            headerSku.style.fontWeight = 'bold';
+            headerSku.style.marginBottom = '10px';
+            headerSku.style.color = '#222';
+            headerSku.style.borderBottom = '1px solid #eee';
+            headerSku.style.paddingBottom = '8px';
+            headerSku.style.display = 'flex';
+            headerSku.style.justifyContent = 'space-between';
+            headerSku.style.alignItems = 'center';
             
-            // 创建库位表格
-            const table = document.createElement('table');
-            table.className = 'location-table';
-            table.innerHTML = `
-                <tr>
-                    <th>库位</th>
-                    <th>库存</th>
-                    <th>可用</th>
-                </tr>
-            `;
+            // 添加SKU信息
+            headerSku.innerHTML = `<span>${sku}</span>`;
             
-            data.locations.forEach(loc => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="location-code">${loc.location}</td>
-                    <td class="location-qty">${loc.qty}</td>
-                    <td class="location-available">${loc.available}</td>
-                `;
-                table.appendChild(row);
-            });
+            // 将SKU标题添加到结果区域
+            resultArea.appendChild(headerSku);
             
-            productCard.appendChild(table);
-            resultArea.appendChild(productCard);
-        }
-
-        // 处理SKU查询
-        function handleSkuQuery(sku) {
-            // 查找所有匹配该SKU的条目
-            const skuItems = [];
-            const seenLocations = new Map(); // 用于跟踪已经看到的库位和数量组合
-            
-            // 遍历inventory_data查找所有匹配的条目
-            for (let barcode in inventory_data) {
-                if (inventory_data[barcode].sku === sku) {
-                    // 创建一个库位的唯一标识字符串
-                    let item = {...inventory_data[barcode], barcode: barcode};
-                    let locationKey = '';
-                    
-                    // 检查这个商品的库位组合是否已经存在
-                    let isDuplicate = false;
-                    
-                    // 为每个库位创建唯一键
-                    const itemLocations = item.locations.map(loc => 
-                        `${loc.location}_${loc.qty}_${loc.available}`
-                    ).sort().join('|');
-                    
-                    if (seenLocations.has(itemLocations)) {
-                        // 如果这个库位组合已经存在，跳过这个条目
-                        continue;
-                    }
-                    
-                    // 记录这个库位组合
-                    seenLocations.set(itemLocations, true);
-                    skuItems.push(item);
-                }
-            }
-            
-            if (skuItems.length === 0) {
-                showNoResults();
-                return;
-            }
-            
-            const resultArea = document.getElementById('resultArea');
-            resultArea.innerHTML = `<h3 style="margin-bottom:16px;font-size:18px;">SKU：${sku}</h3>`;
-            
-            // 计算总库存和可用库存
-            let totalQty = 0;
-            let totalAvailable = 0;
-            
-            skuItems.forEach(item => {
-                item.locations.forEach(loc => {
-                    totalQty += loc.qty;
-                    totalAvailable += loc.available;
-                });
-            });
-            
-            document.getElementById('totalInventory').textContent = `${totalQty}/${totalAvailable}`;
-            
-            // 为每个匹配的条目创建产品卡片
-            skuItems.forEach(item => {
-                const productCard = document.createElement('div');
-                productCard.className = 'product-card';
-                productCard.style.marginBottom = '20px';
+            // 为每个店铺创建产品卡片
+            matchingItems.forEach((item) => {
+                // 跳过没有seller信息的项
+                if (!item.seller) return;
                 
-                // 产品信息头部
-                productCard.innerHTML = `
+                const sellerNote = getSellerSiteNote(item.seller);
+                
+                const sellerCard = document.createElement('div');
+                sellerCard.className = 'product-card';
+                sellerCard.style.marginBottom = '20px';
+                
+                // 创建内容容器
+                const contentContainer = document.createElement('div');
+                contentContainer.className = 'product-content';
+                
+                // 添加产品详细信息
+                contentContainer.innerHTML = `
                     <div class="product-header">
                         <img src="${item.image}" class="product-image" alt="${item.sku}">
-                        <div class="product-info" style="position: relative; flex: 1; padding-right: 85px;">
+                        <div class="product-info" style="position: relative; flex: 1; padding-right: 95px;">
                             <div class="product-item-code">货号: ${item.item_code}</div>
                             <div class="product-color-size">颜色/尺码: ${item.color_size}</div>
                             <div class="product-barcode">条码: ${item.barcode}</div>
-                            <div style="position: absolute; top: 0; right: 0; display: flex; flex-direction: column; align-items: center; background: #f7f7f7; padding: 6px 8px; border-radius: 4px; min-width: 75px;">
-                                <span style="font-size: 14px; font-weight: bold;">库存/可用</span>
-                                <span style="color: #222; font-weight: bold;">
-                                    ${item.locations.reduce((sum, loc) => sum + loc.qty, 0)}/
-                                    ${item.locations.reduce((sum, loc) => sum + loc.available, 0)}
-                                </span>
+                            ${item.seller ? `<div style="color: #666; font-size: 15px;">店铺: ${item.seller}${sellerNote}</div>` : ''}
+                            <div style="position: absolute; top: 0; right: 0; display: flex; flex-direction: column; align-items: center; background: #f7f7f7; padding: 8px 10px; border-radius: 6px; min-width: 85px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                <span style="font-size: 15px; font-weight: bold; margin-bottom: 2px;">库存/可用</span>
+                                <span style="color: #222; font-weight: bold; font-size: 18px;">${item.itemTotalQty}/${item.itemTotalAvailable}</span>
                             </div>
                         </div>
                     </div>
@@ -795,11 +903,145 @@
                     table.appendChild(row);
                 });
                 
-                productCard.appendChild(table);
-                resultArea.appendChild(productCard);
+                contentContainer.appendChild(table);
+                sellerCard.appendChild(contentContainer);
+                resultArea.appendChild(sellerCard);
             });
         }
-
+        //------------------------------------------------
+        // 处理SKU查询
+        function handleSkuQuery(sku) {
+            // 获取SKU对应的数据
+            const skuData = inventory_data[sku];
+            
+            if (!skuData) {
+                showNoResults();
+                return;
+            }
+            
+            const resultArea = document.getElementById('resultArea');
+            resultArea.innerHTML = '';
+            
+            // 计算总库存和可用库存
+            let totalQty = 0;
+            let totalAvailable = 0;
+            skuData.locations.forEach(loc => {
+                totalQty += loc.qty;
+                totalAvailable += loc.available;
+            });
+            
+            document.getElementById('totalInventory').textContent = `${totalQty}/${totalAvailable}`;
+            
+            // 按店铺分组
+            const sellerGroups = {};
+            
+            // 使用新的barcodes和locations数据结构
+            skuData.locations.forEach(loc => {
+                const sellerId = loc.seller;
+                if (!sellerGroups[sellerId]) {
+                    sellerGroups[sellerId] = {
+                        seller: sellerId,
+                        locations: [],
+                        totalQty: 0,
+                        totalAvailable: 0
+                    };
+                    
+                    // 查找该店铺对应的条码
+                    const barcodeInfo = skuData.barcodes.find(b => b.seller === sellerId);
+                    if (barcodeInfo) {
+                        sellerGroups[sellerId].barcode = barcodeInfo.code;
+                    }
+                }
+                
+                // 添加库位
+                sellerGroups[sellerId].locations.push(loc);
+                sellerGroups[sellerId].totalQty += loc.qty;
+                sellerGroups[sellerId].totalAvailable += loc.available;
+            });
+            
+            // 将店铺分组转换为数组并按总库存量排序（降序）
+            const sortedSellers = Object.values(sellerGroups).sort((a, b) => b.totalQty - a.totalQty);
+            
+            // 创建一个包含所有店铺卡片的容器
+            const skuContainer = document.createElement('div');
+            skuContainer.className = 'sku-container';
+            skuContainer.style.marginBottom = '20px';
+            
+            // 创建共用的SKU标题行
+            const headerSku = document.createElement('div');
+            headerSku.className = 'product-header-sku';
+            headerSku.style.fontSize = '17px';
+            headerSku.style.fontWeight = 'bold';
+            headerSku.style.marginBottom = '10px';
+            headerSku.style.color = '#222';
+            headerSku.style.borderBottom = '1px solid #eee';
+            headerSku.style.paddingBottom = '8px';
+            headerSku.style.display = 'flex';
+            headerSku.style.justifyContent = 'space-between';
+            headerSku.style.alignItems = 'center';
+            
+            // 添加SKU信息
+            headerSku.innerHTML = `<span>${sku}</span>`;
+            
+            // 将SKU标题添加到结果区域
+            resultArea.appendChild(headerSku);
+            
+            // 为每个店铺创建产品卡片
+            sortedSellers.forEach((sellerGroup, index) => {
+                const sellerNote = getSellerSiteNote(sellerGroup.seller);
+                
+                const sellerCard = document.createElement('div');
+                sellerCard.className = 'product-card';
+                sellerCard.style.marginBottom = '20px';
+                
+                // 创建内容容器
+                const contentContainer = document.createElement('div');
+                contentContainer.className = 'product-content';
+                
+                // 添加产品详细信息
+                contentContainer.innerHTML = `
+                    <div class="product-header">
+                        <img src="${skuData.image}" class="product-image" alt="${skuData.sku}">
+                        <div class="product-info" style="position: relative; flex: 1; padding-right: 95px;">
+                            <div class="product-item-code">货号: ${skuData.item_code}</div>
+                            <div class="product-color-size">颜色/尺码: ${skuData.color_size}</div>
+                            <div class="product-barcode">条码: ${sellerGroup.barcode || skuData.barcode}</div>
+                            ${sellerGroup.seller ? `<div style="color: #666; font-size: 15px;">店铺: ${sellerGroup.seller}${sellerNote}</div>` : ''}
+                            <div style="position: absolute; top: 0; right: 0; display: flex; flex-direction: column; align-items: center; background: #f7f7f7; padding: 8px 10px; border-radius: 6px; min-width: 85px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                <span style="font-size: 15px; font-weight: bold; margin-bottom: 2px;">库存/可用</span>
+                                <span style="color: #222; font-weight: bold; font-size: 18px;">${sellerGroup.totalQty}/${sellerGroup.totalAvailable}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // 创建库位表格
+                const table = document.createElement('table');
+                table.className = 'location-table';
+                table.innerHTML = `
+                    <tr>
+                        <th>库位</th>
+                        <th>库存</th>
+                        <th>可用</th>
+                    </tr>
+                `;
+                
+                sellerGroup.locations.forEach(loc => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="location-code">${loc.location}</td>
+                        <td class="location-qty">${loc.qty}</td>
+                        <td class="location-available">${loc.available}</td>
+                    `;
+                    table.appendChild(row);
+                });
+                
+                contentContainer.appendChild(table);
+                sellerCard.appendChild(contentContainer);
+                resultArea.appendChild(sellerCard);
+            });
+        }
+        //------------------------------------------------
         // 处理库位查询
         function handleLocationQuery(location) {
             const data = inventory_data[location];
@@ -859,7 +1101,7 @@
                 
                 // 添加SKU文本和下拉箭头
                 skuHeader.innerHTML = `
-                    <span>SKU: ${sku}</span>
+                    <span>${sku}</span>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="dropdown-arrow">
                         <path d="M6 9L12 15L18 9" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
@@ -884,6 +1126,9 @@
                 
                 // 添加每个条码的商品信息
                 items.forEach(item => {
+                    // 获取店铺备注
+                    const sellerNote = getSellerSiteNote(item.seller);
+                    
                     const productItem = document.createElement('div');
                     productItem.className = 'product-item';
                     productItem.style.marginBottom = '15px';
@@ -892,13 +1137,14 @@
                     productItem.innerHTML = `
                         <div class="product-header">
                             <img src="${item.image}" class="product-image" alt="${item.sku}">
-                            <div class="product-info" style="position: relative; flex: 1; padding-right: 85px;">
+                            <div class="product-info" style="position: relative; flex: 1; padding-right: 95px;">
                                 <div class="product-item-code">货号: ${item.item_code}</div>
                                 <div class="product-color-size">颜色/尺码: ${item.color_size}</div>
                                 <div class="product-barcode">条码: ${item.barcode}</div>
-                                <div style="position: absolute; top: 0; right: 0; display: flex; flex-direction: column; align-items: center; background: #f7f7f7; padding: 6px 8px; border-radius: 4px; min-width: 75px;">
-                                    <span style="font-size: 14px; font-weight: bold;">库存/可用</span>
-                                    <span style="color: #222; font-weight: bold;">${item.qty}/${item.available}</span>
+                                ${item.seller ? `<div style="color: #666; font-size: 15px;">店铺: ${item.seller}${sellerNote}</div>` : ''}
+                                <div style="position: absolute; top: 0; right: 0; display: flex; flex-direction: column; align-items: center; background: #f7f7f7; padding: 8px 10px; border-radius: 6px; min-width: 85px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                    <span style="font-size: 15px; font-weight: bold; margin-bottom: 2px;">库存/可用</span>
+                                    <span style="color: #222; font-weight: bold; font-size: 18px;">${item.qty}/${item.available}</span>
                                 </div>
                             </div>
                         </div>
@@ -957,4 +1203,4 @@
         }
     </script>
 </body>
-</html> 
+</html>

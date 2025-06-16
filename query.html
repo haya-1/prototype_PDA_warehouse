@@ -29,6 +29,9 @@
             max-width: 400px;
             margin: 0 auto;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
         .header {
             display: flex;
@@ -151,6 +154,9 @@
             border-radius: 10px;
             padding: 5px 0;
             margin-bottom: 70px;
+            max-height: 460px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .list-item {
             display: flex;
@@ -422,7 +428,7 @@
             <div class="list-area">
                 <div id="skuList"></div>
             </div>
-            <div class="button-area">
+            <div class="button-area"style="display: none;">
                 <button class="button disabled" id="changeButton" onclick="handleChangeBox()" style="display: none;">清空查询</button>
             </div>
         </div>
@@ -576,9 +582,26 @@
                 
                 const infoDiv = document.createElement('div');
                 infoDiv.className = 'item-info';
+                // 处理货号和颜色/尺码的分离
+                let itemCode = '-';
+                let colorSize = '-';
+                
+                if (item.chinese_sku) {
+                    const parts = item.chinese_sku.split('/');
+                    if (parts.length >= 1) {
+                        itemCode = parts[0];
+                    }
+                    if (parts.length >= 3) {
+                        colorSize = `${parts[1]}/${parts[2]}`;
+                    } else if (parts.length === 2) {
+                        colorSize = parts[1];
+                    }
+                }
+                
                 infoDiv.innerHTML = `
                     <div class="item-row"><span class="label">条码：</span>${item.fnsku || '-'}</div>
-                    <div class="item-row"><span class="label">货号/颜色/尺码：</span>${item.chinese_sku || '-'}</div>
+                    <div class="item-row"><span class="label">货号：</span>${itemCode}</div>
+                    <div class="item-row"><span class="label">颜色/尺码：</span>${colorSize}</div>
                     <div class="item-row"><span class="label">店铺：</span>${item.store || '无'}</div>
                 `;
                 
