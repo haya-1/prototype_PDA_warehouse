@@ -564,6 +564,337 @@
             color: #1677ff;
             font-weight: bold;
         }
+        
+        /* 库存选择弹窗样式 */
+        .inventory-modal {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 665px;
+            background: #f5f5f5;
+            z-index: 2000;
+            display: none;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+        }
+        .inventory-modal.visible {
+            display: block;
+        }
+        .inventory-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 0;
+            position: relative;
+            border-bottom: 1px solid #eee;
+        }
+        .inventory-modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #222;
+        }
+        .inventory-modal-close {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+        .inventory-modal-content {
+            padding: 10px 0;
+            height: calc(100% - 140px);
+            overflow-y: auto;
+        }
+        .inventory-modal-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #eee;
+            box-sizing: border-box;
+        }
+        .inventory-modal-btn {
+            flex: 1;
+            margin: 0 10px;
+            padding: 12px 0;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .inventory-modal-btn-cancel {
+            background: #f0f0f0;
+            color: #666;
+        }
+        .inventory-modal-btn-confirm {
+            background: #1677ff;
+            color: #fff;
+        }
+        .inventory-search {
+            padding: 10px;
+            position: sticky;
+            top: 0;
+            background: #f5f5f5;
+            z-index: 10;
+        }
+        .inventory-item {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            padding: 12px;
+            position: relative;
+        }
+        .inventory-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        .inventory-check {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 20px;
+            height: 20px;
+            border: 1.5px solid #1677ff;
+            border-radius: 4px;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .inventory-check.checked {
+            background: #1677ff;
+        }
+        .inventory-check.checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 12px;
+            height: 6px;
+            border-left: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+            transform: translate(-50%, -70%) rotate(-45deg);
+        }
+        
+        .inventory-item .pending-fnsku {
+            position: absolute;
+            top: 14px;
+            right: 40px;
+            text-align: right;
+            font-size: 12px;
+            color: #888;
+        }
+        
+        /* 修改库存项样式，与拣货详情页保持一致 */
+        .inventory-modal-content .inventory-item {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            border-bottom: 2px solid #acacac;
+            padding: 8px 0 8px 0;
+            position: relative;
+            margin-bottom: 0px;
+            background: #fff;
+            border-radius: 0;
+        }
+        
+        .inventory-modal-content .inventory-item:last-child {
+            border-bottom: none;
+        }
+        
+        .inventory-modal-content .inventory-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            padding-bottom: 6px;
+            padding-left: 8px;
+            padding-right: 8px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        
+        .inventory-modal-content .pending-location {
+            font-size: 16px;
+            color: #222;
+        }
+        
+        .inventory-modal-content .pending-fnsku {
+            position: static;
+            font-size: 14px;
+            color: #666;
+            margin-right: 8px;
+        }
+        
+        .inventory-modal-content .inventory-check {
+            position: static;
+            margin-left: auto;
+        }
+        
+        .inventory-modal-content .inventory-check.checked::after {
+            content: '';
+            width: 12px;
+            height: 6px;
+            border-left: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+            transform: rotate(-45deg) translate(1px, -1px);
+        }
+        
+        .inventory-modal-content .inventory-check:hover {
+            border-color: #125fd1;
+        }
+        
+        .inventory-modal-content .inventory-check.checked:hover {
+            background: #125fd1;
+        }
+        
+        .inventory-modal-content .pending-fnsku-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .select-all-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .select-all-btn.active {
+            background: #e8f0fe;
+            color: #1677ff;
+            border-color: #1677ff;
+        }
+        
+        .inventory-modal-content .pending-content {
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+        
+        /* 添加已选/可移出数量样式 */
+        .pending-count-area {
+            flex-shrink: 0;
+            width: 110px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .pending-count-label {
+            color: #444;
+            font-size: 15px;
+            margin-bottom: 4px;
+            line-height: 1.1;
+        }
+        .pending-count-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f6f6f6;
+            border-radius: 10px;
+            padding: 8px 4px;
+            min-width: 110px;
+            max-width: 130px;
+            height: 75px;
+            text-align: center;
+        }
+        .pending-count-row {
+            white-space: nowrap;
+            padding: 0 6px;
+        }
+        .pending-count-input {
+            width: 35px;
+            height: 35px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 18px;
+            color: #00aaff;
+            font-weight: bold;
+            margin-right: 2px;
+            box-sizing: border-box;
+        }
+        .pending-count-input::-webkit-outer-spin-button,
+        .pending-count-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .pending-count-input:focus {
+            border-color: #1677ff;
+            outline: none;
+        }
+        .pending-total {
+            color: #222;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        /* 更新勾选框样式 */
+        .inventory-check {
+            width: 20px;
+            height: 20px;
+            border: 1.5px solid #1677ff;
+            border-radius: 4px;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .inventory-check.checked {
+            background: #1677ff;
+        }
+        .inventory-check.checked::after {
+            content: '';
+            width: 12px;
+            height: 6px;
+            border-left: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+            transform: translate(-50%, -70%) rotate(-45deg);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+        }
+        .inventory-check.partial {
+            background: #1677ff;
+        }
+        .inventory-check.partial::after {
+            content: '';
+            width: 10px;
+            height: 2px;
+            background-color: #fff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
     </style>
 </head>
 <body>
@@ -576,7 +907,7 @@
                     </svg>
                 </button>
                 <span class="header-title">批量移库</span>
-                <button class="moveout-all-btn" id="moveoutAllBtn" disabled>全部移出</button>
+                <button class="moveout-all-btn" id="moveoutAllBtn" disabled>选择移出</button>
             </div>
             <div class="tooltip-container">
                 <span class="info-icon">!</span>
@@ -633,6 +964,32 @@
                 <button class="custom-modal-button custom-modal-button-cancel" id="moveoutAllCancelBtn">取消</button>
                 <button class="custom-modal-button custom-modal-button-confirm" id="moveoutAllConfirmBtn">确认</button>
             </div>
+        </div>
+    </div>
+
+    <!-- 库存选择弹窗 -->
+    <div class="inventory-modal" id="inventoryModal">
+        <div class="inventory-modal-header">
+            <button class="inventory-modal-close" id="inventoryModalClose">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+                    <path d="M15.5 19L9.5 12L15.5 5" stroke="#222" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <div class="inventory-modal-title">选择库存</div>
+            <button class="select-all-btn" id="selectAllBtn">全选</button>
+        </div>
+        <div class="inventory-search">
+            <div class="scan-input-wrapper">
+                <img src="icon/screenshot_2025-05-22_16-58-53.png" alt="扫描条码">
+                <input type="text" class="scan-input" id="filterInput" placeholder="扫描条码筛选" />
+            </div>
+        </div>
+        <div class="inventory-modal-content" id="inventoryList">
+            <!-- 库存列表由JS渲染 -->
+        </div>
+        <div class="inventory-modal-footer">
+            <button class="inventory-modal-btn inventory-modal-btn-cancel" id="inventoryCancelBtn">取消</button>
+            <button class="inventory-modal-btn inventory-modal-btn-confirm" id="inventoryConfirmBtn">确定</button>
         </div>
     </div>
 
@@ -734,6 +1091,10 @@
         let currentLocation = '';
         // 存储已扫描的箱码，避免重复扫描
         const scannedBoxCodes = new Set();
+        // 存储选中的库存项
+        let checkedInventory = [];
+        // 标记是否已全选
+        let isAllSelected = false;
 
         // 切换标签页
         function switchTab(tab) {
@@ -789,72 +1150,252 @@
             currentLocation = locationCode;
         }
 
-        // 渲染待移出列表
-        function renderPendingList() {
-            const list = document.getElementById('pendingList');
+        // 生成当前库位的库存数据
+        function generateLocationInventory(locationCode) {
+            const result = [];
+            
+            if (!location_data[locationCode] || !location_data[locationCode].items) {
+                return result;
+            }
+            
+            const locationItems = location_data[locationCode].items;
+            
+            locationItems.forEach((fnsku, index) => {
+                if (items_data[fnsku] && items_data[fnsku].locations && items_data[fnsku].locations[locationCode] > 0) {
+                    result.push({
+                        id: index + 1,
+                        fnsku: fnsku,
+                        sku: items_data[fnsku].sku,
+                        img: items_data[fnsku].img,
+                        spu: items_data[fnsku].spu,
+                        color_size: items_data[fnsku].color_size,
+                        location: locationCode,
+                        qty: items_data[fnsku].locations[locationCode]
+                    });
+                }
+            });
+            
+            return result;
+        }
+        
+        // 渲染库存选择列表
+        function renderInventoryList(filter = '') {
+            const list = document.getElementById('inventoryList');
             list.innerHTML = '';
             
-            scannedItems.forEach(item => {
+            if (!currentLocation) {
+                list.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">请先扫描库位码</div>';
+                return;
+            }
+            
+            // 获取当前库位的库存
+            const locationInventory = generateLocationInventory(currentLocation);
+            
+            // 根据条码筛选
+            let filteredData = locationInventory;
+            if (filter) {
+                filteredData = locationInventory.filter(item => 
+                    item.fnsku.toLowerCase().includes(filter.toLowerCase()) || 
+                    item.sku.toLowerCase().includes(filter.toLowerCase())
+                );
+            }
+            
+            if (filteredData.length === 0) {
+                list.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">当前库位没有库存或没有匹配的库存</div>';
+                return;
+            }
+            
+            filteredData.forEach((item) => {
+                // 查找是否已选中以及选中数量
+                const checkedItem = checkedInventory.find(checked => 
+                    checked.fnsku === item.fnsku && checked.location === item.location
+                );
+                
+                const isChecked = !!checkedItem;
+                const selectedQty = checkedItem ? checkedItem.selectedQty || 0 : 0;
+                
+                // 确定勾选框状态
+                let checkboxClass = '';
+                if (isChecked) {
+                    if (selectedQty === item.qty) {
+                        checkboxClass = 'checked';
+                    } else if (selectedQty > 0) {
+                        checkboxClass = 'partial';
+                    }
+                }
+                
                 const listItem = document.createElement('div');
-                listItem.className = 'pending-item';
-                
-                // 添加库位信息到顶部
-                const headerDiv = document.createElement('div');
-                headerDiv.className = 'pending-header';
-                headerDiv.innerHTML = `
-                    <div class="pending-location">库位：${location_data[item.location]?.name || item.location}</div>
-                `;
-                listItem.appendChild(headerDiv);
-                
-                // 添加FNSKU在右上角
-                const fnskuDiv = document.createElement('div');
-                fnskuDiv.className = 'pending-fnsku';
-                fnskuDiv.textContent = item.fnsku;
-                listItem.appendChild(fnskuDiv);
-                
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'pending-content';
-                
-                const imgAreaDiv = document.createElement('div');
-                imgAreaDiv.className = 'pending-img-area';
-                imgAreaDiv.innerHTML = `
-                    <div class="pending-img">
-                        <img src="${item.img}" alt="产品图片">
+                listItem.className = 'inventory-item';
+                listItem.innerHTML = `
+                    <div class="inventory-item-header">
+                        <div class="pending-location">库位：${location_data[item.location]?.name || item.location}</div>
+                        <div class="pending-fnsku-wrapper">
+                            <span class="pending-fnsku">${item.fnsku}</span>
+                            <div class="inventory-check ${checkboxClass}" data-fnsku="${item.fnsku}" data-location="${item.location}"></div>
+                        </div>
+                    </div>
+                    <div class="pending-content">
+                        <div class="pending-img-area">
+                            <div class="pending-img">
+                                <img src="${item.img}" alt="产品图片">
+                            </div>
+                        </div>
+                        <div class="pending-info-main">
+                            <div class="pending-info">
+                                <div class="pending-row"><span class="label">货号：</span>${item.spu}</div>
+                                <div class="pending-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
+                                <div class="pending-sku"><span class="label">SKU：</span>${item.sku}</div>
+                            </div>
+                            <div class="pending-count-area">
+                                <div class="pending-count-box">
+                                    <div class="pending-count-label">已选/可移出</div>
+                                    <div class="pending-count-row">
+                                        <input type="number" class="pending-count-input" value="${selectedQty}" 
+                                            onchange="updateItemSelectedQty('${item.fnsku}', '${item.location}', this.value)" min="0" max="${item.qty}">
+                                        <span style="color:#222;font-weight:bold;">/</span>
+                                        <span class="pending-total">${item.qty}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 `;
                 
-                const infoMainDiv = document.createElement('div');
-                infoMainDiv.className = 'pending-info-main';
-                
-                const infoDiv = document.createElement('div');
-                infoDiv.className = 'pending-info';
-                infoDiv.innerHTML = `
-                    <div class="pending-row"><span class="label">货号：</span>${item.spu}</div>
-                    <div class="pending-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
-                    <div class="pending-sku"><span class="label">SKU：</span>${item.sku}</div>
-                `;
-                
-                const qtyBoxDiv = document.createElement('div');
-                qtyBoxDiv.className = 'transfer-qty-box';
-                qtyBoxDiv.innerHTML = `
-                    <div class="transfer-qty-label">移出数量</div>
-                    <div class="transfer-qty-value">${item.qty}</div>
-                `;
-                
-                infoMainDiv.appendChild(infoDiv);
-                infoMainDiv.appendChild(qtyBoxDiv);
-                
-                contentDiv.appendChild(imgAreaDiv);
-                contentDiv.appendChild(infoMainDiv);
-                
-                listItem.appendChild(contentDiv);
                 list.appendChild(listItem);
             });
             
-            // 更新底部按钮状态
-            const hasItems = scannedItems.length > 0;
-            document.getElementById('footerClearBtn').disabled = !hasItems;
-            document.getElementById('footerConfirmBtn').disabled = !hasItems;
+            // 添加勾选事件
+            document.querySelectorAll('.inventory-check').forEach(checkbox => {
+                checkbox.addEventListener('click', function() {
+                    const fnsku = this.getAttribute('data-fnsku');
+                    const location = this.getAttribute('data-location');
+                    const item = filteredData.find(item => item.fnsku === fnsku && item.location === location);
+                    
+                    // 查找是否已选中以及选中数量
+                    const existingIndex = checkedInventory.findIndex(checked => 
+                        checked.fnsku === fnsku && checked.location === location
+                    );
+                    
+                    const isAlreadyChecked = existingIndex !== -1;
+                    const checkedItem = isAlreadyChecked ? checkedInventory[existingIndex] : null;
+                    const currentSelectedQty = checkedItem ? checkedItem.selectedQty || 0 : 0;
+                    
+                    if (isAlreadyChecked) {
+                        // 已选中的情况
+                        if (currentSelectedQty === item.qty || currentSelectedQty === 0) {
+                            // 完全选中或还未选数量，取消选中
+                            checkedInventory.splice(existingIndex, 1);
+                            this.classList.remove('checked');
+                            this.classList.remove('partial');
+                            
+                            // 更新输入框
+                            const input = this.closest('.inventory-item').querySelector('.pending-count-input');
+                            if (input) input.value = 0;
+                        } else {
+                            // 部分选中状态下，变为完全选中
+                            checkedInventory[existingIndex].selectedQty = item.qty;
+                            this.classList.remove('partial');
+                            this.classList.add('checked');
+                            
+                            // 更新输入框
+                            const input = this.closest('.inventory-item').querySelector('.pending-count-input');
+                            if (input) input.value = item.qty;
+                        }
+                    } else {
+                        // 未选中，添加选中状态并设置为全选
+                        checkedInventory.push({...item, selectedQty: item.qty});
+                        this.classList.add('checked');
+                        
+                        // 更新输入框
+                        const input = this.closest('.inventory-item').querySelector('.pending-count-input');
+                        if (input) input.value = item.qty;
+                    }
+                    
+                    // 更新全选按钮状态
+                    updateSelectAllButtonState(filteredData);
+                });
+            });
+        }
+        
+        // 更新已选数量
+        function updateItemSelectedQty(fnsku, location, value) {
+            const qty = Math.max(0, parseInt(value) || 0);
+            const existingIndex = checkedInventory.findIndex(checked => 
+                checked.fnsku === fnsku && checked.location === location
+            );
+            
+            // 获取当前库位的库存
+            const locationInventory = generateLocationInventory(currentLocation);
+            const item = locationInventory.find(item => 
+                item.fnsku === fnsku && item.location === location
+            );
+            
+            if (!item) return;
+            
+            // 限制数量不超过可用数量
+            const maxQty = item.qty;
+            const finalQty = Math.min(qty, maxQty);
+            
+            if (existingIndex !== -1) {
+                // 已存在于选中列表
+                if (finalQty === 0) {
+                    // 数量为0，从选中列表移除
+                    checkedInventory.splice(existingIndex, 1);
+                } else {
+                    // 更新数量
+                    checkedInventory[existingIndex].selectedQty = finalQty;
+                }
+            } else if (finalQty > 0) {
+                // 不存在于选中列表但数量大于0，添加到选中列表
+                checkedInventory.push({...item, selectedQty: finalQty});
+            }
+            
+            // 更新勾选框状态
+            const checkbox = document.querySelector(`.inventory-check[data-fnsku="${fnsku}"][data-location="${location}"]`);
+            if (checkbox) {
+                checkbox.classList.remove('checked', 'partial');
+                if (finalQty > 0) {
+                    if (finalQty === maxQty) {
+                        checkbox.classList.add('checked');
+                    } else {
+                        checkbox.classList.add('partial');
+                    }
+                }
+            }
+            
+            // 更新全选按钮状态
+            const filter = document.getElementById('filterInput').value.trim();
+            const filteredData = locationInventory.filter(item => 
+                !filter || item.fnsku.toLowerCase().includes(filter.toLowerCase()) || 
+                item.sku.toLowerCase().includes(filter.toLowerCase())
+            );
+            updateSelectAllButtonState(filteredData);
+        }
+        
+        // 更新全选按钮状态
+        function updateSelectAllButtonState(filteredData) {
+            // 检查是否所有显示的项目都被选中
+            const allChecked = filteredData.every(item => 
+                checkedInventory.some(checked => 
+                    checked.fnsku === item.fnsku && checked.location === item.location && 
+                    checked.selectedQty === item.qty
+                )
+            );
+            
+            // 检查是否有部分选中
+            const someChecked = filteredData.some(item => 
+                checkedInventory.some(checked => 
+                    checked.fnsku === item.fnsku && checked.location === item.location
+                )
+            );
+            
+            isAllSelected = allChecked;
+            const selectAllBtn = document.getElementById('selectAllBtn');
+            if (allChecked) {
+                selectAllBtn.classList.add('active');
+            } else {
+                selectAllBtn.classList.remove('active');
+            }
         }
 
         // 库位扫描输入框逻辑
@@ -1129,59 +1670,208 @@
 
         // 全部移出按钮点击事件
         document.getElementById('moveoutAllBtn').addEventListener('click', function() {
-            // 设置弹窗标题
-            document.getElementById('moveoutAllTitle').textContent = `当前库位: ${currentLocation}`;
+            showInventoryModal();
+        });
+
+        // 处理全选按钮点击
+        document.getElementById('selectAllBtn').addEventListener('click', function() {
+            const locationInventory = generateLocationInventory(currentLocation);
+            const filterValue = document.getElementById('filterInput').value.trim();
             
-            // 显示确认弹窗
-            document.getElementById('confirmMoveoutAllOverlay').classList.add('visible');
+            // 根据条码筛选
+            let filteredData = locationInventory;
+            if (filterValue) {
+                filteredData = locationInventory.filter(item => 
+                    item.fnsku.toLowerCase().includes(filterValue.toLowerCase()) || 
+                    item.sku.toLowerCase().includes(filterValue.toLowerCase())
+                );
+            }
+            
+            if (isAllSelected) {
+                // 取消全选
+                isAllSelected = false;
+                this.classList.remove('active');
+                
+                // 从选中列表中移除当前过滤后的所有项
+                filteredData.forEach(item => {
+                    checkedInventory = checkedInventory.filter(checked => 
+                        !(checked.fnsku === item.fnsku && checked.location === item.location)
+                    );
+                });
+                
+                // 更新UI
+                document.querySelectorAll('.inventory-check').forEach(checkbox => {
+                    checkbox.classList.remove('checked', 'partial');
+                });
+                
+                // 更新输入框
+                document.querySelectorAll('.pending-count-input').forEach(input => {
+                    input.value = 0;
+                });
+            } else {
+                // 全选
+                isAllSelected = true;
+                this.classList.add('active');
+                
+                // 添加所有未选中的项
+                filteredData.forEach(item => {
+                    const existingIndex = checkedInventory.findIndex(checked => 
+                        checked.fnsku === item.fnsku && checked.location === item.location
+                    );
+                    
+                    if (existingIndex !== -1) {
+                        // 更新已存在项的数量为最大值
+                        checkedInventory[existingIndex].selectedQty = item.qty;
+                    } else {
+                        // 添加新项
+                        checkedInventory.push({...item, selectedQty: item.qty});
+                    }
+                });
+                
+                // 更新UI
+                document.querySelectorAll('.inventory-check').forEach(checkbox => {
+                    checkbox.classList.remove('partial');
+                    checkbox.classList.add('checked');
+                });
+                
+                // 更新输入框
+                document.querySelectorAll('.inventory-item').forEach(itemElement => {
+                    const fnsku = itemElement.querySelector('.inventory-check').getAttribute('data-fnsku');
+                    const location = itemElement.querySelector('.inventory-check').getAttribute('data-location');
+                    const item = filteredData.find(i => i.fnsku === fnsku && i.location === location);
+                    
+                    if (item) {
+                        const input = itemElement.querySelector('.pending-count-input');
+                        if (input) input.value = item.qty;
+                    }
+                });
+            }
         });
-
-        // 取消全部移出
-        document.getElementById('moveoutAllCancelBtn').addEventListener('click', function() {
-            document.getElementById('confirmMoveoutAllOverlay').classList.remove('visible');
+        
+        // 库存筛选输入框逻辑
+        document.getElementById('filterInput').addEventListener('keyup', function() {
+            renderInventoryList(this.value.trim());
         });
-
-        // 确认全部移出
-        document.getElementById('moveoutAllConfirmBtn').addEventListener('click', function() {
+        
+        // 库存弹窗关闭按钮
+        document.getElementById('inventoryModalClose').addEventListener('click', function() {
+            hideInventoryModal();
+        });
+        
+        // 库存弹窗取消按钮
+        document.getElementById('inventoryCancelBtn').addEventListener('click', function() {
+            hideInventoryModal();
+        });
+        
+        // 库存弹窗确认按钮
+        document.getElementById('inventoryConfirmBtn').addEventListener('click', function() {
+            // 更新选中的货品，使用selectedQty作为qty
+            scannedItems = checkedInventory.map(item => ({
+                ...item,
+                qty: item.selectedQty
+            })).filter(item => item.selectedQty > 0);
+            
+            // 清空已扫描箱码
+            scannedBoxCodes.clear();
+            
             // 隐藏弹窗
-            document.getElementById('confirmMoveoutAllOverlay').classList.remove('visible');
+            hideInventoryModal();
             
-            // 获取当前库位下的所有货品
-            const locationItems = location_data[currentLocation].items;
+            // 更新列表显示
+            renderPendingList();
+        });
+
+        // 渲染待移出列表
+        function renderPendingList() {
+            const list = document.getElementById('pendingList');
+            list.innerHTML = '';
             
-            // 将所有货品添加到列表
-            locationItems.forEach(fnsku => {
-                // 检查货品是否有效
-                if (!items_data[fnsku]) return;
+            scannedItems.forEach(item => {
+                const listItem = document.createElement('div');
+                listItem.className = 'pending-item';
                 
-                // 检查库位是否有数量
-                const itemLocations = items_data[fnsku].locations;
-                if (!itemLocations || !itemLocations[currentLocation] || itemLocations[currentLocation] <= 0) return;
+                // 添加库位信息到顶部
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'pending-header';
+                headerDiv.innerHTML = `
+                    <div class="pending-location">库位：${location_data[item.location]?.name || item.location}</div>
+                `;
+                listItem.appendChild(headerDiv);
                 
-                const locationAvailableQty = itemLocations[currentLocation];
+                // 添加FNSKU在右上角
+                const fnskuDiv = document.createElement('div');
+                fnskuDiv.className = 'pending-fnsku';
+                fnskuDiv.textContent = item.fnsku;
+                listItem.appendChild(fnskuDiv);
                 
-                // 检查是否已存在
-                const existingIndex = scannedItems.findIndex(item => item.fnsku === fnsku && item.location === currentLocation);
-                if (existingIndex !== -1) {
-                    // 更新为全部数量
-                    scannedItems[existingIndex].qty = locationAvailableQty;
-                } else {
-                    // 添加新条目
-                    scannedItems.push({
-                        ...items_data[fnsku],
-                        location: currentLocation,
-                        locationAvailableQty: locationAvailableQty,
-                        qty: locationAvailableQty
-                    });
-                }
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'pending-content';
+                
+                const imgAreaDiv = document.createElement('div');
+                imgAreaDiv.className = 'pending-img-area';
+                imgAreaDiv.innerHTML = `
+                    <div class="pending-img">
+                        <img src="${item.img}" alt="产品图片">
+                    </div>
+                `;
+                
+                const infoMainDiv = document.createElement('div');
+                infoMainDiv.className = 'pending-info-main';
+                
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'pending-info';
+                infoDiv.innerHTML = `
+                    <div class="pending-row"><span class="label">货号：</span>${item.spu}</div>
+                    <div class="pending-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
+                    <div class="pending-sku"><span class="label">SKU：</span>${item.sku}</div>
+                `;
+                
+                const qtyBoxDiv = document.createElement('div');
+                qtyBoxDiv.className = 'transfer-qty-box';
+                qtyBoxDiv.innerHTML = `
+                    <div class="transfer-qty-label">移出数量</div>
+                    <div class="transfer-qty-value">${item.qty}</div>
+                `;
+                
+                infoMainDiv.appendChild(infoDiv);
+                infoMainDiv.appendChild(qtyBoxDiv);
+                
+                contentDiv.appendChild(imgAreaDiv);
+                contentDiv.appendChild(infoMainDiv);
+                
+                listItem.appendChild(contentDiv);
+                list.appendChild(listItem);
             });
             
-            // 更新列表
-            renderPendingList();
+            // 更新底部按钮状态
+            const hasItems = scannedItems.length > 0;
+            document.getElementById('footerClearBtn').disabled = !hasItems;
+            document.getElementById('footerConfirmBtn').disabled = !hasItems;
+        }
+
+        // 显示库存选择弹窗
+        function showInventoryModal() {
+            if (!currentLocation) {
+                showAlert('请先扫描库位码');
+                return;
+            }
             
-            // 显示成功提示
-            showAlert('全部货品已添加', 'success');
-        });
+            // 初始化为当前已扫描条码
+            checkedInventory = [...scannedItems];
+            isAllSelected = false;
+            document.getElementById('selectAllBtn').classList.remove('active');
+            
+            // 渲染库存列表
+            renderInventoryList();
+            
+            // 显示弹窗
+            document.getElementById('inventoryModal').classList.add('visible');
+        }
+        
+        // 隐藏库存选择弹窗
+        function hideInventoryModal() {
+            document.getElementById('inventoryModal').classList.remove('visible');
+        }
     </script>
 </body>
 </html> 
