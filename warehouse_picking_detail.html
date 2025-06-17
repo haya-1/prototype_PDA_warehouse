@@ -194,25 +194,28 @@
         }
         .location-group {
             background: #fff;
-            border-radius: 14px;
+            border-radius: 4px;
             margin-bottom: 8px;
             overflow: hidden;
+            border: 1px solid #dddddd;
         }
         .location-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 6px 9px;
-            background: #fff;
+            background: #eeeeee;
             cursor: pointer;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #dddddd;
+            border-radius: 4px 4px 0 0;
         }
         .location-header.collapsed {
             border-bottom: none;
+            border-radius: 4px;
         }
         .location-name {
             font-size: 16px;
-            color: #222;
+            color: #333333;
             font-weight: bold;
         }
         .location-toggle {
@@ -229,6 +232,7 @@
         .location-items {
             transition: max-height 0.3s ease-out;
             overflow: hidden;
+            background-color: #fff;
         }
         .location-items.collapsed {
             max-height: 0;
@@ -251,12 +255,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
             padding-top: 6px;
             padding-bottom: 4px;
-            border-bottom: 1px solid #e5e5e5;
+            border-bottom: 1px solid #acacac;
             width: 100%;
-            background-color: #f6f6f6;
+            background-color: #fff;
         }
         .pending-location {
             font-size: 16px;
@@ -292,6 +296,7 @@
             justify-content: center;
             transition: all 0.2s;
             flex-shrink: 0;
+            position: relative;
         }
         .pending-check-btn.checked {
             background: #1677ff;
@@ -303,6 +308,19 @@
             border-left: 2px solid #fff;
             border-bottom: 2px solid #fff;
             transform: rotate(-45deg) translate(1px, -1px);
+        }
+        .pending-check-btn.partial {
+            background: #1677ff;
+        }
+        .pending-check-btn.partial::after {
+            content: '';
+            width: 10px;
+            height: 2px;
+            background-color: #fff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         .pending-check-btn:hover {
             border-color: #125fd1;
@@ -1017,10 +1035,10 @@
             list.innerHTML = Object.values(groupedByLocation).map((group, groupIndex) => `
                 <div class="location-group" data-location="${group.location}">
                     <div class="location-header" onclick="toggleLocation('${group.location}')">
-                        <div class="location-name">库位：${group.location_name}</div>
+                        <div class="location-name"><span style="color: #666666; font-weight: normal; margin-right: 4px;">库位:</span>${group.location_name}</div>
                         <div class="location-toggle">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
-                                <path d="M6 9L12 15L18 9" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6 9L12 15L18 9" stroke="#666666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </div>
                     </div>
@@ -1030,7 +1048,7 @@
                                 <div class="pending-header">
                                     <div class="pending-fnsku-wrapper">
                                         <div class="pending-sku-display">${item.sku}</div>
-                                        <button class="pending-check-btn ${item.current === item.num ? 'checked' : ''}" 
+                                        <button class="pending-check-btn ${item.current === item.num ? 'checked' : (item.current > 0 ? 'partial' : '')}" 
                                             onclick="checkAll('${group.location}', ${index})"></button>
                                     </div>
                                 </div>
@@ -1096,10 +1114,29 @@
             const item = group[index];
             if (!item) return;
 
+            // 如果当前是部分勾选或未勾选状态，则设为全选
+            // 如果当前是全选状态，则设为未勾选
             if (item.current === item.num) {
                 item.current = 0;
             } else {
                 item.current = item.num;
+            }
+
+            // 获取对应的勾选按钮并更新样式
+            const locationGroup = document.querySelector(`[data-location="${location}"]`);
+            if (locationGroup) {
+                const items = locationGroup.querySelectorAll('.pending-item');
+                if (items[index]) {
+                    const checkBtn = items[index].querySelector('.pending-check-btn');
+                    if (checkBtn) {
+                        checkBtn.classList.remove('checked', 'partial');
+                        if (item.current === item.num) {
+                            checkBtn.classList.add('checked');
+                        } else if (item.current > 0) {
+                            checkBtn.classList.add('partial');
+                        }
+                    }
+                }
             }
 
             updateInfoArea();
@@ -1115,6 +1152,24 @@
             const num = parseInt(value) || 0;
             const max = item.num;
             item.current = Math.min(Math.max(0, num), max);
+            
+            // 获取对应的勾选按钮并更新样式
+            const locationGroup = document.querySelector(`[data-location="${location}"]`);
+            if (locationGroup) {
+                const items = locationGroup.querySelectorAll('.pending-item');
+                if (items[index]) {
+                    const checkBtn = items[index].querySelector('.pending-check-btn');
+                    if (checkBtn) {
+                        checkBtn.classList.remove('checked', 'partial');
+                        if (item.current === item.num) {
+                            checkBtn.classList.add('checked');
+                        } else if (item.current > 0) {
+                            checkBtn.classList.add('partial');
+                        }
+                    }
+                }
+            }
+            
             updateInfoArea();
             renderPendingList();
         }

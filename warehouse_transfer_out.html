@@ -206,17 +206,15 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 8px;
-            padding: 6px 8px;
-            border-bottom: none;
+            padding-top: 6px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #e5e5e5;
             width: 100%;
-            background-color: #ff4d4f;
-            color: white;
-            border-radius: 4px;
+            background-color: #f6f6f6;
         }
         .pending-location {
             font-size: 15px;
-            color: white;
-            text-align: right;
+            color: #666;
         }
         .pending-check-btn {
             width: 20px;
@@ -274,13 +272,11 @@
             display: block;
         }
         .pending-fnsku {
+            position: static;
             font-size: 12px;
             color: #888;
-            word-break: break-all;
             text-align: right;
-            position: absolute;
-            top: 14px;
-            right: 12px;
+            margin-right: 8px;
         }
         .pending-info-main {
             flex-grow: 1;
@@ -668,9 +664,8 @@
             align-items: center;
             margin-bottom: 8px;
             padding: 6px 8px;
-            background-color: #ff4d4f;
-            color: white;
-            border-radius: 4px;
+            border-bottom: 1px solid #e5e5e5;
+            background-color: #f6f6f6;
         }
         .inventory-check {
             width: 20px;
@@ -733,10 +728,9 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 6px;
-            padding-bottom: 6px;
-            padding-left: 8px;
-            padding-right: 8px;
+            padding: 6px 8px;
             border-bottom: 1px solid #e5e5e5;
+            background-color: #f6f6f6;
         }
         
         .inventory-modal-content .pending-location {
@@ -753,7 +747,8 @@
         
         .inventory-modal-content .inventory-check {
             position: static;
-            margin-left: auto;
+            margin-left: 8px;
+            flex-shrink: 0;
         }
         
         .inventory-modal-content .inventory-check.checked::after {
@@ -773,12 +768,13 @@
             background: #125fd1;
         }
         
-        .inventory-modal-content .pending-fnsku-wrapper {
+        .pending-fnsku-wrapper {
             display: flex;
             align-items: center;
             gap: 0px;
             width: 100%;
-            justify-content: flex-end;
+            justify-content: space-between;
+            overflow: hidden;
         }
         
         .select-all-btn {
@@ -912,19 +908,20 @@
         /* 添加库位分组样式 */
         .location-group {
             background: #fff;
-            border-radius: 14px;
+            border-radius: 4px;
             margin-bottom: 8px;
             overflow: hidden;
+            border: 1px solid #dddddd;
         }
         .location-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 6px 9px;
-            background: #ff4d4f;
+            background: #eeeeee;
             cursor: pointer;
-            border-bottom: none;
-            color: white;
+            border-bottom: 1px solid #dddddd;
+            color: #333333;
             border-radius: 4px 4px 0 0;
         }
         .location-header.collapsed {
@@ -932,7 +929,7 @@
         }
         .location-name {
             font-size: 16px;
-            color: white;
+            color: #333333;
             font-weight: bold;
         }
         .location-toggle {
@@ -955,21 +952,24 @@
         }
         .inventory-modal-content .pending-sku-display {
             font-size: 15px;
-            color: white;
+            color: #222;
             font-weight: bold;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 70%;
+            max-width: 60%;
+            margin-right: auto;
         }
         .pending-sku-display {
             font-size: 15px;
-            color: white;
+            color: #222;
             font-weight: bold;
+            margin-right: 8px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 70%;
+            margin-right: auto;
         }
     </style>
 </head>
@@ -1302,10 +1302,10 @@
                 
                 locationGroup.innerHTML = `
                     <div class="location-header" onclick="toggleLocation('${group.location}')">
-                        <div class="location-name">库位：${group.location_name}</div>
+                        <div class="location-name"><span style="color: #666666; font-weight: normal; margin-right: 4px;">库位:</span>${group.location_name}</div>
                         <div class="location-toggle">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
-                                <path d="M6 9L12 15L18 9" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6 9L12 15L18 9" stroke="#666666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </div>
                     </div>
@@ -1337,8 +1337,10 @@
                     inventoryItem.className = 'inventory-item';
                     inventoryItem.innerHTML = `
                         <div class="inventory-item-header">
-                            <div class="pending-sku-display">${item.sku}</div>
-                            <div class="inventory-check ${checkboxClass}" data-fnsku="${item.fnsku}" data-location="${item.location}"></div>
+                            <div class="pending-fnsku-wrapper">
+                                <div class="pending-sku-display" title="${item.sku}">${item.sku}</div>
+                                <div class="inventory-check ${checkboxClass}" data-fnsku="${item.fnsku}" data-location="${item.location}"></div>
+                            </div>
                         </div>
                         <div class="pending-content">
                             <div class="pending-img-area">
@@ -1930,8 +1932,10 @@
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'pending-header';
                 headerDiv.innerHTML = `
-                    <div class="pending-sku-display">${item.sku}</div>
-                    <div class="pending-location">库位: ${location_data[item.location]?.name || item.location}</div>
+                    <div class="pending-fnsku-wrapper">
+                        <div class="pending-sku-display">${item.sku}</div>
+                        <div class="pending-location">库位: ${location_data[item.location]?.name || item.location}</div>
+                    </div>
                 `;
                 listItem.appendChild(headerDiv);
                 
