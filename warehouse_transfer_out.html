@@ -206,12 +206,17 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 8px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #eee;
+            padding: 6px 8px;
+            border-bottom: none;
+            width: 100%;
+            background-color: #ff4d4f;
+            color: white;
+            border-radius: 4px;
         }
         .pending-location {
             font-size: 15px;
-            color: #666;
+            color: white;
+            text-align: right;
         }
         .pending-check-btn {
             width: 20px;
@@ -248,11 +253,11 @@
             align-items: center;
             margin-right: 12px;
             flex-shrink: 0;
-            width: 55px;
+            width: 60px;
         }
         .pending-img {
-            width: 55px;
-            height: 55px;
+            width: 60px;
+            height: 60px;
             background: #ededed;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -316,9 +321,9 @@
             justify-content: center;
             background: #f7f7f7;
             border-radius: 10px;
-            padding: 10px;
+            padding: 8px;
             min-width: 50px;
-            height: 50px;
+            height: 45px;
         }
         .transfer-qty-label {
             color: #666;
@@ -649,18 +654,23 @@
         }
         .inventory-item {
             background: white;
-            border-radius: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 0px;
             padding: 12px;
             position: relative;
+            border-bottom: 1px solid #eee;
+        }
+        .inventory-item:last-child {
+            border-bottom: none;
         }
         .inventory-item-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 8px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #eee;
+            padding: 6px 8px;
+            background-color: #ff4d4f;
+            color: white;
+            border-radius: 4px;
         }
         .inventory-check {
             width: 20px;
@@ -766,7 +776,9 @@
         .inventory-modal-content .pending-fnsku-wrapper {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 0px;
+            width: 100%;
+            justify-content: flex-end;
         }
         
         .select-all-btn {
@@ -819,7 +831,7 @@
             padding: 8px 4px;
             min-width: 110px;
             max-width: 130px;
-            height: 75px;
+            height: 65px;
             text-align: center;
         }
         .pending-count-row {
@@ -895,6 +907,69 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+        }
+        
+        /* 添加库位分组样式 */
+        .location-group {
+            background: #fff;
+            border-radius: 14px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        .location-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 9px;
+            background: #ff4d4f;
+            cursor: pointer;
+            border-bottom: none;
+            color: white;
+            border-radius: 4px 4px 0 0;
+        }
+        .location-header.collapsed {
+            border-bottom: none;
+        }
+        .location-name {
+            font-size: 16px;
+            color: white;
+            font-weight: bold;
+        }
+        .location-toggle {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+        .location-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+        .location-items {
+            transition: max-height 0.3s ease-out;
+            overflow: hidden;
+        }
+        .location-items.collapsed {
+            max-height: 0;
+        }
+        .inventory-modal-content .pending-sku-display {
+            font-size: 15px;
+            color: white;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 70%;
+        }
+        .pending-sku-display {
+            font-size: 15px;
+            color: white;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 70%;
         }
     </style>
 </head>
@@ -1206,63 +1281,96 @@
                 return;
             }
             
-            filteredData.forEach((item) => {
-                // 查找是否已选中以及选中数量
-                const checkedItem = checkedInventory.find(checked => 
-                    checked.fnsku === item.fnsku && checked.location === item.location
-                );
-                
-                const isChecked = !!checkedItem;
-                const selectedQty = checkedItem ? checkedItem.selectedQty || 0 : 0;
-                
-                // 确定勾选框状态
-                let checkboxClass = '';
-                if (isChecked) {
-                    if (selectedQty === item.qty) {
-                        checkboxClass = 'checked';
-                    } else if (selectedQty > 0) {
-                        checkboxClass = 'partial';
-                    }
+            // 按库位分组
+            const groupedByLocation = {};
+            filteredData.forEach(item => {
+                if (!groupedByLocation[item.location]) {
+                    groupedByLocation[item.location] = {
+                        location: item.location,
+                        location_name: location_data[item.location]?.name || item.location,
+                        items: []
+                    };
                 }
+                groupedByLocation[item.location].items.push(item);
+            });
+            
+            // 渲染分组后的列表
+            Object.values(groupedByLocation).forEach((group) => {
+                const locationGroup = document.createElement('div');
+                locationGroup.className = 'location-group';
+                locationGroup.dataset.location = group.location;
                 
-                const listItem = document.createElement('div');
-                listItem.className = 'inventory-item';
-                listItem.innerHTML = `
-                    <div class="inventory-item-header">
-                        <div class="pending-location">库位：${location_data[item.location]?.name || item.location}</div>
-                        <div class="pending-fnsku-wrapper">
-                            <span class="pending-fnsku">${item.fnsku}</span>
-                            <div class="inventory-check ${checkboxClass}" data-fnsku="${item.fnsku}" data-location="${item.location}"></div>
+                locationGroup.innerHTML = `
+                    <div class="location-header" onclick="toggleLocation('${group.location}')">
+                        <div class="location-name">库位：${group.location_name}</div>
+                        <div class="location-toggle">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+                                <path d="M6 9L12 15L18 9" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                         </div>
                     </div>
-                    <div class="pending-content">
-                        <div class="pending-img-area">
-                            <div class="pending-img">
-                                <img src="${item.img}" alt="产品图片">
-                            </div>
+                    <div class="location-items"></div>
+                `;
+                
+                const locationItems = locationGroup.querySelector('.location-items');
+                
+                group.items.forEach((item) => {
+                    // 查找是否已选中以及选中数量
+                    const checkedItem = checkedInventory.find(checked => 
+                        checked.fnsku === item.fnsku && checked.location === item.location
+                    );
+                    
+                    const isChecked = !!checkedItem;
+                    const selectedQty = checkedItem ? checkedItem.selectedQty || 0 : 0;
+                    
+                    // 确定勾选框状态
+                    let checkboxClass = '';
+                    if (isChecked) {
+                        if (selectedQty === item.qty) {
+                            checkboxClass = 'checked';
+                        } else if (selectedQty > 0) {
+                            checkboxClass = 'partial';
+                        }
+                    }
+                    
+                    const inventoryItem = document.createElement('div');
+                    inventoryItem.className = 'inventory-item';
+                    inventoryItem.innerHTML = `
+                        <div class="inventory-item-header">
+                            <div class="pending-sku-display">${item.sku}</div>
+                            <div class="inventory-check ${checkboxClass}" data-fnsku="${item.fnsku}" data-location="${item.location}"></div>
                         </div>
-                        <div class="pending-info-main">
-                            <div class="pending-info">
-                                <div class="pending-row"><span class="label">货号：</span>${item.spu}</div>
-                                <div class="pending-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
-                                <div class="pending-sku"><span class="label">SKU：</span>${item.sku}</div>
+                        <div class="pending-content">
+                            <div class="pending-img-area">
+                                <div class="pending-img">
+                                    <img src="${item.img}" alt="产品图片">
+                                </div>
                             </div>
-                            <div class="pending-count-area">
-                                <div class="pending-count-box">
-                                    <div class="pending-count-label">已选/可移出</div>
-                                    <div class="pending-count-row">
-                                        <input type="number" class="pending-count-input" value="${selectedQty}" 
-                                            onchange="updateItemSelectedQty('${item.fnsku}', '${item.location}', this.value)" min="0" max="${item.qty}">
-                                        <span style="color:#222;font-weight:bold;">/</span>
-                                        <span class="pending-total">${item.qty}</span>
+                            <div class="pending-info-main">
+                                <div class="pending-info">
+                                    <div class="pending-row"><span class="label">货号：</span>${item.spu}</div>
+                                    <div class="pending-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
+                                    <div class="pending-row"><span class="label">条码：</span>${item.fnsku}</div>
+                                </div>
+                                <div class="pending-count-area">
+                                    <div class="pending-count-box">
+                                        <div class="pending-count-label">已选/可移出</div>
+                                        <div class="pending-count-row">
+                                            <input type="number" class="pending-count-input" value="${selectedQty}" 
+                                                onchange="updateItemSelectedQty('${item.fnsku}', '${item.location}', this.value)" min="0" max="${item.qty}">
+                                            <span style="color:#222;font-weight:bold;">/</span>
+                                            <span class="pending-total">${item.qty}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                    
+                    locationItems.appendChild(inventoryItem);
+                });
                 
-                list.appendChild(listItem);
+                list.appendChild(locationGroup);
             });
             
             // 添加勾选事件
@@ -1315,6 +1423,19 @@
                     // 更新全选按钮状态
                     updateSelectAllButtonState(filteredData);
                 });
+            });
+            
+            // 更新全选按钮状态
+            updateSelectAllButtonState(filteredData);
+            
+            // 初始化所有库位为展开状态
+            Object.keys(groupedByLocation).forEach(location => {
+                const header = list.querySelector(`[data-location="${location}"] .location-header`);
+                const items = list.querySelector(`[data-location="${location}"] .location-items`);
+                if (header && items) {
+                    header.classList.remove('collapsed');
+                    items.classList.remove('collapsed');
+                }
             });
         }
         
@@ -1669,6 +1790,20 @@
             showTooltip();
         };
 
+        // 添加展开/收起功能
+        function toggleLocation(location) {
+            const group = document.querySelector(`[data-location="${location}"]`);
+            if (!group) return;
+
+            const header = group.querySelector('.location-header');
+            const items = group.querySelector('.location-items');
+            const toggle = group.querySelector('.location-toggle');
+
+            header.classList.toggle('collapsed');
+            items.classList.toggle('collapsed');
+            toggle.classList.toggle('collapsed');
+        }
+
         // 全部移出按钮点击事件
         document.getElementById('moveoutAllBtn').addEventListener('click', function() {
             showInventoryModal();
@@ -1795,15 +1930,10 @@
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'pending-header';
                 headerDiv.innerHTML = `
-                    <div class="pending-location">库位：${location_data[item.location]?.name || item.location}</div>
+                    <div class="pending-sku-display">${item.sku}</div>
+                    <div class="pending-location">库位: ${location_data[item.location]?.name || item.location}</div>
                 `;
                 listItem.appendChild(headerDiv);
-                
-                // 添加FNSKU在右上角
-                const fnskuDiv = document.createElement('div');
-                fnskuDiv.className = 'pending-fnsku';
-                fnskuDiv.textContent = item.fnsku;
-                listItem.appendChild(fnskuDiv);
                 
                 const contentDiv = document.createElement('div');
                 contentDiv.className = 'pending-content';
@@ -1824,7 +1954,7 @@
                 infoDiv.innerHTML = `
                     <div class="pending-row"><span class="label">货号：</span>${item.spu}</div>
                     <div class="pending-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
-                    <div class="pending-sku"><span class="label">SKU：</span>${item.sku}</div>
+                    <div class="pending-row"><span class="label">条码：</span>${item.fnsku}</div>
                 `;
                 
                 const qtyBoxDiv = document.createElement('div');

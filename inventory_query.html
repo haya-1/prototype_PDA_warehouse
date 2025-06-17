@@ -867,7 +867,7 @@
                 
                 // 添加产品详细信息
                 contentContainer.innerHTML = `
-                    <div class="product-header">
+                <div class="product-header">
                         <img src="${item.image}" class="product-image" alt="${item.sku}">
                         <div class="product-info" style="position: relative; flex: 1; padding-right: 95px;">
                             <div class="product-item-code">货号: ${item.item_code}</div>
@@ -877,38 +877,38 @@
                             <div style="position: absolute; top: 0; right: 0; display: flex; flex-direction: column; align-items: center; background: #f7f7f7; padding: 8px 10px; border-radius: 6px; min-width: 85px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                                 <span style="font-size: 15px; font-weight: bold; margin-bottom: 2px;">库存/可用</span>
                                 <span style="color: #222; font-weight: bold; font-size: 18px;">${item.itemTotalQty}/${item.itemTotalAvailable}</span>
-                            </div>
                         </div>
                     </div>
-                `;
-                
-                // 创建库位表格
-                const table = document.createElement('table');
-                table.className = 'location-table';
-                table.innerHTML = `
-                    <tr>
-                        <th>库位</th>
-                        <th>库存</th>
-                        <th>可用</th>
-                    </tr>
-                `;
-                
+                </div>
+            `;
+            
+            // 创建库位表格
+            const table = document.createElement('table');
+            table.className = 'location-table';
+            table.innerHTML = `
+                <tr>
+                    <th>库位</th>
+                    <th>库存</th>
+                    <th>可用</th>
+                </tr>
+            `;
+            
                 item.locations.forEach(loc => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td class="location-code">${loc.location}</td>
-                        <td class="location-qty">${loc.qty}</td>
-                        <td class="location-available">${loc.available}</td>
-                    `;
-                    table.appendChild(row);
-                });
-                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="location-code">${loc.location}</td>
+                    <td class="location-qty">${loc.qty}</td>
+                    <td class="location-available">${loc.available}</td>
+                `;
+                table.appendChild(row);
+            });
+            
                 contentContainer.appendChild(table);
                 sellerCard.appendChild(contentContainer);
                 resultArea.appendChild(sellerCard);
             });
         }
-        //------------------------------------------------
+         //------------------------------------------------
         // 处理SKU查询
         function handleSkuQuery(sku) {
             // 获取SKU对应的数据
@@ -926,8 +926,8 @@
             let totalQty = 0;
             let totalAvailable = 0;
             skuData.locations.forEach(loc => {
-                totalQty += loc.qty;
-                totalAvailable += loc.available;
+                    totalQty += loc.qty;
+                    totalAvailable += loc.available;
             });
             
             document.getElementById('totalInventory').textContent = `${totalQty}/${totalAvailable}`;
@@ -1203,4 +1203,4 @@
         }
     </script>
 </body>
-</html>
+</html> 

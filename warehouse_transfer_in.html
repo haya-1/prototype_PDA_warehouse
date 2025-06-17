@@ -225,8 +225,11 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 8px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #eee;
+            padding-top: 6px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #e5e5e5;
+            width: 100%;
+            background-color: #f6f6f6;
         }
         .pending-location {
             font-size: 15px;
@@ -267,11 +270,11 @@
             align-items: center;
             margin-right: 12px;
             flex-shrink: 0;
-            width: 55px;
+            width: 60px;
         }
         .pending-img {
-            width: 55px;
-            height: 55px;
+            width: 60px;
+            height: 60px;
             background: #ededed;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -333,9 +336,9 @@
             justify-content: center;
             background: #f7f7f7;
             border-radius: 10px;
-            padding: 10px;
+            padding: 8px;
             min-width: 50px;
-            height: 50px;
+            height: 45px;
         }
         .transfer-qty-label {
             color: #666;
@@ -473,8 +476,11 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #eee;
+            padding-top: 6px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #e5e5e5;
+            width: 100%;
+            background-color: #f6f6f6;
         }
         .inventory-check {
             position: static;
@@ -648,10 +654,10 @@
             justify-content: center;
             background: #f6f6f6;
             border-radius: 10px;
-            padding: 8px 4px;
+            padding: 6px 4px;
             min-width: 110px;
             max-width: 130px;
-            height: 75px;
+            height: 65px;
             text-align: center;
         }
         .pending-count-row {
@@ -705,7 +711,158 @@
         .pending-fnsku-wrapper {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 0px;
+            width: 100%;
+            justify-content: flex-end;
+        }
+        /* 添加库位分组样式 */
+        .location-group {
+            background: #fff;
+            border-radius: 14px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        .location-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 9px;
+            background: #fff;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        .location-header.collapsed {
+            border-bottom: none;
+        }
+        .location-name {
+            font-size: 16px;
+            color: #222;
+            font-weight: bold;
+        }
+        .location-toggle {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+        .location-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+        .location-items {
+            transition: max-height 0.3s ease-out;
+            overflow: hidden;
+        }
+        .location-items.collapsed {
+            max-height: 0;
+        }
+        .inventory-item {
+            background: white;
+            margin-bottom: 0px;
+            padding: 12px;
+            position: relative;
+            border-bottom: 1px solid #eee;
+        }
+        .inventory-item:last-child {
+            border-bottom: none;
+        }
+        .inventory-modal-content {
+            padding: 10px;
+            height: calc(100% - 140px);
+            overflow-y: auto;
+        }
+        .pending-sku-display {
+            font-size: 15px;
+            color: #222;
+            font-weight: bold;
+            margin-right: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 70%;
+            margin-right: auto;
+        }
+        /* 确认移入弹窗样式 */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .custom-modal-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+        .custom-modal-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 90%;
+            width: 320px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .custom-modal-overlay.visible .custom-modal-container {
+             transform: scale(1);
+        }
+        .custom-modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .custom-modal-body {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .custom-modal-info p {
+            margin: 8px 0;
+        }
+        .custom-modal-footer {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+        .custom-modal-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            flex: 1;
+        }
+        .custom-modal-button-confirm {
+            background: #1677ff;
+            color: #fff;
+        }
+        .custom-modal-button-confirm:hover:not(:disabled) {
+            background: #125fd1;
+        }
+        .custom-modal-button-confirm:disabled {
+            background: #a0cfff;
+            cursor: not-allowed;
+        }
+        .custom-modal-button-cancel {
+            background: #eee;
+            color: #333;
+        }
+        .custom-modal-button-cancel:hover {
+            background: #ddd;
         }
     </style>
 </head>
@@ -731,14 +888,6 @@
                 <div class="transfer-type-tab active" onclick="switchTab('in')">移入</div>
             </div>
             <div class="scan-area">
-                <div class="scan-input-wrapper">
-                    <img src="icon/screenshot_2025-05-22_16-58-53.png" alt="扫描库位码">
-                    <input type="text" class="scan-input" id="locationInput" placeholder="扫描库位码" />
-                    <div class="current-location" id="currentLocationGroup">
-                        <span class="current-location-text" id="currentLocationDisplay">当前库位：</span>
-                        <button class="clear-location-btn" onclick="clearLocation()">更换</button>
-                    </div>
-                </div>
                 <button class="add-detail-btn" id="addDetailBtn">选择移入库存</button>
             </div>
             <div class="pending-list-area">
@@ -775,6 +924,27 @@
         <div class="inventory-modal-footer">
             <button class="inventory-modal-btn inventory-modal-btn-cancel" id="inventoryCancelBtn">取消</button>
             <button class="inventory-modal-btn inventory-modal-btn-confirm" id="inventoryConfirmBtn">确定</button>
+        </div>
+    </div>
+
+    <!-- 确认移入弹窗 -->
+    <div class="custom-modal-overlay" id="confirmTransferModalOverlay">
+        <div class="custom-modal-container">
+            <div class="custom-modal-title">确认移入</div>
+            <div class="custom-modal-body">
+                <div class="scan-input-wrapper" style="margin-bottom: 15px;">
+                    <img src="icon/screenshot_2025-05-22_16-58-53.png" alt="扫描库位码">
+                    <input type="text" class="scan-input" id="modalLocationInput" placeholder="扫描库位码" />
+                </div>
+                <div class="custom-modal-info" style="display: none;">
+                    <p>请扫描目标库位码以确认移入</p>
+                    <p>待移入SKU数：<span id="modalItemCount">0</span></p>
+                </div>
+            </div>
+            <div class="custom-modal-footer">
+                <button class="custom-modal-button custom-modal-button-cancel" id="modalCancelBtn">取消</button>
+                <button class="custom-modal-button custom-modal-button-confirm" id="modalConfirmBtn" disabled>确认</button>
+            </div>
         </div>
     </div>
 
@@ -863,30 +1033,13 @@
 
         // 清空当前库位
         function clearLocation() {
-            const locationInput = document.getElementById('locationInput');
-            const currentLocationGroup = document.getElementById('currentLocationGroup');
-            
             // 清空当前库位和仓库
             currentLocation = '';
             currentWarehouse = '';
-            
-            // 显示库位扫描框
-            locationInput.style.display = 'block';
-            currentLocationGroup.style.display = 'none';
-            locationInput.value = '';
-            locationInput.focus();
         }
 
         // 显示当前库位
         function showCurrentLocation(locationCode) {
-            const locationInput = document.getElementById('locationInput');
-            const currentLocationGroup = document.getElementById('currentLocationGroup');
-            const currentLocationDisplay = document.getElementById('currentLocationDisplay');
-            
-            locationInput.style.display = 'none';
-            currentLocationGroup.style.display = 'block';
-            currentLocationDisplay.textContent = `当前库位：${locationCode}`;
-            
             // 设置当前库位和仓库
             currentLocation = locationCode;
             currentWarehouse = location_data[locationCode]?.warehouse || '';
@@ -905,15 +1058,12 @@
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'pending-header';
                 headerDiv.innerHTML = `
-                    <div class="pending-location">原库位：${location_data[item.origin_location]?.name || item.origin_location}</div>
+                    <div class="pending-fnsku-wrapper">
+                        <div class="pending-sku-display">${item.sku}</div>
+                        <div class="pending-location">原库位：${location_data[item.origin_location]?.name || item.origin_location}</div>
+                    </div>
                 `;
                 listItem.appendChild(headerDiv);
-                
-                // 添加FNSKU在右上角
-                const fnskuDiv = document.createElement('div');
-                fnskuDiv.className = 'pending-fnsku';
-                fnskuDiv.textContent = item.fnsku;
-                listItem.appendChild(fnskuDiv);
                 
                 const contentDiv = document.createElement('div');
                 contentDiv.className = 'pending-content';
@@ -934,7 +1084,7 @@
                 infoDiv.innerHTML = `
                     <div class="pending-row"><span class="label">货号：</span>${item.spu}</div>
                     <div class="pending-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
-                    <div class="pending-sku"><span class="label">SKU：</span>${item.sku}</div>
+                    <div class="pending-row"><span class="label">条码：</span>${item.fnsku}</div>
                 `;
                 
                 const qtyBoxDiv = document.createElement('div');
@@ -977,61 +1127,96 @@
                 return;
             }
             
-            filteredData.forEach((item, index) => {
-                // 查找是否已选中以及选中数量
-                const checkedItem = checkedInventory.find(checked => checked.id === item.id);
-                
-                const isChecked = !!checkedItem;
-                const selectedQty = checkedItem ? checkedItem.selectedQty || item.qty : 0;
-                
-                // 确定勾选框状态
-                let checkboxClass = '';
-                if (isChecked) {
-                    if (selectedQty === item.qty) {
-                        checkboxClass = 'checked';
-                    } else if (selectedQty > 0) {
-                        checkboxClass = 'partial';
-                    }
+            // 按库位分组
+            const groupedByLocation = {};
+            filteredData.forEach(item => {
+                if (!groupedByLocation[item.origin_location]) {
+                    groupedByLocation[item.origin_location] = {
+                        location: item.origin_location,
+                        location_name: location_data[item.origin_location]?.name || item.origin_location,
+                        items: []
+                    };
                 }
+                groupedByLocation[item.origin_location].items.push(item);
+            });
+            
+            // 渲染分组后的列表
+            Object.values(groupedByLocation).forEach((group) => {
+                const locationGroup = document.createElement('div');
+                locationGroup.className = 'location-group';
+                locationGroup.dataset.location = group.location;
                 
-                const listItem = document.createElement('div');
-                listItem.className = 'inventory-item';
-                listItem.innerHTML = `
-                    <div class="inventory-item-header">
-                        <div class="pending-location">原库位：${location_data[item.origin_location]?.name || item.origin_location}</div>
-                        <div class="pending-fnsku-wrapper">
-                            <span class="pending-fnsku">${item.fnsku}</span>
-                            <div class="inventory-check ${checkboxClass}" data-id="${item.id}"></div>
+                locationGroup.innerHTML = `
+                    <div class="location-header" onclick="toggleLocation('${group.location}')">
+                        <div class="location-name">原库位：${group.location_name}</div>
+                        <div class="location-toggle">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+                                <path d="M6 9L12 15L18 9" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                         </div>
                     </div>
-                    <div class="pending-content">
-                        <div class="pending-img-area">
-                            <div class="pending-img">
-                                <img src="${item.img}" alt="产品图片">
+                    <div class="location-items"></div>
+                `;
+                
+                const locationItems = locationGroup.querySelector('.location-items');
+                
+                group.items.forEach(item => {
+                    // 查找是否已选中以及选中数量
+                    const checkedItem = checkedInventory.find(checked => checked.id === item.id);
+                    
+                    const isChecked = !!checkedItem;
+                    const selectedQty = checkedItem ? checkedItem.selectedQty || item.qty : 0;
+                    
+                    // 确定勾选框状态
+                    let checkboxClass = '';
+                    if (isChecked) {
+                        if (selectedQty === item.qty) {
+                            checkboxClass = 'checked';
+                        } else if (selectedQty > 0) {
+                            checkboxClass = 'partial';
+                        }
+                    }
+                    
+                    const inventoryItem = document.createElement('div');
+                    inventoryItem.className = 'inventory-item';
+                    inventoryItem.innerHTML = `
+                        <div class="inventory-item-header">
+                            <div class="pending-fnsku-wrapper">
+                                <div class="pending-sku-display">${item.sku}</div>
+                                <div class="inventory-check ${checkboxClass}" data-id="${item.id}"></div>
                             </div>
                         </div>
-                        <div class="pending-info-main">
-                            <div class="pending-info">
-                                <div class="pending-row"><span class="label">货号：</span>${item.spu}</div>
-                                <div class="pending-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
-                                <div class="pending-sku"><span class="label">SKU：</span>${item.sku}</div>
+                        <div class="pending-content">
+                            <div class="pending-img-area">
+                                <div class="pending-img">
+                                    <img src="${item.img}" alt="产品图片">
+                                </div>
                             </div>
-                            <div class="pending-count-area">
-                                <div class="pending-count-box">
-                                    <div class="pending-count-label">已选/可移入</div>
-                                    <div class="pending-count-row">
-                                        <input type="number" class="pending-count-input" value="${selectedQty}" 
-                                            onchange="updateItemSelectedQty(${item.id}, this.value)" min="0" max="${item.qty}">
-                                        <span style="color:#222;font-weight:bold;">/</span>
-                                        <span class="pending-total">${item.qty}</span>
+                            <div class="pending-info-main">
+                                <div class="pending-info">
+                                    <div class="pending-row"><span class="label">货号：</span>${item.spu}</div>
+                                    <div class="pending-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
+                                    <div class="pending-row"><span class="label">条码：</span>${item.fnsku}</div>
+                                </div>
+                                <div class="pending-count-area">
+                                    <div class="pending-count-box">
+                                        <div class="pending-count-label">已选/可移入</div>
+                                        <div class="pending-count-row">
+                                            <input type="number" class="pending-count-input" value="${selectedQty}" 
+                                                onchange="updateItemSelectedQty(${item.id}, this.value)" min="0" max="${item.qty}">
+                                            <span style="color:#222;font-weight:bold;">/</span>
+                                            <span class="pending-total">${item.qty}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                    
+                    locationItems.appendChild(inventoryItem);
+                });
                 
-                list.appendChild(listItem);
+                list.appendChild(locationGroup);
             });
             
             // 添加勾选事件
@@ -1085,6 +1270,16 @@
             
             // 更新全选按钮状态
             updateSelectAllButtonState(filteredData);
+            
+            // 初始化所有库位为展开状态
+            Object.keys(groupedByLocation).forEach(location => {
+                const header = list.querySelector(`[data-location="${location}"] .location-header`);
+                const items = list.querySelector(`[data-location="${location}"] .location-items`);
+                if (header && items) {
+                    header.classList.remove('collapsed');
+                    items.classList.remove('collapsed');
+                }
+            });
         }
 
         // 更新已选数量
@@ -1217,13 +1412,20 @@
                 
                 // 更新UI
                 document.querySelectorAll('.inventory-check').forEach(checkbox => {
-                    checkbox.classList.remove('partial');
-                    checkbox.classList.add('checked');
+                    const itemId = parseInt(checkbox.getAttribute('data-id'));
+                    // 只更新过滤后的项目
+                    if (filteredData.some(item => item.id === itemId)) {
+                        checkbox.classList.remove('partial');
+                        checkbox.classList.add('checked');
+                    }
                 });
                 
                 // 更新输入框
                 document.querySelectorAll('.inventory-item').forEach(itemElement => {
-                    const itemId = parseInt(itemElement.querySelector('.inventory-check').getAttribute('data-id'));
+                    const checkbox = itemElement.querySelector('.inventory-check');
+                    if (!checkbox) return;
+                    
+                    const itemId = parseInt(checkbox.getAttribute('data-id'));
                     const item = filteredData.find(i => i.id === itemId);
                     
                     if (item) {
@@ -1262,38 +1464,6 @@
             document.getElementById('inventoryModal').classList.remove('visible');
         }
 
-        // 库位扫描输入框逻辑
-        const locationInput = document.getElementById('locationInput');
-        locationInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const locationCode = this.value.trim();
-                if (!locationCode) return;
-                
-                // 校验库位是否存在
-                if (!location_data[locationCode]) {
-                    showAlert('库位不属于当前仓库');
-                    this.value = '';
-                    return;
-                }
-                // 获取当前从sessionStorage中选择的仓库
-                const selectedWarehouse = sessionStorage.getItem('selectedWarehouse');
-                
-                // 校验库位是否与当前仓库一致
-                if (location_data[locationCode].warehouse !== selectedWarehouse) {
-                    showAlert('库位不属于当前仓库');
-                    this.value = '';
-                    return;
-                }
-                
-                showCurrentLocation(locationCode);
-            }
-        });
-
-        // 选择移入库存按钮点击事件
-        document.getElementById('addDetailBtn').addEventListener('click', function() {
-            showInventoryModal();
-        });
-
         // 库存筛选输入框逻辑
         document.getElementById('filterInput').addEventListener('keyup', function() {
             renderInventoryList(this.value.trim());
@@ -1331,14 +1501,16 @@
                 return;
             }
             
-            showAlert('移入成功', 'success');
+            // 更新弹窗中的商品数量
+            document.getElementById('modalItemCount').textContent = selectedItems.length;
             
-            // 延时后清空
+            // 显示确认移入弹窗
+            document.getElementById('confirmTransferModalOverlay').classList.add('visible');
+            
+            // 聚焦到库位码输入框
             setTimeout(() => {
-                selectedItems = [];
-                clearLocation();
-                renderPendingList();
-            }, 1000);
+                document.getElementById('modalLocationInput').focus();
+            }, 300);
         });
 
         // 显示提示弹窗
@@ -1399,6 +1571,88 @@
             renderPendingList();
             updateTooltip();
         };
+
+        // 添加展开/收起功能
+        function toggleLocation(location) {
+            const group = document.querySelector(`[data-location="${location}"]`);
+            if (!group) return;
+
+            const header = group.querySelector('.location-header');
+            const items = group.querySelector('.location-items');
+            const toggle = group.querySelector('.location-toggle');
+
+            header.classList.toggle('collapsed');
+            items.classList.toggle('collapsed');
+            toggle.classList.toggle('collapsed');
+        }
+
+        // 弹窗中库位码输入框逻辑
+        document.getElementById('modalLocationInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const locationCode = this.value.trim();
+                if (!locationCode) return;
+                
+                // 校验库位是否存在
+                if (!location_data[locationCode]) {
+                    showAlert('库位不属于当前仓库');
+                    this.value = '';
+                    return;
+                }
+                
+                // 获取当前从sessionStorage中选择的仓库
+                const selectedWarehouse = sessionStorage.getItem('selectedWarehouse');
+                
+                // 校验库位是否与当前仓库一致
+                if (location_data[locationCode].warehouse !== selectedWarehouse) {
+                    showAlert('库位不属于当前仓库');
+                    this.value = '';
+                    return;
+                }
+                
+                // 校验通过，启用确认按钮
+                document.getElementById('modalConfirmBtn').disabled = false;
+                
+                // 保存目标库位码
+                window.targetLocationCode = locationCode;
+            }
+        });
+
+        // 弹窗取消按钮点击事件
+        document.getElementById('modalCancelBtn').addEventListener('click', function() {
+            // 隐藏弹窗
+            document.getElementById('confirmTransferModalOverlay').classList.remove('visible');
+            
+            // 清空输入框和目标库位
+            document.getElementById('modalLocationInput').value = '';
+            document.getElementById('modalConfirmBtn').disabled = true;
+            window.targetLocationCode = '';
+        });
+
+        // 弹窗确认按钮点击事件
+        document.getElementById('modalConfirmBtn').addEventListener('click', function() {
+            // 隐藏弹窗
+            document.getElementById('confirmTransferModalOverlay').classList.remove('visible');
+            
+            // 显示成功提示
+            showAlert('移入成功', 'success');
+            
+            // 延时后清空
+            setTimeout(() => {
+                selectedItems = [];
+                clearLocation();
+                renderPendingList();
+                
+                // 清空弹窗输入框和目标库位
+                document.getElementById('modalLocationInput').value = '';
+                document.getElementById('modalConfirmBtn').disabled = true;
+                window.targetLocationCode = '';
+            }, 1000);
+        });
+
+        // 选择移入库存按钮点击事件
+        document.getElementById('addDetailBtn').addEventListener('click', function() {
+            showInventoryModal();
+        });
     </script>
 </body>
 </html> 
