@@ -288,13 +288,11 @@
             display: block;
         }
         .pending-fnsku {
+            position: static;
             font-size: 12px;
             color: #888;
-            word-break: break-all;
             text-align: right;
-            position: absolute;
-            top: 14px;
-            right: 12px;
+            margin-right: 8px;
         }
         .pending-info-main {
             flex-grow: 1;
@@ -479,35 +477,55 @@
             border-bottom: 1px solid #eee;
         }
         .inventory-check {
-            position: absolute;
-            top: 12px;
-            right: 12px;
+            position: static;
             width: 20px;
             height: 20px;
             border: 1.5px solid #1677ff;
             border-radius: 4px;
             cursor: pointer;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            position: relative;
         }
         .inventory-check.checked {
             background: #1677ff;
         }
         .inventory-check.checked::after {
             content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
             width: 12px;
             height: 6px;
             border-left: 2px solid #fff;
             border-bottom: 2px solid #fff;
-            transform: translate(-50%, -70%) rotate(-45deg);
+            transform: rotate(-45deg) translate(1px, -1px);
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            margin-left: -6px;
+        }
+        .inventory-check.partial {
+            background: #1677ff;
+        }
+        .inventory-check.partial::after {
+            content: '';
+            width: 10px;
+            height: 2px;
+            background-color: #fff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         
         .inventory-item .pending-fnsku {
-            position: absolute;
-            top: 14px;
-            right: 40px;
+            position: static;
+            font-size: 12px;
+            color: #888;
             text-align: right;
+            margin-right: 8px;
         }
         /* Tooltip Styles */
         .tooltip-container {
@@ -607,6 +625,88 @@
             font-size: 22px;
             text-align: center;
         }
+        /* 添加已选/可移出数量样式 */
+        .pending-count-area {
+            flex-shrink: 0;
+            width: 110px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .pending-count-label {
+            color: #444;
+            font-size: 15px;
+            margin-bottom: 4px;
+            line-height: 1.1;
+        }
+        .pending-count-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f6f6f6;
+            border-radius: 10px;
+            padding: 8px 4px;
+            min-width: 110px;
+            max-width: 130px;
+            height: 75px;
+            text-align: center;
+        }
+        .pending-count-row {
+            white-space: nowrap;
+            padding: 0 6px;
+        }
+        .pending-count-input {
+            width: 35px;
+            height: 35px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 18px;
+            color: #00aaff;
+            font-weight: bold;
+            margin-right: 2px;
+            box-sizing: border-box;
+        }
+        .pending-count-input::-webkit-outer-spin-button,
+        .pending-count-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .pending-count-input:focus {
+            border-color: #1677ff;
+            outline: none;
+        }
+        .pending-total {
+            color: #222;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        /* 修改库存选择弹窗 */
+        .select-all-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .select-all-btn.active {
+            background: #e8f0fe;
+            color: #1677ff;
+            border-color: #1677ff;
+        }
+        .pending-fnsku-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
     </style>
 </head>
 <body>
@@ -661,6 +761,7 @@
                 </svg>
             </button>
             <div class="inventory-modal-title">选择库存</div>
+            <button class="select-all-btn" id="selectAllBtn">全选</button>
         </div>
         <div class="inventory-search">
             <div class="scan-input-wrapper">
@@ -756,6 +857,9 @@
         let currentWarehouse = '';
         // 存储选中的库存项
         let checkedInventory = [];
+
+        // 标记是否已全选
+        let isAllSelected = false;
 
         // 清空当前库位
         function clearLocation() {
@@ -874,16 +978,32 @@
             }
             
             filteredData.forEach((item, index) => {
-                const isChecked = checkedInventory.some(checked => checked.id === item.id);
+                // 查找是否已选中以及选中数量
+                const checkedItem = checkedInventory.find(checked => checked.id === item.id);
+                
+                const isChecked = !!checkedItem;
+                const selectedQty = checkedItem ? checkedItem.selectedQty || item.qty : 0;
+                
+                // 确定勾选框状态
+                let checkboxClass = '';
+                if (isChecked) {
+                    if (selectedQty === item.qty) {
+                        checkboxClass = 'checked';
+                    } else if (selectedQty > 0) {
+                        checkboxClass = 'partial';
+                    }
+                }
                 
                 const listItem = document.createElement('div');
                 listItem.className = 'inventory-item';
                 listItem.innerHTML = `
                     <div class="inventory-item-header">
                         <div class="pending-location">原库位：${location_data[item.origin_location]?.name || item.origin_location}</div>
+                        <div class="pending-fnsku-wrapper">
+                            <span class="pending-fnsku">${item.fnsku}</span>
+                            <div class="inventory-check ${checkboxClass}" data-id="${item.id}"></div>
+                        </div>
                     </div>
-                    <div class="pending-fnsku">${item.fnsku}</div>
-                    <div class="inventory-check ${isChecked ? 'checked' : ''}" data-id="${item.id}"></div>
                     <div class="pending-content">
                         <div class="pending-img-area">
                             <div class="pending-img">
@@ -896,9 +1016,16 @@
                                 <div class="pending-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
                                 <div class="pending-sku"><span class="label">SKU：</span>${item.sku}</div>
                             </div>
-                            <div class="transfer-qty-box">
-                                <div class="transfer-qty-label">数量</div>
-                                <div class="transfer-qty-value">${item.qty}</div>
+                            <div class="pending-count-area">
+                                <div class="pending-count-box">
+                                    <div class="pending-count-label">已选/可移入</div>
+                                    <div class="pending-count-row">
+                                        <input type="number" class="pending-count-input" value="${selectedQty}" 
+                                            onchange="updateItemSelectedQty(${item.id}, this.value)" min="0" max="${item.qty}">
+                                        <span style="color:#222;font-weight:bold;">/</span>
+                                        <span class="pending-total">${item.qty}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -913,18 +1040,199 @@
                     const itemId = parseInt(this.getAttribute('data-id'));
                     const item = inventory_data.find(item => item.id === itemId);
                     
-                    if (this.classList.contains('checked')) {
-                        // 取消选中
-                        this.classList.remove('checked');
-                        checkedInventory = checkedInventory.filter(checked => checked.id !== itemId);
+                    // 查找是否已选中以及选中数量
+                    const existingIndex = checkedInventory.findIndex(checked => checked.id === itemId);
+                    
+                    const isAlreadyChecked = existingIndex !== -1;
+                    const checkedItem = isAlreadyChecked ? checkedInventory[existingIndex] : null;
+                    const currentSelectedQty = checkedItem ? checkedItem.selectedQty || item.qty : 0;
+                    
+                    if (isAlreadyChecked) {
+                        // 已选中的情况
+                        if (currentSelectedQty === item.qty || currentSelectedQty === 0) {
+                            // 完全选中或还未选数量，取消选中
+                            checkedInventory.splice(existingIndex, 1);
+                            this.classList.remove('checked');
+                            this.classList.remove('partial');
+                            
+                            // 更新输入框
+                            const input = this.closest('.inventory-item').querySelector('.pending-count-input');
+                            if (input) input.value = 0;
+                        } else {
+                            // 部分选中状态下，变为完全选中
+                            checkedInventory[existingIndex].selectedQty = item.qty;
+                            this.classList.remove('partial');
+                            this.classList.add('checked');
+                            
+                            // 更新输入框
+                            const input = this.closest('.inventory-item').querySelector('.pending-count-input');
+                            if (input) input.value = item.qty;
+                        }
                     } else {
-                        // 选中
+                        // 未选中，添加选中状态并设置为全选
+                        checkedInventory.push({...item, selectedQty: item.qty});
                         this.classList.add('checked');
-                        checkedInventory.push(item);
+                        
+                        // 更新输入框
+                        const input = this.closest('.inventory-item').querySelector('.pending-count-input');
+                        if (input) input.value = item.qty;
                     }
+                    
+                    // 更新全选按钮状态
+                    updateSelectAllButtonState(filteredData);
                 });
             });
+            
+            // 更新全选按钮状态
+            updateSelectAllButtonState(filteredData);
         }
+
+        // 更新已选数量
+        function updateItemSelectedQty(itemId, value) {
+            const qty = Math.max(0, parseInt(value) || 0);
+            const existingIndex = checkedInventory.findIndex(checked => checked.id === itemId);
+            
+            // 获取库存项
+            const item = inventory_data.find(item => item.id === itemId);
+            
+            if (!item) return;
+            
+            // 限制数量不超过可用数量
+            const maxQty = item.qty;
+            const finalQty = Math.min(qty, maxQty);
+            
+            if (existingIndex !== -1) {
+                // 已存在于选中列表
+                if (finalQty === 0) {
+                    // 数量为0，从选中列表移除
+                    checkedInventory.splice(existingIndex, 1);
+                } else {
+                    // 更新数量
+                    checkedInventory[existingIndex].selectedQty = finalQty;
+                }
+            } else if (finalQty > 0) {
+                // 不存在于选中列表但数量大于0，添加到选中列表
+                checkedInventory.push({...item, selectedQty: finalQty});
+            }
+            
+            // 更新勾选框状态
+            const checkbox = document.querySelector(`.inventory-check[data-id="${itemId}"]`);
+            if (checkbox) {
+                checkbox.classList.remove('checked', 'partial');
+                if (finalQty > 0) {
+                    if (finalQty === maxQty) {
+                        checkbox.classList.add('checked');
+                    } else {
+                        checkbox.classList.add('partial');
+                    }
+                }
+            }
+            
+            // 更新全选按钮状态
+            const filter = document.getElementById('filterInput').value.trim();
+            const filteredData = inventory_data.filter(item => 
+                item.origin_warehouse === currentWarehouse &&
+                (!filter || item.fnsku.includes(filter) || item.sku.includes(filter))
+            );
+            updateSelectAllButtonState(filteredData);
+        }
+        
+        // 更新全选按钮状态
+        function updateSelectAllButtonState(filteredData) {
+            // 检查是否所有显示的项目都被选中
+            const allChecked = filteredData.every(item => 
+                checkedInventory.some(checked => 
+                    checked.id === item.id && 
+                    checked.selectedQty === item.qty
+                )
+            );
+            
+            // 检查是否有部分选中
+            const someChecked = filteredData.some(item => 
+                checkedInventory.some(checked => 
+                    checked.id === item.id
+                )
+            );
+            
+            isAllSelected = allChecked;
+            const selectAllBtn = document.getElementById('selectAllBtn');
+            if (allChecked) {
+                selectAllBtn.classList.add('active');
+            } else {
+                selectAllBtn.classList.remove('active');
+            }
+        }
+        
+        // 处理全选按钮点击
+        document.getElementById('selectAllBtn').addEventListener('click', function() {
+            const filter = document.getElementById('filterInput').value.trim();
+            let filteredData = inventory_data.filter(item => item.origin_warehouse === currentWarehouse);
+            
+            if (filter) {
+                filteredData = filteredData.filter(item => 
+                    item.fnsku.includes(filter) || item.sku.includes(filter)
+                );
+            }
+            
+            if (isAllSelected) {
+                // 取消全选
+                isAllSelected = false;
+                this.classList.remove('active');
+                
+                // 从选中列表中移除当前过滤后的所有项
+                filteredData.forEach(item => {
+                    checkedInventory = checkedInventory.filter(checked => 
+                        !(checked.id === item.id)
+                    );
+                });
+                
+                // 更新UI
+                document.querySelectorAll('.inventory-check').forEach(checkbox => {
+                    checkbox.classList.remove('checked', 'partial');
+                });
+                
+                // 更新输入框
+                document.querySelectorAll('.pending-count-input').forEach(input => {
+                    input.value = 0;
+                });
+            } else {
+                // 全选
+                isAllSelected = true;
+                this.classList.add('active');
+                
+                // 添加所有未选中的项
+                filteredData.forEach(item => {
+                    const existingIndex = checkedInventory.findIndex(checked => 
+                        checked.id === item.id
+                    );
+                    
+                    if (existingIndex !== -1) {
+                        // 更新已存在项的数量为最大值
+                        checkedInventory[existingIndex].selectedQty = item.qty;
+                    } else {
+                        // 添加新项
+                        checkedInventory.push({...item, selectedQty: item.qty});
+                    }
+                });
+                
+                // 更新UI
+                document.querySelectorAll('.inventory-check').forEach(checkbox => {
+                    checkbox.classList.remove('partial');
+                    checkbox.classList.add('checked');
+                });
+                
+                // 更新输入框
+                document.querySelectorAll('.inventory-item').forEach(itemElement => {
+                    const itemId = parseInt(itemElement.querySelector('.inventory-check').getAttribute('data-id'));
+                    const item = filteredData.find(i => i.id === itemId);
+                    
+                    if (item) {
+                        const input = itemElement.querySelector('.pending-count-input');
+                        if (input) input.value = item.qty;
+                    }
+                });
+            }
+        });
 
         // 显示库存选择弹窗
         function showInventoryModal() {
@@ -1003,8 +1311,11 @@
 
         // 库存弹窗确认按钮
         document.getElementById('inventoryConfirmBtn').addEventListener('click', function() {
-            // 更新选中的货品
-            selectedItems = [...checkedInventory];
+            // 更新选中的货品，使用selectedQty作为qty
+            selectedItems = checkedInventory.map(item => ({
+                ...item,
+                qty: item.selectedQty || item.qty
+            })).filter(item => (item.selectedQty || 0) > 0);
             
             // 隐藏弹窗
             hideInventoryModal();

@@ -663,9 +663,6 @@
             border-bottom: 1px solid #eee;
         }
         .inventory-check {
-            position: absolute;
-            top: 12px;
-            right: 12px;
             width: 20px;
             height: 20px;
             border: 1.5px solid #1677ff;
@@ -677,20 +674,22 @@
             justify-content: center;
             transition: all 0.2s;
             flex-shrink: 0;
+            position: relative;
         }
         .inventory-check.checked {
             background: #1677ff;
         }
         .inventory-check.checked::after {
             content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
             width: 12px;
             height: 6px;
             border-left: 2px solid #fff;
             border-bottom: 2px solid #fff;
-            transform: translate(-50%, -70%) rotate(-45deg);
+            transform: rotate(-45deg) translate(1px, -1px);
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            margin-left: -6px;
         }
         
         .inventory-item .pending-fnsku {
@@ -867,6 +866,7 @@
             justify-content: center;
             transition: all 0.2s;
             flex-shrink: 0;
+            position: relative;
         }
         .inventory-check.checked {
             background: #1677ff;
@@ -877,10 +877,11 @@
             height: 6px;
             border-left: 2px solid #fff;
             border-bottom: 2px solid #fff;
-            transform: translate(-50%, -70%) rotate(-45deg);
+            transform: rotate(-45deg) translate(1px, -1px);
             position: absolute;
-            top: 50%;
+            top: 45%;
             left: 50%;
+            margin-left: -6px;
         }
         .inventory-check.partial {
             background: #1677ff;
