@@ -504,6 +504,9 @@
         .pending-item.checked-highlight {
             background-color: #e8f0fe; /* Light blue background */
         }
+        .pending-item.checked-highlight .pending-header {
+            background-color: #e8f0fe; /* Light blue background for header too */
+        }
 
         /* Custom Modal Styles */
         .custom-modal-overlay {
@@ -845,6 +848,57 @@
             sessionStorage.setItem(`confirmedCounts_${pickingCode}`, JSON.stringify(confirmedCounts));
         }
 
+        // 从sessionStorage获取已确认的拣货数量（按库位）
+        function getConfirmedLocationCounts() {
+            const confirmedLocationCountsStr = sessionStorage.getItem(`confirmedLocationCounts_${pickingCode}`);
+            return confirmedLocationCountsStr ? JSON.parse(confirmedLocationCountsStr) : {};
+        }
+
+        // 保存已确认的拣货数量到sessionStorage（按库位）
+        function saveConfirmedLocationCounts(confirmedLocationCounts) {
+            sessionStorage.setItem(`confirmedLocationCounts_${pickingCode}`, JSON.stringify(confirmedLocationCounts));
+        }
+
+        // 从sessionStorage获取临时拣货数量（未确认的当前session数量）
+        function getTempCounts() {
+            const tempCountsStr = sessionStorage.getItem(`tempCounts_${pickingCode}`);
+            return tempCountsStr ? JSON.parse(tempCountsStr) : {};
+        }
+
+        // 保存临时拣货数量到sessionStorage
+        function saveTempCounts() {
+            // 将当前pendingData中的current值保存为临时数量
+            const tempCounts = {};
+            
+            // 使用"SKU_location"作为键来唯一标识每个库位的SKU
+            pendingData.forEach(item => {
+                if (item.current > 0) {
+                    const key = `${item.sku}_${item.location}`;
+                    tempCounts[key] = item.current;
+                }
+            });
+            
+            // 只有在有选择的情况下才保存临时数据
+            if (Object.keys(tempCounts).length > 0) {
+                sessionStorage.setItem(`tempCounts_${pickingCode}`, JSON.stringify(tempCounts));
+                console.log('保存临时数量(按库位):', tempCounts);
+            } else {
+                // 如果没有选择，则清除临时数据
+                clearTempCounts();
+            }
+        }
+
+        // 清除临时拣货数量
+        function clearTempCounts() {
+            sessionStorage.removeItem(`tempCounts_${pickingCode}`);
+            console.log('清除临时数量');
+            
+            // 确保pendingData中的current都设为0
+            pendingData.forEach(item => {
+                item.current = 0;
+            });
+        }
+
         // 模拟待拣货数据
         const pendingData = [
             {
@@ -884,12 +938,50 @@
 
         // 初始化时从sessionStorage加载已确认的数量
         const confirmedCounts = getConfirmedCounts();
+        const confirmedLocationCounts = getConfirmedLocationCounts();
+        
+        console.log('初始化 - 已确认数量(总计):', confirmedCounts);
+        console.log('初始化 - 已确认数量(按库位):', confirmedLocationCounts);
+        
+        // 使用按库位的确认数量直接减少待拣数量
         pendingData.forEach(item => {
-            if (confirmedCounts[item.sku]) {
-                // 减去已确认的数量来得到真实的待拣货数量
-                item.num -= confirmedCounts[item.sku];
+            const locationKey = `${item.sku}_${item.location}`;
+            if (confirmedLocationCounts[locationKey]) {
+                // 直接从对应库位减去已确认的数量
+                const confirmedForThisLocation = Math.min(item.num, confirmedLocationCounts[locationKey]);
+                item.num -= confirmedForThisLocation;
+                console.log(`按库位减少: SKU ${item.sku} 在库位 ${item.location} 的待拣数量调整为: ${item.num} (减少了 ${confirmedForThisLocation})`);
             }
         });
+
+        // 加载临时缓存数据（未确认的当前session数量）
+        const tempCounts = getTempCounts();
+        
+        // 添加一个标记来判断当前是否是由确认拣货引起的页面刷新
+        // 从sessionStorage获取标记
+        const isConfirmRefresh = sessionStorage.getItem(`isConfirmRefresh_${pickingCode}`) === 'true';
+        
+        // 如果是确认拣货引起的刷新，则不加载临时缓存
+        if (Object.keys(tempCounts).length > 0 && !isConfirmRefresh) {
+            console.log('加载临时缓存数据(按库位):', tempCounts);
+            
+            pendingData.forEach(item => {
+                // 使用"SKU_location"作为键来查找对应的临时数量
+                const key = `${item.sku}_${item.location}`;
+                if (tempCounts[key] !== undefined) {
+                    // 确保不超过可拣数量
+                    item.current = Math.min(tempCounts[key], item.num);
+                    console.log(`恢复临时数量: SKU ${item.sku} 在库位 ${item.location} 的临时数量设置为: ${item.current}`);
+                }
+            });
+        } else if (isConfirmRefresh) {
+            // 如果是确认拣货引起的刷新，清除标记
+            sessionStorage.removeItem(`isConfirmRefresh_${pickingCode}`);
+            console.log('确认拣货后刷新，不加载临时缓存');
+            
+            // 确保清除临时缓存
+            clearTempCounts();
+        }
 
         // 存储已扫描的箱码
         const scannedBoxCodes = new Set();
@@ -898,11 +990,11 @@
         const boxData = {
             'CD250423000001': {
                 skus: ['ST210628UBCOGNAC100', 'ST210628UBBLACK9'],
-                quantities: [15, 35]
+                quantities: [15, 10]
             },
             'CD250423000002': {
                 skus: ['ST210628UBCOGNAC100', 'ST210628UBBLACK9'],
-                quantities: [15, 35]
+                quantities: [15, 5]
             },
             'CD250423000003': {
                 skus: ['ST210628UBCOGNAC090', 'ST210628UBBLACK100'],
@@ -956,6 +1048,8 @@
                 pendingItem.current += quantity;
             }
 
+            // 保存临时数据
+            saveTempCounts();
             return true;
         }
 
@@ -976,6 +1070,9 @@
 
             // 校验通过，更新数量
             pendingItem.current += 1;
+            
+            // 保存临时数据
+            saveTempCounts();
             return true;
         }
 
@@ -986,8 +1083,17 @@
             // 计算列表中剩余待拣数量总和
             const remainingToPickInList = pendingData.reduce((sum, item) => sum + item.num, 0);
             
+            // 获取已确认数量
+            const confirmedCounts = getConfirmedCounts();
+            const totalConfirmed = Object.values(confirmedCounts).reduce((sum, count) => sum + count, 0);
+            
             const totalPlannedCount = detailData[pickingCode].totalCount;
-            // const pendingToPickCount = totalPlannedCount - currentPickingCount; // Original calculation
+            
+            console.log('更新显示区域:');
+            console.log('本次已选:', currentPickedInSession);
+            console.log('待拣数量:', remainingToPickInList);
+            console.log('已确认数量:', totalConfirmed);
+            console.log('总计划数量:', totalPlannedCount);
 
             // Update the single quantity display
             // Display format: 已选/待拣/总数
@@ -1008,8 +1114,7 @@
             }
 
             // 终止拣货按钮状态：待拣数量等于总数或等于0时禁用
-            // Now using remainingToPickInList for the condition
-            terminateBtn.disabled = (remainingToPickInList === totalPlannedCount);
+            terminateBtn.disabled = (remainingToPickInList === 0 || remainingToPickInList === totalPlannedCount);
         }
 
         // 渲染待拣货列表
@@ -1044,7 +1149,7 @@
                     </div>
                     <div class="location-items">
                         ${group.items.map((item, index) => `
-                            <div class="pending-item ${item.current === item.num ? 'checked-highlight' : ''}">
+                            <div class="pending-item ${item.current === item.num ? 'checked-highlight' : (item.current > 0 ? 'checked-highlight' : '')}">
                                 <div class="pending-header">
                                     <div class="pending-fnsku-wrapper">
                                         <div class="pending-sku-display">${item.sku}</div>
@@ -1139,6 +1244,9 @@
                 }
             }
 
+            console.log(`勾选操作: ${item.sku}, 当前数量: ${item.current}, 总数: ${item.num}`);
+            // 保存临时数据
+            saveTempCounts();
             updateInfoArea();
             renderPendingList();
         }
@@ -1170,6 +1278,9 @@
                 }
             }
             
+            console.log(`手动修改数量: ${item.sku}, 当前数量: ${item.current}, 总数: ${item.num}`);
+            // 保存临时数据
+            saveTempCounts();
             updateInfoArea();
             renderPendingList();
         }
@@ -1226,6 +1337,8 @@
             pendingData.forEach(item => {
                 item.current = 0;
             });
+            // 清除临时缓存
+            clearTempCounts();
             updateInfoArea();
             renderPendingList();
         };
@@ -1264,17 +1377,60 @@
             confirmPickingModalOverlay.classList.remove('visible');
 
             // 保存当前拣货数量到sessionStorage
-            const currentConfirmedCounts = getConfirmedCounts(); // Get existing confirmed counts
+            const currentConfirmedCounts = getConfirmedCounts(); // 总计数
+            const currentConfirmedLocationCounts = getConfirmedLocationCounts(); // 按库位计数
+            
             let totalPickedThisSession = 0; // Track total picked in this session for the calculation
+            
+            // 使用一个临时对象来合并相同SKU的数量，避免重复计算
+            const tempPickedCounts = {};
+            
+            // 记录每个库位的拣货数量
+            const locationPickedDetails = {};
+            
             pendingData.forEach(item => {
                 if (item.current > 0) {
-                    // Add newly picked quantity to existing confirmed quantity for this SKU
-                    currentConfirmedCounts[item.sku] = (currentConfirmedCounts[item.sku] || 0) + item.current;
+                    // 记录每个库位的拣货明细
+                    const locationKey = `${item.sku}_${item.location}`;
+                    locationPickedDetails[locationKey] = item.current;
+                    
+                    // 更新按库位的确认数量
+                    currentConfirmedLocationCounts[locationKey] = (currentConfirmedLocationCounts[locationKey] || 0) + item.current;
+                    
+                    // 合并相同SKU的数量到临时对象（用于总计）
+                    tempPickedCounts[item.sku] = (tempPickedCounts[item.sku] || 0) + item.current;
                     totalPickedThisSession += item.current; // Add to session total
                 }
             });
+            
+            // 然后将临时对象中的数量添加到已确认数量中（总计）
+            Object.keys(tempPickedCounts).forEach(sku => {
+                currentConfirmedCounts[sku] = (currentConfirmedCounts[sku] || 0) + tempPickedCounts[sku];
+            });
+            
+            // 保存更新后的确认数量
             saveConfirmedCounts(currentConfirmedCounts);
-
+            saveConfirmedLocationCounts(currentConfirmedLocationCounts);
+            
+            // 清除临时缓存
+            clearTempCounts();
+            
+            // 清空所有商品的current属性，确保页面刷新后不会自动选中
+            pendingData.forEach(item => {
+                item.current = 0;
+            });
+            
+            // 设置标记，表示当前是由确认拣货引起的页面刷新
+            sessionStorage.setItem(`isConfirmRefresh_${pickingCode}`, 'true');
+            
+            // 记录调试信息
+            console.log('确认拣货后：');
+            console.log('本次拣货数量:', totalPickedThisSession);
+            console.log('本次拣货库位明细:', locationPickedDetails);
+            console.log('本次拣货SKU合并后:', tempPickedCounts);
+            console.log('更新后的已确认数量(总计):', currentConfirmedCounts);
+            console.log('更新后的已确认数量(按库位):', currentConfirmedLocationCounts);
+            
             // 使用success类型的提示
             showCustomAlert('拣货成功', 'success');
 
@@ -1282,12 +1438,16 @@
             const totalPlannedCount = detailData[pickingCode].totalCount;
             const totalConfirmedAfterThis = Object.values(currentConfirmedCounts).reduce((sum, count) => sum + count, 0);
             const remainingAfterThis = totalPlannedCount - totalConfirmedAfterThis;
+            
+            console.log('总计划数量:', totalPlannedCount);
+            console.log('确认后总已拣数量:', totalConfirmedAfterThis);
+            console.log('剩余待拣数量:', remainingAfterThis);
 
             // If remaining is 0, go back to list page; otherwise, reload page
-                setTimeout(() => {
+            setTimeout(() => {
                 if (remainingAfterThis <= 0) {
                     window.location.href = 'warehouse_picking_list.html'; // Navigate to list page
-            } else {
+                } else {
                     window.location.reload(); // Reload current page
                 }
             }, 1500); // Wait for 1.5 seconds before action
@@ -1362,6 +1522,9 @@
             
             // 清除sessionStorage中的缓存
             sessionStorage.removeItem(`confirmedCounts_${pickingCode}`);
+            sessionStorage.removeItem(`confirmedLocationCounts_${pickingCode}`);
+            // 清除临时缓存
+            clearTempCounts();
             
             // 显示成功提示
             showCustomAlert('拣货终止', 'success');
@@ -1375,6 +1538,25 @@
         // 页面加载时初始化
         document.getElementById('pickingCode').textContent = detailData[pickingCode].pickingCode;
         document.getElementById('shippingCode').textContent = detailData[pickingCode].shippingCode;
+        
+        // 添加调试日志
+        console.log('初始化数据：');
+        console.log('待拣货数据:', JSON.parse(JSON.stringify(pendingData)));
+        console.log('已确认数量(总计):', confirmedCounts);
+        console.log('已确认数量(按库位):', confirmedLocationCounts);
+        console.log('临时缓存数据:', tempCounts);
+        const totalPending = pendingData.reduce((sum, item) => sum + item.num, 0);
+        const totalConfirmed = Object.values(confirmedCounts).reduce((sum, count) => sum + count, 0);
+        console.log('当前待拣总数:', totalPending);
+        console.log('已确认总数:', totalConfirmed);
+        console.log('总数校验:', totalPending + totalConfirmed, '应等于', detailData[pickingCode].totalCount);
+        
+        // 添加页面卸载事件监听器
+        window.addEventListener('beforeunload', function() {
+            // 保存临时数据
+            saveTempCounts();
+        });
+        
         updateInfoArea();
         renderPendingList();
     </script>
