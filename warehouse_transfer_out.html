@@ -983,7 +983,7 @@
                     </svg>
                 </button>
                 <span class="header-title">批量移库</span>
-                <button class="moveout-all-btn" id="moveoutAllBtn" disabled>选择移出</button>
+                <button class="moveout-all-btn" id="moveoutAllBtn" disabled>选择库存</button>
             </div>
             <div class="tooltip-container">
                 <span class="info-icon">!</span>
@@ -1321,7 +1321,8 @@
                     );
                     
                     const isChecked = !!checkedItem;
-                    const selectedQty = checkedItem ? checkedItem.selectedQty || 0 : 0;
+                    // 确保使用选中项的数量，如果选中项有selectedQty则使用，否则使用qty，默认为0
+                    const selectedQty = checkedItem ? (checkedItem.selectedQty !== undefined ? checkedItem.selectedQty : checkedItem.qty) || 0 : 0;
                     
                     // 确定勾选框状态
                     let checkboxClass = '';
@@ -1359,7 +1360,9 @@
                                         <div class="pending-count-label">已选/可移出</div>
                                         <div class="pending-count-row">
                                             <input type="number" class="pending-count-input" value="${selectedQty}" 
-                                                onchange="updateItemSelectedQty('${item.fnsku}', '${item.location}', this.value)" min="0" max="${item.qty}">
+                                                onchange="updateItemSelectedQty('${item.fnsku}', '${item.location}', this.value)" 
+                                                data-fnsku="${item.fnsku}" data-location="${item.location}" 
+                                                min="0" max="${item.qty}">
                                             <span style="color:#222;font-weight:bold;">/</span>
                                             <span class="pending-total">${item.qty}</span>
                                         </div>
@@ -1459,6 +1462,16 @@
             // 限制数量不超过可用数量
             const maxQty = item.qty;
             const finalQty = Math.min(qty, maxQty);
+            
+            // 添加视觉反馈 - 高亮输入框
+            const input = document.querySelector(`.inventory-item .pending-count-input[data-fnsku="${fnsku}"][data-location="${location}"]`);
+            if (input) {
+                input.style.transition = "background-color 0.3s";
+                input.style.backgroundColor = "#e8f4ff";
+                setTimeout(() => {
+                    input.style.backgroundColor = "";
+                }, 500);
+            }
             
             if (existingIndex !== -1) {
                 // 已存在于选中列表
@@ -1704,7 +1717,7 @@
         function handleBarcode(barcode) {
             // 校验条码是否存在
             if (!items_data[barcode]) {
-                showAlert('条码不存在');
+                showAlert('条码不属于当前库位');
                 return;
             }
             
@@ -1991,8 +2004,11 @@
                 return;
             }
             
-            // 初始化为当前已扫描条码
-            checkedInventory = [...scannedItems];
+            // 初始化为当前已扫描条码，确保selectedQty等于qty
+            checkedInventory = scannedItems.map(item => ({
+                ...item,
+                selectedQty: item.qty // 确保selectedQty等于已扫描的qty
+            }));
             isAllSelected = false;
             document.getElementById('selectAllBtn').classList.remove('active');
             
