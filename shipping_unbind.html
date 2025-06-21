@@ -64,57 +64,24 @@
             flex: 1;
         }
         .note-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 22px;
-            height: 22px;
-            margin-left: 8px;
-            border-radius: 6px;
-            background: #ffe066;
-            color: #b48a00;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-            z-index: 1001;
-            border: 1px solid #ffd700;
-            position: relative;
+            display: none; /* 隐藏旧的提示图标 */
         }
         .note-tooltip {
-            display: none;
-            position: absolute;
-            top: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            min-width: 200px;
-            max-width: 340px;
-            background: #ffe066;
-            color: #222;
-            border-radius: 8px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.13);
-            padding: 16px 18px 12px 18px;
-            font-size: 15px;
-            line-height: 1.7;
-            z-index: 2000;
-            white-space: pre-line;
-        }
-        .note-icon:hover .note-tooltip {
-            display: block;
+            display: none; /* 隐藏旧的提示内容 */
         }
         .tab-bar {
             display: flex;
             background: #fff;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            margin-bottom: 18px;
+            margin-bottom: 8px;
             overflow: hidden;
         }
         .tab-btn {
             flex: 1;
             text-align: center;
-            padding: 16px 0;
-            font-size: 18px;
+            padding: 12px 0;
+            font-size: 16px;
             color: #666;
             cursor: pointer;
             transition: all 0.3s;
@@ -148,12 +115,12 @@
             background: #fff;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            padding: 18px 18px 10px 18px;
-            margin-bottom: 18px;
+            padding: 10px 18px 10px 18px;
+            margin-bottom: 8px;
             box-sizing: border-box;
         }
         .scan-group {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             position: relative;
         }
         .scan-input-wrapper {
@@ -172,7 +139,7 @@
         .scan-input {
             width: 100%;
             box-sizing: border-box;
-            padding: 14px 40px 14px 40px;
+            padding: 12px 40px 12px 40px;
             font-size: 16px;
             border: 1.5px solid #ddd;
             border-radius: 8px;
@@ -187,8 +154,8 @@
         .current-box-code {
             width: 100%;
             box-sizing: border-box;
-            padding: 14px 16px 14px 40px;
-            font-size: 19px;
+            padding: 12px 16px 12px 40px;
+            font-size: 16px;
             border: 1.5px solid #ddd;
             border-radius: 8px;
             background: #fff;
@@ -204,34 +171,138 @@
             background: #fff;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            padding: 10px 0 10px 0;
+            padding: 5px 0 10px 0;
             margin: 0 0 18px 0;
+            overflow-y: auto;
+            max-height: 320px;
         }
         .list-header {
-            display: grid;
-            grid-template-columns: 2fr 2fr 80px;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-            font-weight: bold;
-            color: #222;
+            display: none;
         }
         .list-item {
-            display: grid;
-            grid-template-columns: 2fr 2fr 80px;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            border-bottom: 2px solid #c6c5c5;
+            padding: 4px 8px 4px 8px;
+            position: relative;
+            margin-bottom: 0px;
+            background: #fff;
         }
-        .list-header > div, .list-item > div {
-            padding: 0 10px;
+        .list-item:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
         }
-        .list-header > div:last-child, .list-item > div:last-child {
+        .list-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-top: 6px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #e5e5e5;
+            width: 100%;
+            background-color: #f6f6f6;
+        }
+        .list-sku-display {
+            font-size: 15px;
+            color: #222;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 70%;
+            margin-right: auto;
+        }
+        .list-content {
+            display: flex;
+            align-items: flex-start;
+            margin-top: 8px;
+        }
+        .list-img-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+            width: 60px;
+        }
+        .list-img {
+            width: 60px;
+            height: 60px;
+            background: #ededed;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0;
+        }
+        .list-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+            display: block;
+        }
+        .list-info-main {
+            flex-grow: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .list-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+            margin-right: 10px;
+        }
+        .list-row {
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .list-row .label {
+            color: #666;
+            margin-right: 4px;
+        }
+        .list-qty-box {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f7f7f7;
+            border-radius: 10px;
+            padding: 8px;
+            min-width: 50px;
+            height: 45px;
+        }
+        .list-qty-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .list-qty-value {
+            color: #0099ff;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .no-data {
             text-align: center;
+            color: #aaa;
+            padding: 20px;
         }
         .button-area {
             position: relative;
             width: 100%;
             background: none;
-            padding: 16px 0 12px 0;
+            padding: 5px 0 12px 0;
             display: flex;
             justify-content: center;
             z-index: 100;
@@ -312,6 +383,50 @@
             font-size: 22px;
             text-align: center;
         }
+        /* 新增样式，与warehouse_transfer_out.html保持一致 */
+        .tooltip-container {
+            position: fixed;
+            top: 12px;
+            right: calc(50% - 400px / 2 + 9px + 100px);
+            display: inline-block;
+            vertical-align: middle;
+            z-index: 1001;
+        }
+        .info-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 6px;
+            background-color: #ffe066;
+            color: #b48a00;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            border: 1px solid #ffd700;
+        }
+        .tooltip-content {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 260px;
+            max-width: 340px;
+            background-color: #ffe066;
+            color: #222;
+            padding: 16px 18px 12px 18px;
+            border-radius: 8px;
+            white-space: pre-line;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .tooltip-container:hover .tooltip-content {
+            opacity: 1;
+            visibility: visible;
+        }
     </style>
 </head>
 <body>
@@ -325,12 +440,14 @@
                 </button>
                 <div class="header-title">
                     库内装箱
-                    <!-- 备注 -->
-                    <span class="note-icon">!
-                        <span class="note-tooltip">----------------装箱----------------<br>箱码：<br>CD250423000001~004<br>条码：<br>X001P67ABJ、X001P58RN9、X001P59JSB；<br>----------------解绑----------------<br>箱码：<br>CD250423000001~003
-                        </span>
-                    </span>
+                    <!-- 移除原有备注图标 -->
                 </div>
+            </div>
+            
+            <!-- 保留新的提示样式 -->
+            <div class="tooltip-container">
+                <span class="info-icon">!</span>
+                <div class="tooltip-content">----------------装箱----------------<br>箱码：<br>CD250423000001~004<br>条码：<br>X001P67ABJ、X001P58RN9、X001P59JSB；<br>----------------解绑----------------<br>箱码：<br>CD250423000001~003</div>
             </div>
             
             <div class="tab-bar">
@@ -402,9 +519,9 @@
     <script>
         // 数据模拟
         const skuDataList = [
-            { 条码: "X001P67ABJ", chinese_sku: "ST250126789/灰色/8" },
-            { 条码: "X001P58RN9", chinese_sku: "ST250126789/白色/9" },
-            { 条码: "X001P59JSB", chinese_sku: "ST250126789/灰白/9" }
+            { 条码: "X001P67ABJ", sku: "ST250126789GRAY080", img: "icon/3.png", spu: "ST250126789", color_size: "灰色/8" },
+            { 条码: "X001P58RN9", sku: "ST250126789WHITE090", img: "icon/3.png", spu: "ST250126789", color_size: "白色/9" },
+            { 条码: "X001P59JSB", sku: "ST250126789GRAYWHITE090", img: "icon/3.png", spu: "ST250126789", color_size: "灰白/9" }
         ];
         const boxDataList = [
             { box_code: "CD250423000001", is_empty: true },
@@ -416,9 +533,9 @@
         const unbindSkuData = {
             boxcode: "CD250423000002",
             skudetail: [
-                { 条码: "X001P67ABJ", chinese_sku: "ST250126789/灰色/8", quantity: 9 },
-                { 条码: "X001P58RN9", chinese_sku: "ST250126789/白色/9", quantity: 8 },
-                { 条码: "X001P59JSB", chinese_sku: "ST250126789/灰白/9", quantity: 1 }
+                { 条码: "X001P67ABJ", sku: "ST250126789GRAY080", quantity: 9 },
+                { 条码: "X001P58RN9", sku: "ST250126789WHITE090", quantity: 8 },
+                { 条码: "X001P59JSB", sku: "ST250126789GRAYWHITE090", quantity: 1 }
             ]
         };
         // 装箱逻辑
@@ -472,21 +589,69 @@
         function updateListPack() {
             const listArea = document.getElementById('listAreaPack');
             const noData = document.getElementById('noDataPack');
-            // 清空除表头外内容
-            listArea.innerHTML = `<div class="list-header"><div>条码</div><div>货号/颜色/尺码</div><div>数量</div></div>`;
+            // 清空内容
+            listArea.innerHTML = '';
             let hasData = false;
+            
             Object.entries(scannedItemsPack).forEach(([条码, data]) => {
                 hasData = true;
+                // 查找完整的SKU数据
+                const skuData = skuDataList.find(item => item.条码 === 条码) || {};
+                
                 const listItem = document.createElement('div');
                 listItem.className = 'list-item';
-                const skuDisplay = data.chineseSku || '<span class="error-text">错误数据</span>';
-                listItem.innerHTML = `<div>${条码}</div><div style="text-align:left">${skuDisplay}</div><div>${data.quantity}</div>`;
+                
+                // 添加表头
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'list-item-header';
+                headerDiv.innerHTML = `
+                    <div class="list-sku-display" title="${skuData.sku}">${skuData.sku}</div>
+                `;
+                listItem.appendChild(headerDiv);
+                
+                // 添加内容
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'list-content';
+                
+                const imgAreaDiv = document.createElement('div');
+                imgAreaDiv.className = 'list-img-area';
+                imgAreaDiv.innerHTML = `
+                    <div class="list-img">
+                        <img src="${skuData.img || 'icon/3.png'}" alt="产品图片">
+                    </div>
+                `;
+                
+                const infoMainDiv = document.createElement('div');
+                infoMainDiv.className = 'list-info-main';
+                
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'list-info';
+                infoDiv.innerHTML = `
+                    <div class="list-row"><span class="label">货号：</span>${skuData.spu || ''}</div>
+                    <div class="list-row"><span class="label">颜色/尺码：</span>${skuData.color_size || ''}</div>
+                    <div class="list-row"><span class="label">条码：</span>${条码}</div>
+                `;
+                
+                const qtyBoxDiv = document.createElement('div');
+                qtyBoxDiv.className = 'list-qty-box';
+                qtyBoxDiv.innerHTML = `
+                    <div class="list-qty-label">数量</div>
+                    <div class="list-qty-value">${data.quantity}</div>
+                `;
+                
+                infoMainDiv.appendChild(infoDiv);
+                infoMainDiv.appendChild(qtyBoxDiv);
+                
+                contentDiv.appendChild(imgAreaDiv);
+                contentDiv.appendChild(infoMainDiv);
+                
+                listItem.appendChild(contentDiv);
                 listArea.appendChild(listItem);
             });
+            
             if(!hasData) {
                 const noDataDiv = document.createElement('div');
                 noDataDiv.className = 'no-data';
-                noDataDiv.style = 'text-align:center;color:#aaa;padding:20px;';
                 noDataDiv.textContent = '暂无数据';
                 listArea.appendChild(noDataDiv);
             }
@@ -579,21 +744,70 @@
         // 解绑部分
         function updateListUnbind() {
             const listArea = document.getElementById('listAreaUnbind');
-            listArea.innerHTML = `<div class="list-header"><div>条码</div><div>货号/颜色/尺码</div><div>数量</div></div>`;
+            listArea.innerHTML = '';
             let hasData = false;
+            
             if (currentBoxCodeUnbind && unbindSkuData.boxcode === currentBoxCodeUnbind) {
                 unbindSkuData.skudetail.forEach(item => {
                     hasData = true;
+                    // 查找完整的SKU数据
+                    const skuData = skuDataList.find(sku => sku.条码 === item.条码) || {};
+                    
                     const listItem = document.createElement('div');
                     listItem.className = 'list-item';
-                    listItem.innerHTML = `<div>${item.条码}</div><div style='text-align:left'>${item.chinese_sku}</div><div>${item.quantity}</div>`;
+                    
+                    // 添加表头
+                    const headerDiv = document.createElement('div');
+                    headerDiv.className = 'list-item-header';
+                    headerDiv.innerHTML = `
+                        <div class="list-sku-display" title="${item.sku}">${item.sku}</div>
+                    `;
+                    listItem.appendChild(headerDiv);
+                    
+                    // 添加内容
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'list-content';
+                    
+                    const imgAreaDiv = document.createElement('div');
+                    imgAreaDiv.className = 'list-img-area';
+                    imgAreaDiv.innerHTML = `
+                        <div class="list-img">
+                            <img src="${skuData.img || 'icon/3.png'}" alt="产品图片">
+                        </div>
+                    `;
+                    
+                    const infoMainDiv = document.createElement('div');
+                    infoMainDiv.className = 'list-info-main';
+                    
+                    const infoDiv = document.createElement('div');
+                    infoDiv.className = 'list-info';
+                    infoDiv.innerHTML = `
+                        <div class="list-row"><span class="label">货号：</span>${skuData.spu || ''}</div>
+                        <div class="list-row"><span class="label">颜色/尺码：</span>${skuData.color_size || ''}</div>
+                        <div class="list-row"><span class="label">条码：</span>${item.条码}</div>
+                    `;
+                    
+                    const qtyBoxDiv = document.createElement('div');
+                    qtyBoxDiv.className = 'list-qty-box';
+                    qtyBoxDiv.innerHTML = `
+                        <div class="list-qty-label">数量</div>
+                        <div class="list-qty-value">${item.quantity}</div>
+                    `;
+                    
+                    infoMainDiv.appendChild(infoDiv);
+                    infoMainDiv.appendChild(qtyBoxDiv);
+                    
+                    contentDiv.appendChild(imgAreaDiv);
+                    contentDiv.appendChild(infoMainDiv);
+                    
+                    listItem.appendChild(contentDiv);
                     listArea.appendChild(listItem);
                 });
             }
+            
             if (!hasData) {
                 const noDataDiv = document.createElement('div');
                 noDataDiv.className = 'no-data';
-                noDataDiv.style = 'text-align:center;color:#aaa;padding:20px;';
                 noDataDiv.textContent = '暂无数据';
                 listArea.appendChild(noDataDiv);
             }
@@ -647,6 +861,7 @@
             }
             currentBoxCodeUnbind = boxCode;
             updateButtonStateUnbind();
+            document.getElementById('currentBoxCodeDisplayUnbind').textContent = boxCode;
             updateListUnbind();
         });
         document.getElementById('changeButtonUnbind').addEventListener('click', function() {
