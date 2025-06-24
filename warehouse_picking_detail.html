@@ -1114,7 +1114,8 @@
             }
 
             // 终止拣货按钮状态：待拣数量等于总数或等于0时禁用
-            terminateBtn.disabled = (remainingToPickInList === 0 || remainingToPickInList === totalPlannedCount);
+            // terminateBtn.disabled = (remainingToPickInList === 0 || remainingToPickInList === totalPlannedCount);
+            terminateBtn.disabled = (remainingToPickInList === totalPlannedCount);
         }
 
         // 渲染待拣货列表
@@ -1140,7 +1141,7 @@
             list.innerHTML = Object.values(groupedByLocation).map((group, groupIndex) => `
                 <div class="location-group" data-location="${group.location}">
                     <div class="location-header" onclick="toggleLocation('${group.location}')">
-                        <div class="location-name"><span style="color: #666666; font-weight: normal; margin-right: 4px;">库位:</span>${group.location_name}</div>
+                        <div class="location-name"><span style="color: #666666; font-weight: normal; margin-right: 4px;">拣货库位:</span>${group.location_name}</div>
                         <div class="location-toggle">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
                                 <path d="M6 9L12 15L18 9" stroke="#666666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

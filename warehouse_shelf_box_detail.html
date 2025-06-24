@@ -591,6 +591,10 @@
         .location-scan-confirm:active {
             background: #125fd1;
         }
+        .location-scan-confirm:disabled {
+            background: #a0cfff;
+            cursor: not-allowed;
+        }
         .location-scan-cancel {
             background: #f5f5f5;
             color: #666;
@@ -700,7 +704,7 @@
                 <div class="tooltip-content">没有全部扫描就确认上架时，页面会刷新并重新获取待上架数量，原型没有体现这一点。
                     
                     箱码：CD250423000001~CD250423000005,其中CD250423000004为已上架箱子;
-                    库位码:KW20250524001
+                    库位码:KW20250524001、KW20250524002
                 </div>
             </div>
             <div class="shelf-type-tabs">
@@ -775,7 +779,7 @@
             </div>
             <div class="location-scan-buttons">
                 <button class="location-scan-btn location-scan-cancel" id="locationScanCancelBtn">取消</button>
-                <button class="location-scan-btn location-scan-confirm" id="locationScanConfirmBtn">确认</button>
+                <button class="location-scan-btn location-scan-confirm" id="locationScanConfirmBtn" disabled>确认</button>
             </div>
         </div>
     </div>
@@ -1014,6 +1018,7 @@
 
         // 模拟库位数据
         const validLocations = ['KW20250524001', 'KW20250524002', 'KW20250524003', 'KW20250524004', 'KW20250524005'];
+        const Locations_w2 = ['KW20250524002', 'KW20250524003', 'KW20250524004', 'KW20250524005'];
 
         // 底部确认上架按钮逻辑
         const footerConfirmBtn = document.getElementById('footerConfirmBtn');
@@ -1050,25 +1055,34 @@
 
                 // 校验库位是否存在
                 if (!validLocations.includes(locationCode)) {
-                    showCustomAlert('上架仓库不一致');
+                    showCustomAlert('库位不存在');
                     this.value = ''; // 清空输入框
                     return;
                 }
 
-                // 关闭库位扫描弹窗
-                document.getElementById('locationScanModal').style.display = 'none';
-                this.value = '';
+                // 校验库位是否一致
+                if (Locations_w2.includes(locationCode)) {
+                    showCustomAlert('上架库位不一致');
+                    this.value = ''; // 清空输入框
+                    return;
+                }
+                // 校验通过，启用确认按钮
+                document.getElementById('locationScanConfirmBtn').disabled = false;
 
-                // 显示上架成功提示
-                showCustomAlert('上架成功');
+                // // 关闭库位扫描弹窗
+                // document.getElementById('locationScanModal').style.display = 'none';
+                // this.value = '';
+
+                // // 显示上架成功提示
+                // showCustomAlert('上架成功');
                 
-                // 清空所有已扫描记录
-                scannedBoxes.clear();
-                pendingData.forEach((item, index) => {
-                    item.scanned = initialPendingData[index].scanned;
-                });
-                updateInfoArea();
-                scanInput.value = '';
+                // // 清空所有已扫描记录
+                // scannedBoxes.clear();
+                // pendingData.forEach((item, index) => {
+                //     item.scanned = initialPendingData[index].scanned;
+                // });
+                // updateInfoArea();
+                // scanInput.value = '';
             }
         });
 
@@ -1077,17 +1091,10 @@
             const locationCode = document.getElementById('locationScanInput').value.trim();
             
             if (!locationCode) {
-                showCustomAlert('请输入库位');
+                showCustomAlert('请扫描库位');
                 return;
             }
-
-            // 校验库位是否存在
-            if (!validLocations.includes(locationCode)) {
-                showCustomAlert('上架仓库不一致');
-                document.getElementById('locationScanInput').value = ''; // 清空输入框
-                return;
-            }
-
+            
             // 关闭库位扫描弹窗
             document.getElementById('locationScanModal').style.display = 'none';
             document.getElementById('locationScanInput').value = '';
