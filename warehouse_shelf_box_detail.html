@@ -184,7 +184,7 @@
             flex: 1 1 40%;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 4px;
             align-items: flex-end;
             justify-content: flex-start;
         }
@@ -719,17 +719,17 @@
             </div>
             <div class="info-area">
                 <div class="info-col-left">
-                    <div class="info-row"><span class="info-label">入库单号:</span><span class="info-value" id="receiptCode">RK20250523001</span></div>                    
+                    <div class="info-row" style="display: none;"><span class="info-label">入库单号:</span><span class="info-value" id="receiptCode">RK20250523001</span></div>                    
                     <div class="info-row"><span class="info-label">采购单号:</span><span class="info-value" id="purchaseOrder">ST20250423001</span></div>
-                    <div class="info-row"><span class="info-label">供应商:</span><span class="info-value" id="supplier">供应商1</span></div>
-                </div>
-                <div class="info-col-right">
                     <div class="info-row">
                         <span class="info-label">已扫/待上架:</span>
                         <span class="info-highlight" id="shelfCount">0</span>
                         <span style="color:#222;font-weight:bold;">/</span>
                         <span class="info-value" id="totalCount">100</span>
                     </div>
+                </div>
+                <div class="info-col-right">
+                    <div class="info-row"><span class="info-label"></span><span class="info-value" id="supplier">供应商1</span></div>
                     <div class="info-row">
                         <span class="info-label">已扫箱数：</span>
                         <span class="info-value" id="scannedBoxCount">0</span>
