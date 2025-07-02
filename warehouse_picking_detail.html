@@ -511,7 +511,7 @@
         /* Custom Modal Styles */
         .custom-modal-overlay {
             position: fixed;
-            top: 0;
+            top: -150px;
             left: 0;
             width: 100%;
             height: 100%;
@@ -586,7 +586,7 @@
         /* Custom Alert Styles */
          .custom-alert-overlay {
             position: fixed;
-            top: 0;
+            top: -150px;
             left: 0;
             width: 100%;
             height: 100%;
@@ -641,7 +641,7 @@
         /* 成功提示样式 */
         .custom-success-alert-overlay {
             position: fixed;
-            top: 0;
+            top: -150px;
             left: 0;
             width: 100%;
             height: 100%;
@@ -750,7 +750,7 @@
             </div>
             <div class="scan-area">
                 <div class="scan-input-wrapper">
-                    <img src="icon/screenshot_2025-05-22_16-58-53.png" alt="扫描条码">
+                    <img src="icon/扫描.png" alt="扫描条码">
                     <input type="text" class="scan-input" id="scanInput" placeholder="扫描箱码/条码" />
                 </div>
             </div>
@@ -1012,7 +1012,7 @@
 
             // 2. 检查箱码是否存在
             if (!boxData[boxCode]) {
-                showCustomAlert('无效箱码');
+                showCustomAlert('箱码不存在');
                 return false;
             }
 
