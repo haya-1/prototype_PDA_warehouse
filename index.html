@@ -369,7 +369,7 @@
         const warehouseModal = document.getElementById('warehouseModal');
         const warehouseModalClose = document.getElementById('warehouseModalClose');
         const warehouseItems = document.querySelectorAll('.warehouse-item');
-        
+
         // 初始化仓库选择
         const savedWarehouse = sessionStorage.getItem('selectedWarehouse');
         const savedWarehouseName = sessionStorage.getItem('selectedWarehouseName');
@@ -377,7 +377,7 @@
             warehouseDisplay.textContent = savedWarehouseName;
             updateSelectedWarehouse(savedWarehouse);
         }
-        
+
         // 打开仓库选择弹窗
         warehouseSelector.addEventListener('click', function() {
             // 获取main-fixed元素的位置
@@ -426,8 +426,8 @@
                     item.classList.add('selected');
                 } else {
                     item.classList.remove('selected');
-                }
-            });
+            }
+        });
         }
 
         // 修改所有功能按钮的点击事件
