@@ -723,12 +723,12 @@
                 
                 // 先进行校验
                 if (!boxs_data[boxCode]) {
-                    showCustomAlert('箱码不属于当前质检单');
+                    showCustomAlert('无关箱码，请检查');
                     scanInput.value = '';
                     return;
                 }
                 if (scannedBoxes.has(boxCode)) {
-                    showCustomAlert('箱码不属于当前质检单');
+                    showCustomAlert('无关箱码，请检查');
                     scanInput.value = '';
                     return;
                 }
