@@ -728,6 +728,24 @@
             word-break: break-all;
         }
 
+        /* 新增样式 */
+        .footer-btn-start {
+            width: 180px;
+            padding: 14px 0;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            background: #1677ff;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(22,119,255,0.08);
+            transition: all 0.2s;
+        }
+        .footer-btn-start:active:not(:disabled) {
+            background: #125fd1;
+        }
+
     </style>
 </head>
 <body>
@@ -758,7 +776,11 @@
             </div>
             <div class="info-area">
                 <div class="info-col-left">
-                    <div class="info-row"><span class="info-label">拣货单号：</span><span class="info-value" id="pickingCode">PJ20250524001</span></div>                    
+                    <div class="info-row">
+                        <span class="info-label">拣货单号：</span>
+                        <span class="info-value" id="pickingCode">PJ20250524001</span>
+                        <span id="pickingStatusText" style="margin-left: 5px; color: #666; font-size: 14px;">(待拣货)</span>
+                    </div>                    
                     <div class="info-row" style="display: none;"><span class="info-label">发货单号：</span><span class="info-value" id="shippingCode">OP20250524001</span></div>
                     <div class="info-row">
                         <span class="info-label">已选/待拣/总数 :</span>
@@ -774,8 +796,11 @@
             </div>
         </div>
         <div class="footer-btn-area">
-            <button class="footer-btn footer-btn-clear" id="footerClearBtn" disabled>清空选择</button>
-            <button class="footer-btn" id="footerConfirmBtn" disabled>确认拣货</button>
+            <button class="footer-btn-start" id="footerStartBtn" style="display: block;">开始拣货</button>
+            <div id="pickingButtonsGroup" style="display: none; width: 100%;">
+                <button class="footer-btn footer-btn-clear" id="footerClearBtn" disabled>清空选择</button>
+                <button class="footer-btn" id="footerConfirmBtn" disabled>确认拣货</button>
+            </div>
         </div>
     </div>
 
@@ -838,6 +863,15 @@
                 currentPickingCount: 0
             }
         };
+        
+        // 拣货进度变量：0=待拣货，1=拣货中
+        let pickingStatus = 0;
+        
+        // 从sessionStorage获取拣货状态
+        const savedPickingStatus = sessionStorage.getItem(`pickingStatus_${pickingCode}`);
+        if (savedPickingStatus !== null) {
+            pickingStatus = parseInt(savedPickingStatus);
+        }
 
         // 从sessionStorage获取已确认的拣货数量
         function getConfirmedCounts() {
@@ -1096,6 +1130,7 @@
             console.log('待拣数量:', remainingToPickInList);
             console.log('已确认数量:', totalConfirmed);
             console.log('总计划数量:', totalPlannedCount);
+            console.log('拣货状态:', pickingStatus);
 
             // Update the single quantity display
             // Display format: 已选/待拣/总数
@@ -1105,6 +1140,9 @@
             const footerClearBtn = document.getElementById('footerClearBtn');
             const footerConfirmBtn = document.getElementById('footerConfirmBtn');
             const terminateBtn = document.getElementById('terminateBtn');
+            
+            // 根据拣货状态更新按钮显示
+            updateButtonsByPickingStatus();
 
             // 更新按钮状态 based on current picked count in session
             if (currentPickedInSession > 0) {
@@ -1115,9 +1153,27 @@
                 footerConfirmBtn.disabled = true;
             }
 
-            // 终止拣货按钮状态：待拣数量等于总数或等于0时禁用
-            // terminateBtn.disabled = (remainingToPickInList === 0 || remainingToPickInList === totalPlannedCount);
+            // 终止拣货按钮状态：待拣数量等于总数时禁用
             terminateBtn.disabled = (remainingToPickInList === totalPlannedCount);
+        }
+        
+        // 根据拣货状态更新按钮显示和状态文本
+        function updateButtonsByPickingStatus() {
+            const footerStartBtn = document.getElementById('footerStartBtn');
+            const pickingButtonsGroup = document.getElementById('pickingButtonsGroup');
+            const pickingStatusText = document.getElementById('pickingStatusText');
+            
+            if (pickingStatus === 0) { // 待拣货
+                footerStartBtn.style.display = 'block';
+                pickingButtonsGroup.style.display = 'none';
+                pickingStatusText.textContent = '(待拣货)';
+            } else { // 拣货中
+                footerStartBtn.style.display = 'none';
+                pickingButtonsGroup.style.display = 'flex';
+                pickingButtonsGroup.style.justifyContent = 'center';
+                pickingButtonsGroup.style.gap = '20px';
+                pickingStatusText.textContent = '(拣货中)';
+            }
         }
 
         // 渲染待拣货列表
@@ -1174,14 +1230,16 @@
                                             <div class="pending-count-label">数量：</div>
                                             <div class="pending-count-box">
                                                 <input type="number" class="pending-count-input" value="${item.current}" 
-                                                    onchange="updateItemCount('${group.location}', ${index}, this.value)" min="0" max="${item.num}">
+                                                    onchange="updateItemCount('${group.location}', ${index}, this.value)" min="0" max="${item.num}"
+                                                    ${pickingStatus === 0 ? 'disabled' : ''}>
                                                 <span style="color:#222;font-weight:bold;">/</span>
                                                 <span class="pending-total">${item.num}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <button class="pending-check-btn ${item.current === item.num ? 'checked' : (item.current > 0 ? 'partial' : '')}" 
-                                        onclick="checkAll('${group.location}', ${index})" style="margin-left: 10px; align-self: flex-start;"></button>
+                                        onclick="checkAll('${group.location}', ${index})" style="margin-left: 10px; align-self: flex-start;"
+                                        ${pickingStatus === 0 ? 'disabled' : ''}></button>
                                 </div>
                             </div>
                         `).join('')}
@@ -1216,6 +1274,12 @@
 
         // 修改checkAll函数
         function checkAll(location, index) {
+            // 如果是待拣货状态，则不允许操作
+            if (pickingStatus === 0) {
+                showCustomAlert('请先点击"开始拣货"按钮');
+                return;
+            }
+            
             const group = pendingData.filter(item => item.location === location);
             const item = group[index];
             if (!item) return;
@@ -1254,6 +1318,13 @@
 
         // 修改updateItemCount函数
         function updateItemCount(location, index, value) {
+            // 如果是待拣货状态，则不允许操作
+            if (pickingStatus === 0) {
+                showCustomAlert('请先点击"开始拣货"按钮');
+                renderPendingList(); // 重新渲染，恢复原来的值
+                return;
+            }
+            
             const group = pendingData.filter(item => item.location === location);
             const item = group[index];
             if (!item) return;
@@ -1524,6 +1595,7 @@
             // 清除sessionStorage中的缓存
             sessionStorage.removeItem(`confirmedCounts_${pickingCode}`);
             sessionStorage.removeItem(`confirmedLocationCounts_${pickingCode}`);
+            sessionStorage.removeItem(`pickingStatus_${pickingCode}`);
             // 清除临时缓存
             clearTempCounts();
             
@@ -1536,6 +1608,23 @@
             }, 1500);
         };
 
+        // 开始拣货按钮事件
+        document.getElementById('footerStartBtn').addEventListener('click', function() {
+            // 更新拣货状态为拣货中
+            pickingStatus = 1;
+            // 保存状态到sessionStorage
+            sessionStorage.setItem(`pickingStatus_${pickingCode}`, pickingStatus);
+            // 更新按钮显示
+            updateButtonsByPickingStatus();
+            // 重新渲染列表，使勾选按钮和输入框可用
+            renderPendingList();
+            // 显示成功提示
+            // showCustomAlert('开始拣货', 'success');
+        });
+        
+        // 初始化按钮显示
+        updateButtonsByPickingStatus();
+        
         // 页面加载时初始化
         document.getElementById('pickingCode').textContent = detailData[pickingCode].pickingCode;
         document.getElementById('shippingCode').textContent = detailData[pickingCode].shippingCode;
@@ -1562,5 +1651,4 @@
         renderPendingList();
     </script>
 </body>
-</html> 
 </html> 
