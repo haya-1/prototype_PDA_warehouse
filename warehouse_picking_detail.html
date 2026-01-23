@@ -402,21 +402,24 @@
         .pending-count-area {
             flex-shrink: 0;
             width: auto;
+            text-align: center;
             display: flex;
             flex-direction: row;
             align-items: center;
-            margin-top: 0px;
+            justify-content: center;
+            margin-top: 0px; /* 向上移动7px */
         }
         .pending-count-label {
             color: #444;
             font-size: 15px;
-            margin-right: 0px;
+            margin-bottom: 0px;
             line-height: 1.1;
         }
         .pending-count-box {
             display: flex;
             flex-direction: row;
             align-items: center;
+            justify-content: center;
             background: none;
             border-radius: 10px;
             padding: 0px 10px;
@@ -427,7 +430,7 @@
             padding: 0 6px;
         }
         .pending-count-input {
-            width:60px;
+            width: 60px;
             height: 40px;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -720,15 +723,6 @@
         }
 
         /* 新增样式 */
-        .pending-spu {
-            font-size: 12px;
-            color: #888;
-            text-align: center;
-            margin-top: 2px;
-            word-break: break-all;
-        }
-
-        /* 新增样式 */
         .footer-btn-start {
             width: 180px;
             padding: 14px 0;
@@ -745,6 +739,7 @@
         .footer-btn-start:active:not(:disabled) {
             background: #125fd1;
         }
+
 
     </style>
 </head>
@@ -863,7 +858,7 @@
                 currentPickingCount: 0
             }
         };
-        
+
         // 拣货进度变量：0=待拣货，1=拣货中
         let pickingStatus = 0;
         
@@ -941,7 +936,7 @@
                 location: 'KW20250524001',
                 location_name:'库位1',
                 fnsku: 'X00302LCPX',
-                sku: 'ST210628UBCOGNAC100',
+                sku: 'ST220519CHARC0ALGREYBLACK090',
                 img: 'icon/3.png',
                 spu: 'ST210628UB',
                 color_size: '栗色/10',
@@ -989,6 +984,15 @@
                 console.log(`按库位减少: SKU ${item.sku} 在库位 ${item.location} 的待拣数量调整为: ${item.num} (减少了 ${confirmedForThisLocation})`);
             }
         });
+
+        // 拣货进度变量：0=待拣货，1=拣货中
+        // 如果待拣数量已经有减少，说明已经在拣货中了
+        const totalPlannedCount = detailData[pickingCode].totalCount;
+        const currentTotalPending = pendingData.reduce((sum, item) => sum + item.num, 0);
+        if (currentTotalPending < totalPlannedCount && pickingStatus === 0) {
+            pickingStatus = 1;
+            sessionStorage.setItem(`pickingStatus_${pickingCode}`, pickingStatus);
+        }
 
         // 加载临时缓存数据（未确认的当前session数量）
         const tempCounts = getTempCounts();
@@ -1140,7 +1144,7 @@
             const footerClearBtn = document.getElementById('footerClearBtn');
             const footerConfirmBtn = document.getElementById('footerConfirmBtn');
             const terminateBtn = document.getElementById('terminateBtn');
-            
+
             // 根据拣货状态更新按钮显示
             updateButtonsByPickingStatus();
 
@@ -1156,7 +1160,7 @@
             // 终止拣货按钮状态：待拣数量等于总数时禁用
             terminateBtn.disabled = (remainingToPickInList === totalPlannedCount);
         }
-        
+
         // 根据拣货状态更新按钮显示和状态文本
         function updateButtonsByPickingStatus() {
             const footerStartBtn = document.getElementById('footerStartBtn');
@@ -1212,34 +1216,36 @@
                                 <div class="pending-header">
                                     <div class="pending-fnsku-wrapper">
                                         <div class="pending-sku-display">${item.sku}</div>
-                                        <div style="width: 20px;"></div>
+                                        <button class="pending-check-btn ${item.current === item.num ? 'checked' : (item.current > 0 ? 'partial' : '')}" 
+                                            onclick="checkAll('${group.location}', ${index})"
+                                            ${pickingStatus === 0 ? 'disabled' : ''}></button>
                                     </div>
                                 </div>
-                                <div style="margin-bottom: 8px;">
-                                    <span class="label">货号/颜色/尺码：</span>${item.spu}/${item.color_size}
-                                </div>
-                                <div style="display: flex; width: 100%;">
-                                    <div class="pending-img-area" style="width: 60px; margin-right: 15px;">
-                                        <div class="pending-img" style="width: 60px; height: 60px;">
+                                <div class="pending-content">
+                                    <div class="pending-img-area">
+                                        <div class="pending-img">
                                             <img src="${item.img}" alt="产品图片" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">
                                         </div>
                                     </div>
-                                    <div class="pending-info" style="flex: 1;">
+                                    <div class="pending-info-main">
+                                                                            <div class="pending-info">
+                                        <div class="pending-row"><span class="label">货号/</span>${item.spu}</div>
+                                        <div class="pending-row"><span class="label">颜色/尺码：</span>${item.color_size}</div>
                                         <div class="pending-row"><span class="label">条码：</span>${item.fnsku}</div>
-                                        <div class="pending-count-area" style="margin-top: 0px;">
-                                            <div class="pending-count-label">数量：</div>
+                                    </div>
+                                        <div class="pending-count-area">
                                             <div class="pending-count-box">
-                                                <input type="number" class="pending-count-input" value="${item.current}" 
-                                                    onchange="updateItemCount('${group.location}', ${index}, this.value)" min="0" max="${item.num}"
-                                                    ${pickingStatus === 0 ? 'disabled' : ''}>
-                                                <span style="color:#222;font-weight:bold;">/</span>
-                                                <span class="pending-total">${item.num}</span>
+                                                <div class="pending-count-label">已选/待拣</div>
+                                                <div class="pending-count-row">
+                                                    <input type="number" class="pending-count-input" value="${item.current}" 
+                                                        onchange="updateItemCount('${group.location}', ${index}, this.value)" min="0" max="${item.num}"
+                                                        ${pickingStatus === 0 ? 'disabled' : ''}>
+                                                    <span style="color:#222;font-weight:bold;">/</span>
+                                                    <span class="pending-total">${item.num}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <button class="pending-check-btn ${item.current === item.num ? 'checked' : (item.current > 0 ? 'partial' : '')}" 
-                                        onclick="checkAll('${group.location}', ${index})" style="margin-left: 10px; align-self: flex-start;"
-                                        ${pickingStatus === 0 ? 'disabled' : ''}></button>
                                 </div>
                             </div>
                         `).join('')}
