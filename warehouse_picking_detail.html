@@ -285,8 +285,8 @@
             margin-right: auto;
         }
         .pending-check-btn {
-            width: 40px;
-            height: 40px;
+            width: 20px;
+            height: 20px;
             border: 1.5px solid #1677ff;
             border-radius: 4px;
             background: #fff;
@@ -351,7 +351,7 @@
             align-items: center;
             justify-content: center;
             margin-bottom: 4px;
-            margin-top: 0px; /* 向上移动7px */
+            margin-top: -7px; /* 向上移动7px */
         }
         .pending-img img {
             width: 100%;
@@ -401,13 +401,13 @@
         }
         .pending-count-area {
             flex-shrink: 0;
-            width: auto;
+            width: 110px;
             text-align: center;
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-top: 0px; /* 向上移动7px */
+            margin-top: -7px; /* 向上移动7px */
         }
         .pending-count-label {
             color: #444;
@@ -417,12 +417,15 @@
         }
         .pending-count-box {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: none;
+            background: #f6f6f6;
             border-radius: 10px;
-            padding: 0px 10px;
+            padding: 8px 4px;
+            min-width: 110px;
+            max-width: 130px;
+            height: 75px;
             text-align: center;
         }
         .pending-count-row {
@@ -430,7 +433,7 @@
             padding: 0 6px;
         }
         .pending-count-input {
-            width: 60px;
+            width: 40px;
             height: 40px;
             border: 1px solid #ddd;
             border-radius: 4px;
