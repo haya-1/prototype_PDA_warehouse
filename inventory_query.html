@@ -42,6 +42,131 @@
             margin-top: 5px;
             margin-bottom: 5px;
         }
+        .site-filter-btn {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1677ff;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 14px;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .site-filter-btn:active {
+            background: #0958d9;
+        }
+        /* Site Filter Modal Styles */
+        .site-modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10002;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        .site-modal-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+        .site-modal-container {
+            background: #fff;
+            width: 320px;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .site-modal-header {
+            padding: 8px 16px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .site-modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #222;
+        }
+        .site-modal-body {
+            padding: 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .site-modal-footer {
+            padding: 12px 16px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 12px;
+        }
+        .site-modal-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .site-modal-btn-cancel {
+            background: #f5f5f5;
+            color: #666;
+        }
+        .site-modal-btn-confirm {
+            background: #1677ff;
+            color: #fff;
+        }
+        .region-item {
+            margin-bottom: 0;
+            border: none;
+            border-radius: 0;
+            overflow: hidden;
+        }
+        .region-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            background: #fafafa;
+            font-weight: bold;
+            font-size: 16px;
+            color: #222;
+            border-bottom: 1px solid #eee;
+        }
+        .site-list {
+            padding-left: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .site-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 12px 12px 36px;
+            font-size: 15px;
+            color: #444;
+            width: 100%;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .site-item:last-child {
+            border-bottom: none;
+        }
+        .site-item input, .region-header input {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
         .back-button {
             position: absolute;
             left: 0;
@@ -368,6 +493,7 @@
                     </svg>
                 </button>
                 <span class="header-title">库存查询</span>
+                <button class="site-filter-btn" id="siteFilterBtn">站点筛选</button>
             </div>
             <div class="tooltip-container">
                 <span class="info-icon">!</span>
@@ -399,6 +525,46 @@
             </div>
             <div class="result-area" id="resultArea" style="display: none;">
                 <!-- Results will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Site Filter Modal -->
+        <div class="site-modal-overlay" id="siteModalOverlay">
+            <div class="site-modal-container">
+                <div class="site-modal-header">
+                    <span class="site-modal-title">站点筛选</span>
+                </div>
+                <div class="site-modal-body">
+                    <div class="region-item">
+                        <div class="region-header">
+                            <input type="checkbox" id="region-na" data-region="北美洲">
+                            <label for="region-na">北美洲</label>
+                        </div>
+                        <div class="site-list">
+                            <label class="site-item"><input type="checkbox" class="site-checkbox" data-region="北美洲" value="美国">美国</label>
+                            <label class="site-item"><input type="checkbox" class="site-checkbox" data-region="北美洲" value="加拿大">加拿大</label>
+                        </div>
+                    </div>
+                    <div class="region-item">
+                        <div class="region-header">
+                            <input type="checkbox" id="region-eu" data-region="欧洲">
+                            <label for="region-eu">欧洲</label>
+                        </div>
+                        <div class="site-list">
+                            <label class="site-item"><input type="checkbox" class="site-checkbox" data-region="欧洲" value="德国">德国</label>
+                            <label class="site-item"><input type="checkbox" class="site-checkbox" data-region="欧洲" value="英国">英国</label>
+                            <label class="site-item"><input type="checkbox" class="site-checkbox" data-region="欧洲" value="法国">法国</label>
+                            <label class="site-item"><input type="checkbox" class="site-checkbox" data-region="欧洲" value="荷兰">荷兰</label>
+                            <label class="site-item"><input type="checkbox" class="site-checkbox" data-region="欧洲" value="瑞典">瑞典</label>
+                            <label class="site-item"><input type="checkbox" class="site-checkbox" data-region="欧洲" value="瑞典">西班牙</label>
+                            <label class="site-item"><input type="checkbox" class="site-checkbox" data-region="欧洲" value="瑞典">葡萄牙</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="site-modal-footer">
+                    <button class="site-modal-btn site-modal-btn-cancel" id="siteCancelBtn">取消</button>
+                    <button class="site-modal-btn site-modal-btn-confirm" id="siteConfirmBtn">确定</button>
+                </div>
             </div>
         </div>
     </div>
@@ -640,9 +806,11 @@
             }
         };
 
+        let selectedSites = []; // 全局选中的站点
+
         // 初始化页面
         document.addEventListener('DOMContentLoaded', function() {
-            // 从sessionStorage获取当前仓库
+            // ... existing warehouse logic ...
             const currentWarehouse = sessionStorage.getItem('selectedWarehouse');
             
             if (!currentWarehouse) {
@@ -653,10 +821,107 @@
                 return;
             }
 
-            // 根据仓库代码获取仓库名称
             const warehouseName = getWarehouseName(currentWarehouse);
             document.getElementById('currentWarehouse').textContent = warehouseName;
             
+            // 站点筛选逻辑
+            const siteFilterBtn = document.getElementById('siteFilterBtn');
+            const siteModalOverlay = document.getElementById('siteModalOverlay');
+            const siteCancelBtn = document.getElementById('siteCancelBtn');
+            const siteConfirmBtn = document.getElementById('siteConfirmBtn');
+            const regionCheckboxes = document.querySelectorAll('.region-header input');
+            const siteCheckboxes = document.querySelectorAll('.site-checkbox');
+
+            // 打开弹窗
+            siteFilterBtn.addEventListener('click', () => {
+                siteModalOverlay.classList.add('visible');
+            });
+
+            // 关闭弹窗
+            siteCancelBtn.addEventListener('click', () => {
+                siteModalOverlay.classList.remove('visible');
+            });
+
+            // 区域勾选逻辑
+            regionCheckboxes.forEach(regionBox => {
+                regionBox.addEventListener('change', function() {
+                    const region = this.getAttribute('data-region');
+                    const relatedSites = document.querySelectorAll(`.site-checkbox[data-region="${region}"]`);
+                    relatedSites.forEach(siteBox => {
+                        siteBox.checked = this.checked;
+                    });
+                });
+            });
+
+            // 站点勾选逻辑
+            siteCheckboxes.forEach(siteBox => {
+                siteBox.addEventListener('change', function() {
+                    const region = this.getAttribute('data-region');
+                    const regionBox = document.querySelector(`.region-header input[data-region="${region}"]`);
+                    const relatedSites = document.querySelectorAll(`.site-checkbox[data-region="${region}"]`);
+                    const allChecked = Array.from(relatedSites).every(s => s.checked);
+                    const someChecked = Array.from(relatedSites).some(s => s.checked);
+                    
+                    regionBox.checked = allChecked;
+                    regionBox.indeterminate = someChecked && !allChecked;
+                });
+            });
+
+            // 确定筛选
+            siteConfirmBtn.addEventListener('click', () => {
+                const siteCheckboxes = document.querySelectorAll('.site-checkbox');
+                selectedSites = Array.from(siteCheckboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value);
+                
+                console.log('选中的站点:', selectedSites);
+                
+                // 汇总显示内容：如果区域下的站点全选，则显示区域名
+                const displayNames = [];
+                const regionItems = document.querySelectorAll('.region-item');
+                
+                let allSitesSelected = true;
+                regionItems.forEach(item => {
+                    const regionName = item.querySelector('.region-header label').textContent.trim();
+                    const sites = item.querySelectorAll('.site-checkbox');
+                    const selectedInRegion = Array.from(sites).filter(cb => cb.checked);
+                    
+                    if (selectedInRegion.length === sites.length && sites.length > 0) {
+                        displayNames.push(regionName);
+                    } else {
+                        allSitesSelected = false;
+                        selectedInRegion.forEach(cb => {
+                            // 获取label中的文字，因为value可能不准确
+                            displayNames.push(cb.parentElement.textContent.trim());
+                        });
+                    }
+                });
+
+                siteModalOverlay.classList.remove('visible');
+                
+                let summaryText = '全部';
+                if (displayNames.length > 0) {
+                    if (displayNames.length === regionItems.length && allSitesSelected) {
+                        summaryText = '全部';
+                    } else {
+                        summaryText = displayNames.join(', ');
+                    }
+                } else {
+                    summaryText = '全部';
+                }
+
+                showAlert('筛选已应用: ' + summaryText, 'success');
+                
+                // 如果当前已经有查询结果，重新触发查询以应用筛选
+                const currentQueryText = document.getElementById('queryContent').textContent;
+                const currentQuery = currentQueryText.includes('(') ? currentQueryText.split('(')[0] : currentQueryText;
+                
+                if (currentQuery && currentQuery !== '-') {
+                    const currentWarehouse = sessionStorage.getItem('selectedWarehouse');
+                    handleQuery(currentQuery, currentWarehouse);
+                }
+            });
+
             // 监听扫描输入
             document.getElementById('scanInput').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
@@ -677,6 +942,26 @@
                 'WH004': '深圳仓库'
             };
             return warehouseNames[warehouseCode] || warehouseCode;
+        }
+
+        // 辅助函数：判断店铺是否符合选中的站点
+        function isSellerInSelectedSites(seller) {
+            if (!selectedSites || selectedSites.length === 0) return true; // 未筛选则显示全部
+            
+            const siteMap = {
+                '美国': '-US',
+                '加拿大': '-CA',
+                '德国': '-DE',
+                '英国': '-UK',
+                '法国': '-FR',
+                '荷兰': '-NL',
+                '瑞典': '-SE'
+            };
+            
+            return selectedSites.some(site => {
+                const suffix = siteMap[site];
+                return seller.endsWith(suffix);
+            });
         }
 
         // 辅助函数：获取店铺站点备注
@@ -781,6 +1066,9 @@
                 
                 // 检查条码是否匹配
                 if (item.barcode === barcode) {
+                    // 增加站点筛选
+                    if (!isSellerInSelectedSites(item.seller)) continue;
+                    
                     // 检查是否已经添加了该店铺的数据
                     if (seenSellers.has(item.seller)) continue;
                     
@@ -922,10 +1210,18 @@
             const resultArea = document.getElementById('resultArea');
             resultArea.innerHTML = '';
             
+            // 过滤符合站点的库位信息
+            const filteredLocations = skuData.locations.filter(loc => isSellerInSelectedSites(loc.seller));
+            
+            if (filteredLocations.length === 0) {
+                showNoResults();
+                return;
+            }
+
             // 计算总库存和可用库存
             let totalQty = 0;
             let totalAvailable = 0;
-            skuData.locations.forEach(loc => {
+            filteredLocations.forEach(loc => {
                     totalQty += loc.qty;
                     totalAvailable += loc.available;
             });
@@ -936,7 +1232,7 @@
             const sellerGroups = {};
             
             // 使用新的barcodes和locations数据结构
-            skuData.locations.forEach(loc => {
+            filteredLocations.forEach(loc => {
                 const sellerId = loc.seller;
                 if (!sellerGroups[sellerId]) {
                     sellerGroups[sellerId] = {
@@ -1055,10 +1351,18 @@
             //不需要显示库位了，不要去掉注释
             // resultArea.innerHTML = `<h3 style="margin-bottom:16px;font-size:16px;">库位：${location.name}</h3>`;
             
+            // 过滤符合站点的商品
+            const filteredItems = data.items.filter(item => isSellerInSelectedSites(item.seller));
+            
+            if (filteredItems.length === 0) {
+                showNoResults();
+                return;
+            }
+
             // 计算总库存和可用库存
             let totalQty = 0;
             let totalAvailable = 0;
-            data.items.forEach(item => {
+            filteredItems.forEach(item => {
                 totalQty += item.qty;
                 totalAvailable += item.available;
             });
@@ -1067,7 +1371,7 @@
             
             // 按SKU分组
             const skuGroups = {};
-            data.items.forEach(item => {
+            filteredItems.forEach(item => {
                 if (!skuGroups[item.sku]) {
                     skuGroups[item.sku] = [];
                 }
