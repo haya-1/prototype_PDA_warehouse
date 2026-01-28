@@ -309,10 +309,10 @@
             font-size: 18px;
         }
         .result-area {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            padding: 16px;
+            background: transparent;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 0;
             margin-bottom: 18px;
             max-height: 370px;
             overflow-y: auto;
@@ -320,99 +320,155 @@
             -webkit-overflow-scrolling: touch;
             padding-bottom: 20px;
         }
-        .product-card {
-            display: flex;
-            flex-direction: column;
-        }
-        .product-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .product-image {
-            width: 55px;
-            height: 55px;
-            object-fit: cover;
-            border: 1px solid #eee;
-            border-radius: 6px;
-            margin-right: 12px;
-        }
-        .product-info {
-            flex: 1;
-        }
-        .product-sku {
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-        .product-item-code {
-            font-size: 15px;
-            margin-bottom: 4px;
-        }
-        .product-color-size {
-            font-size: 15px;
-            margin-bottom: 4px;
-        }
-        .product-barcode {
-            font-size: 15px;
-            color: #222;
-        }
-        .inventory-summary {
-            background: #f7f7f7;
-            padding: 10px;
+        /* SPU分组卡片样式 */
+        .spu-group-card {
+            background: #fff;
+            border: 1px solid #ddd;
             border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .spu-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 12px;
+            align-items: center;
+            padding: 10px 12px;
+            background: #f5f5f5;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
         }
-        .inventory-count {
+        .spu-header.collapsed {
+            border-bottom: none;
+        }
+        .spu-title {
             font-size: 16px;
             font-weight: bold;
-        }
-        .inventory-count .label {
-            font-weight: normal;
-            color: #666;
-            margin-right: 4px;
-        }
-        .inventory-count .value {
             color: #222;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .available-count {
-            font-size: 16px;
-            font-weight: bold;
-        }
-        .available-count .label {
+        .spu-total {
+            font-size: 14px;
             font-weight: normal;
-            color: #666;
-            margin-right: 4px;
+            color: #1677ff;
+            background: #e6f4ff;
+            padding: 2px 8px;
+            border-radius: 4px;
         }
-        .available-count .value {
-            color: #0099ff;
+        .spu-toggle {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+        .spu-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+        .spu-content {
+            transition: max-height 0.3s ease-out;
+            overflow: hidden;
+        }
+        .spu-content.collapsed {
+            max-height: 0;
+        }
+        /* SKU条目样式 */
+        .sku-item {
+            display: flex;
+            flex-direction: column;
+            padding: 10px 12px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+        .sku-item:last-child {
+            border-bottom: none;
+        }
+        .sku-item-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .sku-img-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 60px;
+            flex-shrink: 0;
+        }
+        .sku-img {
+            width: 60px;
+            height: 60px;
+            background: #ededed;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .sku-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .sku-qty-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+            text-align: center;
+        }
+        .sku-qty-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: #222;
+            text-align: center;
+        }
+        .sku-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        .sku-info-row {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sku-info-row .label {
+            color: #666;
         }
         .location-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 12px;
+            margin-top: 8px;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            overflow: hidden;
         }
         .location-table th {
             background: #f5f5f5;
-            padding: 10px;
+            padding: 8px 6px;
             text-align: center;
             font-weight: bold;
             color: #222;
-            font-size: 15px;
+            font-size: 14px;
+            border-bottom: 1px solid #e5e5e5;
         }
         .location-table td {
-            padding: 12px 10px;
+            padding: 8px 6px;
             text-align: center;
             border-top: 1px solid #eee;
-            font-size: 15px;
+            font-size: 14px;
         }
         .location-table tr:first-child td {
             border-top: none;
         }
         .location-code {
-            font-weight: bold;
+            font-weight: normal;
             color: #222;
         }
         .location-qty {
@@ -497,7 +553,7 @@
             </div>
             <div class="tooltip-container">
                 <span class="info-icon">!</span>
-                <div class="tooltip-content">支持条码/SKU/库位查询<br>条码：<br>X00302LCPX、X23456789、X6SV4S4Y<br>SKU：<br>ST210628UBBLACK9、ST210628UBCOGNAC10<br>库位：<br>KW20250524001、KW20250524002</div>
+                <div class="tooltip-content">支持条码/SKU/库位查询<br>条码：<br>X00302LCPX、X6SV4S4Y、XWKRN001、XLXSD001、XHYBT001<br>SKU：<br>ST210628UBBLACK9、WK220915RNWHITE42、LX230320SDPINK37、HY240105BTBROWN39<br>库位：<br>KW20250524001、KW20250524002</div>
             </div>
             <div class="scan-area">
                 <div class="scan-input-wrapper">
@@ -579,14 +635,15 @@
     <script>
         // 模拟数据 - 库存
         const inventory_data = {
-            // 条码查询数据
+            // ==================== 条码查询数据 ====================
+            // SPU: ST210628UB (原有)
             "X00302LCPX": {
                 sku: "ST210628UBCOGNAC10",
                 item_code: "ST210628UB",
                 color_size: "栗色/10",
                 barcode: "X00302LCPX",
                 seller: "STQ SHOP-US",
-                image: "https://via.placeholder.com/80x80?text=产品图片",
+                image: "https://via.placeholder.com/80x80?text=ST210628UB",
                 locations: [
                     { location: "库位1", qty: 106, available: 30 },
                     { location: "库位2", qty: 62, available: 12 }
@@ -598,7 +655,7 @@
                 color_size: "栗色/10",
                 barcode: "X23456789",
                 seller: "STQ SHOP-CA",
-                image: "https://via.placeholder.com/80x80?text=产品图片",
+                image: "https://via.placeholder.com/80x80?text=ST210628UB",
                 locations: [
                     { location: "库位1", qty: 1, available: 1 },
                     { location: "库位2", qty: 5, available: 5 }
@@ -610,7 +667,7 @@
                 color_size: "黑色/9",
                 barcode: "X6SV4S4Y",
                 seller: "STQ SHOP-US",
-                image: "https://via.placeholder.com/80x80?text=产品图片",
+                image: "https://via.placeholder.com/80x80?text=ST210628UB",
                 locations: [
                     { location: "库位1", qty: 35, available: 20 },
                     { location: "库位3", qty: 28, available: 15 }
@@ -622,7 +679,7 @@
                 color_size: "黑色/9",
                 barcode: "X6SV4S4Y",
                 seller: "STQ SHOP-DE",
-                image: "https://via.placeholder.com/80x80?text=产品图片",
+                image: "https://via.placeholder.com/80x80?text=ST210628UB",
                 locations: [
                     { location: "库位1", qty: 12, available: 12 },
                     { location: "库位2", qty: 34, available: 20 }
@@ -634,13 +691,113 @@
                 color_size: "黑色/9",
                 barcode: "X6SV4S4Y",
                 seller: "STQ SHOP-UK",
-                image: "https://via.placeholder.com/80x80?text=产品图片",
+                image: "https://via.placeholder.com/80x80?text=ST210628UB",
                 locations: [
                     { location: "库位4", qty: 15, available: 10 },
                     { location: "库位5", qty: 25, available: 18 }
                 ]
             },
-            // SKU查询数据
+            // SPU: WK220915RN (运动鞋 - 新增)
+            "XWKRN001-US": {
+                sku: "WK220915RNWHITE42",
+                item_code: "WK220915RN",
+                color_size: "白色/42",
+                barcode: "XWKRN001",
+                seller: "STQ SHOP-US",
+                image: "https://via.placeholder.com/80x80?text=WK220915RN",
+                locations: [
+                    { location: "库位1", qty: 45, available: 40 },
+                    { location: "库位2", qty: 30, available: 25 }
+                ]
+            },
+            "XWKRN001-DE": {
+                sku: "WK220915RNWHITE42",
+                item_code: "WK220915RN",
+                color_size: "白色/42",
+                barcode: "XWKRN001",
+                seller: "STQ SHOP-DE",
+                image: "https://via.placeholder.com/80x80?text=WK220915RN",
+                locations: [
+                    { location: "库位1", qty: 20, available: 18 },
+                    { location: "库位2", qty: 15, available: 12 }
+                ]
+            },
+            "XWKRN002-US": {
+                sku: "WK220915RNBLACK43",
+                item_code: "WK220915RN",
+                color_size: "黑色/43",
+                barcode: "XWKRN002",
+                seller: "STQ SHOP-US",
+                image: "https://via.placeholder.com/80x80?text=WK220915RN",
+                locations: [
+                    { location: "库位1", qty: 38, available: 35 },
+                    { location: "库位2", qty: 22, available: 20 }
+                ]
+            },
+            // SPU: LX230320SD (凉鞋 - 新增)
+            "XLXSD001-US": {
+                sku: "LX230320SDPINK37",
+                item_code: "LX230320SD",
+                color_size: "粉色/37",
+                barcode: "XLXSD001",
+                seller: "STQ SHOP-US",
+                image: "https://via.placeholder.com/80x80?text=LX230320SD",
+                locations: [
+                    { location: "库位1", qty: 50, available: 45 },
+                    { location: "库位2", qty: 35, available: 30 }
+                ]
+            },
+            "XLXSD001-UK": {
+                sku: "LX230320SDPINK37",
+                item_code: "LX230320SD",
+                color_size: "粉色/37",
+                barcode: "XLXSD001",
+                seller: "STQ SHOP-UK",
+                image: "https://via.placeholder.com/80x80?text=LX230320SD",
+                locations: [
+                    { location: "库位1", qty: 28, available: 25 },
+                    { location: "库位2", qty: 18, available: 15 }
+                ]
+            },
+            "XLXSD002-US": {
+                sku: "LX230320SDBLUE38",
+                item_code: "LX230320SD",
+                color_size: "蓝色/38",
+                barcode: "XLXSD002",
+                seller: "STQ SHOP-US",
+                image: "https://via.placeholder.com/80x80?text=LX230320SD",
+                locations: [
+                    { location: "库位1", qty: 42, available: 38 },
+                    { location: "库位2", qty: 25, available: 22 }
+                ]
+            },
+            // SPU: HY240105BT (靴子 - 新增)
+            "XHYBT001-US": {
+                sku: "HY240105BTBROWN39",
+                item_code: "HY240105BT",
+                color_size: "棕色/39",
+                barcode: "XHYBT001",
+                seller: "STQ SHOP-US",
+                image: "https://via.placeholder.com/80x80?text=HY240105BT",
+                locations: [
+                    { location: "库位1", qty: 25, available: 20 },
+                    { location: "库位2", qty: 18, available: 15 }
+                ]
+            },
+            "XHYBT001-CA": {
+                sku: "HY240105BTBROWN39",
+                item_code: "HY240105BT",
+                color_size: "棕色/39",
+                barcode: "XHYBT001",
+                seller: "STQ SHOP-CA",
+                image: "https://via.placeholder.com/80x80?text=HY240105BT",
+                locations: [
+                    { location: "库位1", qty: 15, available: 12 },
+                    { location: "库位2", qty: 10, available: 8 }
+                ]
+            },
+            // ==================== SKU查询数据 ====================
+            // SPU: ST210628UB (原有)
             "ST210628UBBLACK9": {
                 sku: "ST210628UBBLACK9",
                 item_code: "ST210628UB",
@@ -651,7 +808,7 @@
                     { code: "X6SV4S4Y", seller: "STQ SHOP-DE" },
                     { code: "X6SV4S4Y", seller: "STQ SHOP-UK" }
                 ],
-                image: "https://via.placeholder.com/80x80?text=产品图片",
+                image: "https://via.placeholder.com/80x80?text=ST210628UB",
                 locations: [
                     { location: "库位1", qty: 35, available: 20, seller: "STQ SHOP-US" },
                     { location: "库位3", qty: 28, available: 15, seller: "STQ SHOP-US" },
@@ -670,7 +827,7 @@
                     { code: "X00302LCPX", seller: "STQ SHOP-US" },
                     { code: "X23456789", seller: "STQ SHOP-CA" }
                 ],
-                image: "https://via.placeholder.com/80x80?text=产品图片",
+                image: "https://via.placeholder.com/80x80?text=ST210628UB",
                 locations: [
                     { location: "库位1", qty: 106, available: 30, seller: "STQ SHOP-US" },
                     { location: "库位2", qty: 62, available: 12, seller: "STQ SHOP-US" },
@@ -678,17 +835,100 @@
                     { location: "库位2", qty: 5, available: 5, seller: "STQ SHOP-CA" }
                 ]
             },
-            // 库位查询数据
+            // SPU: WK220915RN (运动鞋 - 新增)
+            "WK220915RNWHITE42": {
+                sku: "WK220915RNWHITE42",
+                item_code: "WK220915RN",
+                color_size: "白色/42",
+                barcode: "XWKRN001",
+                barcodes: [
+                    { code: "XWKRN001", seller: "STQ SHOP-US" },
+                    { code: "XWKRN001", seller: "STQ SHOP-DE" }
+                ],
+                image: "https://via.placeholder.com/80x80?text=WK220915RN",
+                locations: [
+                    { location: "库位1", qty: 45, available: 40, seller: "STQ SHOP-US" },
+                    { location: "库位2", qty: 30, available: 25, seller: "STQ SHOP-US" },
+                    { location: "库位1", qty: 20, available: 18, seller: "STQ SHOP-DE" },
+                    { location: "库位2", qty: 15, available: 12, seller: "STQ SHOP-DE" }
+                ]
+            },
+            "WK220915RNBLACK43": {
+                sku: "WK220915RNBLACK43",
+                item_code: "WK220915RN",
+                color_size: "黑色/43",
+                barcode: "XWKRN002",
+                barcodes: [
+                    { code: "XWKRN002", seller: "STQ SHOP-US" }
+                ],
+                image: "https://via.placeholder.com/80x80?text=WK220915RN",
+                locations: [
+                    { location: "库位1", qty: 38, available: 35, seller: "STQ SHOP-US" },
+                    { location: "库位2", qty: 22, available: 20, seller: "STQ SHOP-US" }
+                ]
+            },
+            // SPU: LX230320SD (凉鞋 - 新增)
+            "LX230320SDPINK37": {
+                sku: "LX230320SDPINK37",
+                item_code: "LX230320SD",
+                color_size: "粉色/37",
+                barcode: "XLXSD001",
+                barcodes: [
+                    { code: "XLXSD001", seller: "STQ SHOP-US" },
+                    { code: "XLXSD001", seller: "STQ SHOP-UK" }
+                ],
+                image: "https://via.placeholder.com/80x80?text=LX230320SD",
+                locations: [
+                    { location: "库位1", qty: 50, available: 45, seller: "STQ SHOP-US" },
+                    { location: "库位2", qty: 35, available: 30, seller: "STQ SHOP-US" },
+                    { location: "库位1", qty: 28, available: 25, seller: "STQ SHOP-UK" },
+                    { location: "库位2", qty: 18, available: 15, seller: "STQ SHOP-UK" }
+                ]
+            },
+            "LX230320SDBLUE38": {
+                sku: "LX230320SDBLUE38",
+                item_code: "LX230320SD",
+                color_size: "蓝色/38",
+                barcode: "XLXSD002",
+                barcodes: [
+                    { code: "XLXSD002", seller: "STQ SHOP-US" }
+                ],
+                image: "https://via.placeholder.com/80x80?text=LX230320SD",
+                locations: [
+                    { location: "库位1", qty: 42, available: 38, seller: "STQ SHOP-US" },
+                    { location: "库位2", qty: 25, available: 22, seller: "STQ SHOP-US" }
+                ]
+            },
+            // SPU: HY240105BT (靴子 - 新增)
+            "HY240105BTBROWN39": {
+                sku: "HY240105BTBROWN39",
+                item_code: "HY240105BT",
+                color_size: "棕色/39",
+                barcode: "XHYBT001",
+                barcodes: [
+                    { code: "XHYBT001", seller: "STQ SHOP-US" },
+                    { code: "XHYBT001", seller: "STQ SHOP-CA" }
+                ],
+                image: "https://via.placeholder.com/80x80?text=HY240105BT",
+                locations: [
+                    { location: "库位1", qty: 25, available: 20, seller: "STQ SHOP-US" },
+                    { location: "库位2", qty: 18, available: 15, seller: "STQ SHOP-US" },
+                    { location: "库位1", qty: 15, available: 12, seller: "STQ SHOP-CA" },
+                    { location: "库位2", qty: 10, available: 8, seller: "STQ SHOP-CA" }
+                ]
+            },
+            // ==================== 库位查询数据 ====================
             "KW20250524001": {
                 name: "库位1",
                 items: [
+                    // SPU: ST210628UB
                     {
                         sku: "ST210628UBBLACK9",
                         item_code: "ST210628UB",
                         color_size: "黑色/9",
                         barcode: "X6SV4S4Y",
                         seller: "STQ SHOP-US",
-                        image: "https://via.placeholder.com/80x80?text=产品图片",
+                        image: "https://via.placeholder.com/80x80?text=ST210628UB",
                         qty: 35,
                         available: 20
                     },
@@ -698,7 +938,7 @@
                         color_size: "黑色/9",
                         barcode: "X6SV4S4Y",
                         seller: "STQ SHOP-DE",
-                        image: "https://via.placeholder.com/80x80?text=产品图片",
+                        image: "https://via.placeholder.com/80x80?text=ST210628UB",
                         qty: 12,
                         available: 12
                     },
@@ -708,7 +948,7 @@
                         color_size: "栗色/10",
                         barcode: "X00302LCPX",
                         seller: "STQ SHOP-US",
-                        image: "https://via.placeholder.com/80x80?text=产品图片",
+                        image: "https://via.placeholder.com/80x80?text=ST210628UB",
                         qty: 106,
                         available: 30
                     },
@@ -718,22 +958,106 @@
                         color_size: "栗色/10",
                         barcode: "X23456789",
                         seller: "STQ SHOP-CA",
-                        image: "https://via.placeholder.com/80x80?text=产品图片",
+                        image: "https://via.placeholder.com/80x80?text=ST210628UB",
                         qty: 1,
                         available: 1
+                    },
+                    // SPU: WK220915RN (运动鞋)
+                    {
+                        sku: "WK220915RNWHITE42",
+                        item_code: "WK220915RN",
+                        color_size: "白色/42",
+                        barcode: "XWKRN001",
+                        seller: "STQ SHOP-US",
+                        image: "https://via.placeholder.com/80x80?text=WK220915RN",
+                        qty: 45,
+                        available: 40
+                    },
+                    {
+                        sku: "WK220915RNWHITE42",
+                        item_code: "WK220915RN",
+                        color_size: "白色/42",
+                        barcode: "XWKRN001",
+                        seller: "STQ SHOP-DE",
+                        image: "https://via.placeholder.com/80x80?text=WK220915RN",
+                        qty: 20,
+                        available: 18
+                    },
+                    {
+                        sku: "WK220915RNBLACK43",
+                        item_code: "WK220915RN",
+                        color_size: "黑色/43",
+                        barcode: "XWKRN002",
+                        seller: "STQ SHOP-US",
+                        image: "https://via.placeholder.com/80x80?text=WK220915RN",
+                        qty: 38,
+                        available: 35
+                    },
+                    // SPU: LX230320SD (凉鞋)
+                    {
+                        sku: "LX230320SDPINK37",
+                        item_code: "LX230320SD",
+                        color_size: "粉色/37",
+                        barcode: "XLXSD001",
+                        seller: "STQ SHOP-US",
+                        image: "https://via.placeholder.com/80x80?text=LX230320SD",
+                        qty: 50,
+                        available: 45
+                    },
+                    {
+                        sku: "LX230320SDPINK37",
+                        item_code: "LX230320SD",
+                        color_size: "粉色/37",
+                        barcode: "XLXSD001",
+                        seller: "STQ SHOP-UK",
+                        image: "https://via.placeholder.com/80x80?text=LX230320SD",
+                        qty: 28,
+                        available: 25
+                    },
+                    {
+                        sku: "LX230320SDBLUE38",
+                        item_code: "LX230320SD",
+                        color_size: "蓝色/38",
+                        barcode: "XLXSD002",
+                        seller: "STQ SHOP-US",
+                        image: "https://via.placeholder.com/80x80?text=LX230320SD",
+                        qty: 42,
+                        available: 38
+                    },
+                    // SPU: HY240105BT (靴子)
+                    {
+                        sku: "HY240105BTBROWN39",
+                        item_code: "HY240105BT",
+                        color_size: "棕色/39",
+                        barcode: "XHYBT001",
+                        seller: "STQ SHOP-US",
+                        image: "https://via.placeholder.com/80x80?text=HY240105BT",
+                        qty: 25,
+                        available: 20
+                    },
+                    {
+                        sku: "HY240105BTBROWN39",
+                        item_code: "HY240105BT",
+                        color_size: "棕色/39",
+                        barcode: "XHYBT001",
+                        seller: "STQ SHOP-CA",
+                        image: "https://via.placeholder.com/80x80?text=HY240105BT",
+                        qty: 15,
+                        available: 12
                     }
                 ]
             },
             "KW20250524002": {
                 name: "库位2",
                 items: [
+                    // SPU: ST210628UB
                     {
                         sku: "ST210628UBBLACK9",
                         item_code: "ST210628UB",
                         color_size: "黑色/9",
                         barcode: "X6SV4S4Y",
                         seller: "STQ SHOP-DE",
-                        image: "https://via.placeholder.com/80x80?text=产品图片",
+                        image: "https://via.placeholder.com/80x80?text=ST210628UB",
                         qty: 34,
                         available: 20
                     },
@@ -743,7 +1067,7 @@
                         color_size: "栗色/10",
                         barcode: "X00302LCPX",
                         seller: "STQ SHOP-US",
-                        image: "https://via.placeholder.com/80x80?text=产品图片",
+                        image: "https://via.placeholder.com/80x80?text=ST210628UB",
                         qty: 62,
                         available: 12
                     },
@@ -753,9 +1077,92 @@
                         color_size: "栗色/10",
                         barcode: "X23456789",
                         seller: "STQ SHOP-CA",
-                        image: "https://via.placeholder.com/80x80?text=产品图片",
+                        image: "https://via.placeholder.com/80x80?text=ST210628UB",
                         qty: 5,
                         available: 5
+                    },
+                    // SPU: WK220915RN (运动鞋)
+                    {
+                        sku: "WK220915RNWHITE42",
+                        item_code: "WK220915RN",
+                        color_size: "白色/42",
+                        barcode: "XWKRN001",
+                        seller: "STQ SHOP-US",
+                        image: "https://via.placeholder.com/80x80?text=WK220915RN",
+                        qty: 30,
+                        available: 25
+                    },
+                    {
+                        sku: "WK220915RNWHITE42",
+                        item_code: "WK220915RN",
+                        color_size: "白色/42",
+                        barcode: "XWKRN001",
+                        seller: "STQ SHOP-DE",
+                        image: "https://via.placeholder.com/80x80?text=WK220915RN",
+                        qty: 15,
+                        available: 12
+                    },
+                    {
+                        sku: "WK220915RNBLACK43",
+                        item_code: "WK220915RN",
+                        color_size: "黑色/43",
+                        barcode: "XWKRN002",
+                        seller: "STQ SHOP-US",
+                        image: "https://via.placeholder.com/80x80?text=WK220915RN",
+                        qty: 22,
+                        available: 20
+                    },
+                    // SPU: LX230320SD (凉鞋)
+                    {
+                        sku: "LX230320SDPINK37",
+                        item_code: "LX230320SD",
+                        color_size: "粉色/37",
+                        barcode: "XLXSD001",
+                        seller: "STQ SHOP-US",
+                        image: "https://via.placeholder.com/80x80?text=LX230320SD",
+                        qty: 35,
+                        available: 30
+                    },
+                    {
+                        sku: "LX230320SDPINK37",
+                        item_code: "LX230320SD",
+                        color_size: "粉色/37",
+                        barcode: "XLXSD001",
+                        seller: "STQ SHOP-UK",
+                        image: "https://via.placeholder.com/80x80?text=LX230320SD",
+                        qty: 18,
+                        available: 15
+                    },
+                    {
+                        sku: "LX230320SDBLUE38",
+                        item_code: "LX230320SD",
+                        color_size: "蓝色/38",
+                        barcode: "XLXSD002",
+                        seller: "STQ SHOP-US",
+                        image: "https://via.placeholder.com/80x80?text=LX230320SD",
+                        qty: 25,
+                        available: 22
+                    },
+                    // SPU: HY240105BT (靴子)
+                    {
+                        sku: "HY240105BTBROWN39",
+                        item_code: "HY240105BT",
+                        color_size: "棕色/39",
+                        barcode: "XHYBT001",
+                        seller: "STQ SHOP-US",
+                        image: "https://via.placeholder.com/80x80?text=HY240105BT",
+                        qty: 18,
+                        available: 15
+                    },
+                    {
+                        sku: "HY240105BTBROWN39",
+                        item_code: "HY240105BT",
+                        color_size: "棕色/39",
+                        barcode: "XHYBT001",
+                        seller: "STQ SHOP-CA",
+                        image: "https://via.placeholder.com/80x80?text=HY240105BT",
+                        qty: 10,
+                        available: 8
                     }
                 ]
             },
@@ -1034,63 +1441,174 @@
             resultArea.style.display = 'block';
             
             // 判断查询类型
-            if (query.startsWith('ST')) {
-                // SKU查询
-                handleSkuQuery(query);
-            } else if (query.startsWith('KW')) {
+            // SKU数据有barcodes属性，用此来判断是否为SKU查询
+            const queryData = inventory_data[query];
+            if (query.startsWith('KW')) {
                 // 库位查询
                 handleLocationQuery(query);
+            } else if (queryData && queryData.barcodes) {
+                // SKU查询（数据存在且有barcodes属性）
+                handleSkuQuery(query);
             } else {
                 // 条码查询
                 handleBarcodeQuery(query);
             }
         }
 
+        // 通用渲染函数：按SPU聚合渲染结果
+        function renderResultsBySPU(itemsData) {
+            const resultArea = document.getElementById('resultArea');
+            resultArea.innerHTML = '';
+            
+            // 按SPU（item_code）分组
+            const spuGroups = {};
+            itemsData.forEach(item => {
+                const spu = item.item_code;
+                if (!spuGroups[spu]) {
+                    spuGroups[spu] = {
+                        spu: spu,
+                        skuItems: [],
+                        totalQty: 0,
+                        totalAvailable: 0
+                    };
+                }
+                spuGroups[spu].skuItems.push(item);
+                spuGroups[spu].totalQty += item.totalQty;
+                spuGroups[spu].totalAvailable += item.totalAvailable;
+            });
+            
+            // 计算总库存
+            let grandTotalQty = 0;
+            let grandTotalAvailable = 0;
+            Object.values(spuGroups).forEach(group => {
+                grandTotalQty += group.totalQty;
+                grandTotalAvailable += group.totalAvailable;
+            });
+            document.getElementById('totalInventory').textContent = `${grandTotalQty}/${grandTotalAvailable}`;
+            
+            // 渲染每个SPU分组
+            Object.values(spuGroups).forEach(spuGroup => {
+                const spuCard = document.createElement('div');
+                spuCard.className = 'spu-group-card';
+                
+                // SPU头部
+                const spuHeader = document.createElement('div');
+                spuHeader.className = 'spu-header';
+                spuHeader.innerHTML = `
+                    <span class="spu-title">
+                        ${spuGroup.spu}
+                        <span class="spu-total">${spuGroup.totalQty}/${spuGroup.totalAvailable}</span>
+                    </span>
+                    <div class="spu-toggle">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                            <path d="M6 9L12 15L18 9" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                `;
+                
+                // SPU内容区域
+                const spuContent = document.createElement('div');
+                spuContent.className = 'spu-content';
+                
+                // 渲染每个SKU条目
+                spuGroup.skuItems.forEach(skuItem => {
+                    const skuItemDiv = document.createElement('div');
+                    skuItemDiv.className = 'sku-item';
+                    
+                    const sellerNote = getSellerSiteNote(skuItem.seller);
+                    
+                    let skuItemHTML = `
+                        <div class="sku-item-content">
+                            <div class="sku-img-area">
+                                <div class="sku-img">
+                                    <img src="${skuItem.image}" alt="${skuItem.sku}">
+                                </div>
+                                <div class="sku-qty-label">库存/可用</div>
+                                <div class="sku-qty-value">${skuItem.totalQty}/${skuItem.totalAvailable}</div>
+                            </div>
+                            <div class="sku-info">
+                                <div class="sku-info-row"><span class="label">SKU：</span>${skuItem.sku}</div>
+                                <div class="sku-info-row"><span class="label">规格：</span>${skuItem.color_size}</div>
+                                <div class="sku-info-row"><span class="label">条码：</span>${skuItem.barcode}</div>
+                                ${skuItem.seller ? `<div class="sku-info-row"><span class="label">店铺：</span>${skuItem.seller}${sellerNote}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    
+                    // 如果有库位信息，添加库位表格
+                    if (skuItem.locations && skuItem.locations.length > 0) {
+                        skuItemHTML += `
+                            <table class="location-table">
+                                <tr>
+                                    <th>库位</th>
+                                    <th>库存</th>
+                                    <th>可用</th>
+                                </tr>
+                                ${skuItem.locations.map(loc => `
+                                    <tr>
+                                        <td class="location-code">${loc.location}</td>
+                                        <td class="location-qty">${loc.qty}</td>
+                                        <td class="location-available">${loc.available}</td>
+                                    </tr>
+                                `).join('')}
+                            </table>
+                        `;
+                    }
+                    
+                    skuItemDiv.innerHTML = skuItemHTML;
+                    spuContent.appendChild(skuItemDiv);
+                });
+                
+                // 添加展开/收起功能
+                spuHeader.addEventListener('click', function() {
+                    const toggle = this.querySelector('.spu-toggle');
+                    this.classList.toggle('collapsed');
+                    toggle.classList.toggle('collapsed');
+                    spuContent.classList.toggle('collapsed');
+                });
+                
+                spuCard.appendChild(spuHeader);
+                spuCard.appendChild(spuContent);
+                resultArea.appendChild(spuCard);
+            });
+        }
+
         // 处理条码查询
         function handleBarcodeQuery(barcode) {
-            // 查找直接匹配条码的数据
-            let directMatch = null;
-            // 保存所有匹配的条目
             const matchingItems = [];
-            const seenSellers = new Set(); // 用于跟踪已经看到的店铺
+            const seenSellers = new Set();
             
             // 遍历所有数据查找匹配的条码
             for (let key in inventory_data) {
                 const item = inventory_data[key];
                 
-                // 检查是否是库位数据
-                if (item.items) continue;
-                
-                // 检查是否是SKU数据，这里我们不需要直接处理
-                if (key.startsWith('ST')) continue;
+                // 跳过库位数据和SKU数据（SKU数据有barcodes属性）
+                if (item.items || item.barcodes) continue;
                 
                 // 检查条码是否匹配
                 if (item.barcode === barcode) {
-                    // 增加站点筛选
+                    // 站点筛选
                     if (!isSellerInSelectedSites(item.seller)) continue;
                     
                     // 检查是否已经添加了该店铺的数据
                     if (seenSellers.has(item.seller)) continue;
-                    
-                    // 记录该店铺
                     seenSellers.add(item.seller);
                     
                     // 计算该项的总库存和可用数量
-                    const itemTotalQty = item.locations.reduce((sum, loc) => sum + loc.qty, 0);
-                    const itemTotalAvailable = item.locations.reduce((sum, loc) => sum + loc.available, 0);
+                    const totalQty = item.locations.reduce((sum, loc) => sum + loc.qty, 0);
+                    const totalAvailable = item.locations.reduce((sum, loc) => sum + loc.available, 0);
                     
-                    // 添加到匹配项，并包含计算好的库存信息
                     matchingItems.push({
-                        ...item, 
-                        key: key, 
-                        itemTotalQty: itemTotalQty, 
-                        itemTotalAvailable: itemTotalAvailable
+                        sku: item.sku,
+                        item_code: item.item_code,
+                        color_size: item.color_size,
+                        barcode: item.barcode,
+                        seller: item.seller,
+                        image: item.image,
+                        locations: item.locations,
+                        totalQty: totalQty,
+                        totalAvailable: totalAvailable
                     });
-                    
-                    // 如果是完全匹配键名的，标记为直接匹配
-                    if (key.startsWith(barcode)) {
-                        directMatch = matchingItems[matchingItems.length - 1];
-                    }
                 }
             }
             
@@ -1100,115 +1618,20 @@
             }
             
             // 按库存量排序（降序）
-            matchingItems.sort((a, b) => b.itemTotalQty - a.itemTotalQty);
+            matchingItems.sort((a, b) => b.totalQty - a.totalQty);
             
-            const resultArea = document.getElementById('resultArea');
-            resultArea.innerHTML = '';
-            
-            // 计算所有匹配项的总库存和可用库存（合计值）
-            let grandTotalQty = 0;
-            let grandTotalAvailable = 0;
-            matchingItems.forEach(item => {
-                grandTotalQty += item.itemTotalQty;
-                grandTotalAvailable += item.itemTotalAvailable;
-            });
-            
-            // 更新查询信息区域的合计库存显示
-            document.getElementById('totalInventory').textContent = `${grandTotalQty}/${grandTotalAvailable}`;
-            
-            // 获取要显示的SKU（使用第一个匹配项的SKU）
-            const sku = matchingItems[0].sku;
-            
-            // 创建共用的SKU标题行
-            const headerSku = document.createElement('div');
-            headerSku.className = 'product-header-sku';
-            headerSku.style.fontSize = '17px';
-            headerSku.style.fontWeight = 'bold';
-            headerSku.style.marginBottom = '10px';
-            headerSku.style.color = '#222';
-            headerSku.style.borderBottom = '1px solid #eee';
-            headerSku.style.paddingBottom = '8px';
-            headerSku.style.display = 'flex';
-            headerSku.style.justifyContent = 'space-between';
-            headerSku.style.alignItems = 'center';
-            
-            // 添加SKU信息
-            headerSku.innerHTML = `<span>${sku}</span>`;
-            
-            // 将SKU标题添加到结果区域
-            resultArea.appendChild(headerSku);
-            
-            // 为每个店铺创建产品卡片
-            matchingItems.forEach((item) => {
-                // 跳过没有seller信息的项
-                if (!item.seller) return;
-                
-                const sellerNote = getSellerSiteNote(item.seller);
-                
-                const sellerCard = document.createElement('div');
-                sellerCard.className = 'product-card';
-                sellerCard.style.marginBottom = '20px';
-                
-                // 创建内容容器
-                const contentContainer = document.createElement('div');
-                contentContainer.className = 'product-content';
-                
-                // 添加产品详细信息
-                contentContainer.innerHTML = `
-                <div class="product-header">
-                        <img src="${item.image}" class="product-image" alt="${item.sku}">
-                        <div class="product-info" style="position: relative; flex: 1; padding-right: 95px;">
-                            <div class="product-item-code">货号: ${item.item_code}</div>
-                            <div class="product-color-size">颜色/尺码: ${item.color_size}</div>
-                            <div class="product-barcode">条码: ${item.barcode}</div>
-                            ${item.seller ? `<div style="color: #666; font-size: 15px;">店铺: ${item.seller}${sellerNote}</div>` : ''}
-                            <div style="position: absolute; top: 0; right: 0; display: flex; flex-direction: column; align-items: center; background: #f7f7f7; padding: 8px 10px; border-radius: 6px; min-width: 85px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                                <span style="font-size: 15px; font-weight: bold; margin-bottom: 2px;">库存/可用</span>
-                                <span style="color: #222; font-weight: bold; font-size: 18px;">${item.itemTotalQty}/${item.itemTotalAvailable}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            // 创建库位表格
-            const table = document.createElement('table');
-            table.className = 'location-table';
-            table.innerHTML = `
-                <tr>
-                    <th>库位</th>
-                    <th>库存</th>
-                    <th>可用</th>
-                </tr>
-            `;
-            
-                item.locations.forEach(loc => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="location-code">${loc.location}</td>
-                    <td class="location-qty">${loc.qty}</td>
-                    <td class="location-available">${loc.available}</td>
-                `;
-                table.appendChild(row);
-            });
-            
-                contentContainer.appendChild(table);
-                sellerCard.appendChild(contentContainer);
-                resultArea.appendChild(sellerCard);
-            });
+            // 使用通用渲染函数
+            renderResultsBySPU(matchingItems);
         }
-         //------------------------------------------------
+        //------------------------------------------------
         // 处理SKU查询
         function handleSkuQuery(sku) {
-            // 获取SKU对应的数据
             const skuData = inventory_data[sku];
             
             if (!skuData) {
                 showNoResults();
                 return;
             }
-            
-            const resultArea = document.getElementById('resultArea');
-            resultArea.innerHTML = '';
             
             // 过滤符合站点的库位信息
             const filteredLocations = skuData.locations.filter(loc => isSellerInSelectedSites(loc.seller));
@@ -1217,21 +1640,9 @@
                 showNoResults();
                 return;
             }
-
-            // 计算总库存和可用库存
-            let totalQty = 0;
-            let totalAvailable = 0;
-            filteredLocations.forEach(loc => {
-                    totalQty += loc.qty;
-                    totalAvailable += loc.available;
-            });
-            
-            document.getElementById('totalInventory').textContent = `${totalQty}/${totalAvailable}`;
             
             // 按店铺分组
             const sellerGroups = {};
-            
-            // 使用新的barcodes和locations数据结构
             filteredLocations.forEach(loc => {
                 const sellerId = loc.seller;
                 if (!sellerGroups[sellerId]) {
@@ -1249,93 +1660,29 @@
                     }
                 }
                 
-                // 添加库位
                 sellerGroups[sellerId].locations.push(loc);
                 sellerGroups[sellerId].totalQty += loc.qty;
                 sellerGroups[sellerId].totalAvailable += loc.available;
             });
             
-            // 将店铺分组转换为数组并按总库存量排序（降序）
-            const sortedSellers = Object.values(sellerGroups).sort((a, b) => b.totalQty - a.totalQty);
+            // 转换为统一格式
+            const matchingItems = Object.values(sellerGroups).map(group => ({
+                sku: skuData.sku,
+                item_code: skuData.item_code,
+                color_size: skuData.color_size,
+                barcode: group.barcode || skuData.barcode,
+                seller: group.seller,
+                image: skuData.image,
+                locations: group.locations,
+                totalQty: group.totalQty,
+                totalAvailable: group.totalAvailable
+            }));
             
-            // 创建一个包含所有店铺卡片的容器
-            const skuContainer = document.createElement('div');
-            skuContainer.className = 'sku-container';
-            skuContainer.style.marginBottom = '20px';
+            // 按库存量排序（降序）
+            matchingItems.sort((a, b) => b.totalQty - a.totalQty);
             
-            // 创建共用的SKU标题行
-            const headerSku = document.createElement('div');
-            headerSku.className = 'product-header-sku';
-            headerSku.style.fontSize = '17px';
-            headerSku.style.fontWeight = 'bold';
-            headerSku.style.marginBottom = '10px';
-            headerSku.style.color = '#222';
-            headerSku.style.borderBottom = '1px solid #eee';
-            headerSku.style.paddingBottom = '8px';
-            headerSku.style.display = 'flex';
-            headerSku.style.justifyContent = 'space-between';
-            headerSku.style.alignItems = 'center';
-            
-            // 添加SKU信息
-            headerSku.innerHTML = `<span>${sku}</span>`;
-            
-            // 将SKU标题添加到结果区域
-            resultArea.appendChild(headerSku);
-            
-            // 为每个店铺创建产品卡片
-            sortedSellers.forEach((sellerGroup, index) => {
-                const sellerNote = getSellerSiteNote(sellerGroup.seller);
-                
-                const sellerCard = document.createElement('div');
-                sellerCard.className = 'product-card';
-                sellerCard.style.marginBottom = '20px';
-                
-                // 创建内容容器
-                const contentContainer = document.createElement('div');
-                contentContainer.className = 'product-content';
-                
-                // 添加产品详细信息
-                contentContainer.innerHTML = `
-                    <div class="product-header">
-                        <img src="${skuData.image}" class="product-image" alt="${skuData.sku}">
-                        <div class="product-info" style="position: relative; flex: 1; padding-right: 95px;">
-                            <div class="product-item-code">货号: ${skuData.item_code}</div>
-                            <div class="product-color-size">颜色/尺码: ${skuData.color_size}</div>
-                            <div class="product-barcode">条码: ${sellerGroup.barcode || skuData.barcode}</div>
-                            ${sellerGroup.seller ? `<div style="color: #666; font-size: 15px;">店铺: ${sellerGroup.seller}${sellerNote}</div>` : ''}
-                            <div style="position: absolute; top: 0; right: 0; display: flex; flex-direction: column; align-items: center; background: #f7f7f7; padding: 8px 10px; border-radius: 6px; min-width: 85px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                                <span style="font-size: 15px; font-weight: bold; margin-bottom: 2px;">库存/可用</span>
-                                <span style="color: #222; font-weight: bold; font-size: 18px;">${sellerGroup.totalQty}/${sellerGroup.totalAvailable}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                // 创建库位表格
-                const table = document.createElement('table');
-                table.className = 'location-table';
-                table.innerHTML = `
-                    <tr>
-                        <th>库位</th>
-                        <th>库存</th>
-                        <th>可用</th>
-                    </tr>
-                `;
-                
-                sellerGroup.locations.forEach(loc => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td class="location-code">${loc.location}</td>
-                        <td class="location-qty">${loc.qty}</td>
-                        <td class="location-available">${loc.available}</td>
-                    `;
-                    table.appendChild(row);
-                });
-                
-                contentContainer.appendChild(table);
-                sellerCard.appendChild(contentContainer);
-                resultArea.appendChild(sellerCard);
-            });
+            // 使用通用渲染函数
+            renderResultsBySPU(matchingItems);
         }
         //------------------------------------------------
         // 处理库位查询
@@ -1347,10 +1694,6 @@
                 return;
             }
             
-            const resultArea = document.getElementById('resultArea');
-            //不需要显示库位了，不要去掉注释
-            // resultArea.innerHTML = `<h3 style="margin-bottom:16px;font-size:16px;">库位：${location.name}</h3>`;
-            
             // 过滤符合站点的商品
             const filteredItems = data.items.filter(item => isSellerInSelectedSites(item.seller));
             
@@ -1358,111 +1701,26 @@
                 showNoResults();
                 return;
             }
-
-            // 计算总库存和可用库存
-            let totalQty = 0;
-            let totalAvailable = 0;
-            filteredItems.forEach(item => {
-                totalQty += item.qty;
-                totalAvailable += item.available;
-            });
             
-            document.getElementById('totalInventory').textContent = `${totalQty}/${totalAvailable}`;
+            // 库位查询时，每个商品就是一条记录，不需要单独的库位表格
+            // 转换为统一格式
+            const matchingItems = filteredItems.map(item => ({
+                sku: item.sku,
+                item_code: item.item_code,
+                color_size: item.color_size,
+                barcode: item.barcode,
+                seller: item.seller,
+                image: item.image,
+                locations: null, // 库位查询时不显示库位表格，因为已经是单一库位
+                totalQty: item.qty,
+                totalAvailable: item.available
+            }));
             
-            // 按SKU分组
-            const skuGroups = {};
-            filteredItems.forEach(item => {
-                if (!skuGroups[item.sku]) {
-                    skuGroups[item.sku] = [];
-                }
-                skuGroups[item.sku].push(item);
-            });
+            // 按库存量排序（降序）
+            matchingItems.sort((a, b) => b.totalQty - a.totalQty);
             
-            // 创建每个SKU组的卡片
-            Object.keys(skuGroups).forEach(sku => {
-                const items = skuGroups[sku];
-                const groupQty = items.reduce((sum, item) => sum + item.qty, 0);
-                const groupAvailable = items.reduce((sum, item) => sum + item.available, 0);
-                
-                // 创建SKU组卡片
-                const skuGroupCard = document.createElement('div');
-                skuGroupCard.className = 'product-card';
-                skuGroupCard.style.marginBottom = '20px';
-                
-                // 创建可点击的SKU标题行
-                const skuHeader = document.createElement('div');
-                skuHeader.className = 'product-header-sku';
-                skuHeader.style.fontSize = '18px';
-                skuHeader.style.fontWeight = 'bold';
-                skuHeader.style.marginBottom = '10px';
-                skuHeader.style.color = '#222';
-                skuHeader.style.borderBottom = '1px solid #eee';
-                skuHeader.style.paddingBottom = '8px';
-                skuHeader.style.cursor = 'pointer';
-                skuHeader.style.display = 'flex';
-                skuHeader.style.justifyContent = 'space-between';
-                skuHeader.style.alignItems = 'center';
-                
-                // 添加SKU文本和下拉箭头
-                skuHeader.innerHTML = `
-                    <span>${sku}</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="dropdown-arrow">
-                        <path d="M6 9L12 15L18 9" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                `;
-                
-                // 创建内容容器，默认展开
-                const contentContainer = document.createElement('div');
-                contentContainer.className = 'sku-group-content';
-                contentContainer.style.display = 'block';
-                
-                // 为SKU标题添加点击事件，控制展开/收起
-                skuHeader.addEventListener('click', function() {
-                    const arrow = this.querySelector('.dropdown-arrow');
-                    if (contentContainer.style.display === 'none') {
-                        contentContainer.style.display = 'block';
-                        arrow.style.transform = 'rotate(0deg)';
-                    } else {
-                        contentContainer.style.display = 'none';
-                        arrow.style.transform = 'rotate(-90deg)';
-                    }
-                });
-                
-                // 添加每个条码的商品信息
-                items.forEach(item => {
-                    // 获取店铺备注
-                    const sellerNote = getSellerSiteNote(item.seller);
-                    
-                    const productItem = document.createElement('div');
-                    productItem.className = 'product-item';
-                    productItem.style.marginBottom = '15px';
-                    productItem.style.paddingTop = '5px';
-                    
-                    productItem.innerHTML = `
-                        <div class="product-header">
-                            <img src="${item.image}" class="product-image" alt="${item.sku}">
-                            <div class="product-info" style="position: relative; flex: 1; padding-right: 95px;">
-                                <div class="product-item-code">货号: ${item.item_code}</div>
-                                <div class="product-color-size">颜色/尺码: ${item.color_size}</div>
-                                <div class="product-barcode">条码: ${item.barcode}</div>
-                                ${item.seller ? `<div style="color: #666; font-size: 15px;">店铺: ${item.seller}${sellerNote}</div>` : ''}
-                                <div style="position: absolute; top: 0; right: 0; display: flex; flex-direction: column; align-items: center; background: #f7f7f7; padding: 8px 10px; border-radius: 6px; min-width: 85px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                                    <span style="font-size: 15px; font-weight: bold; margin-bottom: 2px;">库存/可用</span>
-                                    <span style="color: #222; font-weight: bold; font-size: 18px;">${item.qty}/${item.available}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    
-                    contentContainer.appendChild(productItem);
-                });
-                
-                // 组装SKU组卡片
-                skuGroupCard.appendChild(skuHeader);
-                skuGroupCard.appendChild(contentContainer);
-                
-                resultArea.appendChild(skuGroupCard);
-            });
+            // 使用通用渲染函数
+            renderResultsBySPU(matchingItems);
         }
 
         // 显示无结果提示
