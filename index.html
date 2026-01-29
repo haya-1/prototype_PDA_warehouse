@@ -370,13 +370,20 @@
         const warehouseModalClose = document.getElementById('warehouseModalClose');
         const warehouseItems = document.querySelectorAll('.warehouse-item');
 
-        // 初始化仓库选择
-        const savedWarehouse = sessionStorage.getItem('selectedWarehouse');
-        const savedWarehouseName = sessionStorage.getItem('selectedWarehouseName');
-        if (savedWarehouse && savedWarehouseName) {
-            warehouseDisplay.textContent = savedWarehouseName;
-            updateSelectedWarehouse(savedWarehouse);
+        // 初始化仓库选择（默认选择北京仓库）
+        let savedWarehouse = sessionStorage.getItem('selectedWarehouse');
+        let savedWarehouseName = sessionStorage.getItem('selectedWarehouseName');
+        
+        // 如果没有保存的仓库，设置默认仓库
+        if (!savedWarehouse || !savedWarehouseName) {
+            savedWarehouse = 'WH001';
+            savedWarehouseName = '北京仓库';
+            sessionStorage.setItem('selectedWarehouse', savedWarehouse);
+            sessionStorage.setItem('selectedWarehouseName', savedWarehouseName);
         }
+        
+        warehouseDisplay.textContent = savedWarehouseName;
+        updateSelectedWarehouse(savedWarehouse);
 
         // 打开仓库选择弹窗
         warehouseSelector.addEventListener('click', function() {

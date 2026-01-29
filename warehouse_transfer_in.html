@@ -1439,11 +1439,13 @@
         // 显示库存选择弹窗
         function showInventoryModal() {
             // 获取当前从sessionStorage中选择的仓库
-            const selectedWarehouseFromIndex = sessionStorage.getItem('selectedWarehouse');
+            let selectedWarehouseFromIndex = sessionStorage.getItem('selectedWarehouse');
 
             if (!selectedWarehouseFromIndex) {
-                showAlert('请先在首页选择仓库'); // Alert if no warehouse selected in index.html
-                return;
+                // 设置默认仓库
+                selectedWarehouseFromIndex = 'WH001';
+                sessionStorage.setItem('selectedWarehouse', selectedWarehouseFromIndex);
+                sessionStorage.setItem('selectedWarehouseName', '北京仓库');
             }
             
             // 将当前仓库设置为从index.html读取的仓库，用于库存列表的筛选

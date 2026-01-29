@@ -1217,15 +1217,14 @@
 
         // 初始化页面
         document.addEventListener('DOMContentLoaded', function() {
-            // ... existing warehouse logic ...
-            const currentWarehouse = sessionStorage.getItem('selectedWarehouse');
+            // 获取仓库，如果没有则设置默认仓库
+            let currentWarehouse = sessionStorage.getItem('selectedWarehouse');
             
             if (!currentWarehouse) {
-                showAlert('请先在首页选择仓库');
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1500);
-                return;
+                // 设置默认仓库
+                currentWarehouse = 'WH001';
+                sessionStorage.setItem('selectedWarehouse', currentWarehouse);
+                sessionStorage.setItem('selectedWarehouseName', '北京仓库');
             }
 
             const warehouseName = getWarehouseName(currentWarehouse);
